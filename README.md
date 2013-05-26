@@ -25,10 +25,10 @@ include.inject('app.js').done(function(){
 })
 ```
 
-- NodeJS: ```$ ijs test app.test```, or ```$ ijs test app.test -watch``` (now any changes to app.test or app.js will rerun the tests)
-- Browser: 
--- Capture slave, if not already with starting the server and opening "test" page (```ijs server```, navigate to ```http://localhost:5777/test```)
--- ```$ cd directory/with/app``` ```$ ijs test app.test -browser ```, or ```$ ijs test app.test -browser -watch```
+- nodejs - ```$ ijs test app.test```, or ```$ ijs test app.test -watch``` (now any changes to app.test or app.js will rerun the tests)
+- browser - 
+	- capture slave, if not already with starting the server and opening "test" page (```ijs server```, navigate to ```http://localhost:5777/test```)
+	- ```$ cd directory/with/app``` ```$ ijs test app.test -browser ```, or ```$ ijs test app.test -browser -watch```
 
 - ```include.inject``` - this is same as ```include.js``` in browsers (_application.js_ is embedded via <script src> tag - that means, script is evaluated in global scope, so in our case Application object will be in globals), but in nodejs environment scripts are evaluated in there module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit test.
 
