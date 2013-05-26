@@ -1,0 +1,21 @@
+{
+  "name": "ijs-utest",
+  "description": "Testing toolkit / TDD plugin for IncludeJS",
+  "preferGlobal": true,
+  "author": {
+    "name": "Alexander Kit",
+    "email": "source.kit@gmail.com"
+  },
+  "version": "0.8.1",
+  "main": "module.js",
+  "dependencies": {
+    "socket.io": "~0.9.13",
+    "libjs-class": "~1.0.3",
+    "socket.io-client": "~0.9.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tenbits/ijs-utest.git"
+  },
+  "license": "MIT"
+}
