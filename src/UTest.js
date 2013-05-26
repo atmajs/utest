@@ -41,7 +41,8 @@
 			teardownDelegate(teardown, done)();	
 		
 		} catch(error){
-			
+			console.error(error);
+			this.errors++;
 			done();
 			
 		}
@@ -68,7 +69,9 @@
 		},
 		
 		run: function(callback){
+			
 			this.processed = [];
+			this.errors = 0;
 			this.onComplete = callback;
 			
 			runCase(this.suite.before, this.nextCase);

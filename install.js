@@ -3,7 +3,7 @@ include.exports = {
 
 		var base = 'c:/Users/Tenbits/AppData/Roaming/npm/node_modules/includejs/'
 
-		new io.Directory(io.env.currentDir.combine('lib/'))
+		new io.Directory(io.env.currentDir.combine('/lib/').toString())
 				.readFiles()
 				.copyTo(new net.URI(base + 'plugins/utest/'));
 

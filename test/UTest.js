@@ -1,21 +1,20 @@
 
 var TestSuite = UTest;
 
-debugger;
-include.js('/src/utest/browser/src/UTest.js').done(function(){
-	
-	console.log('asdasd');
-	
-	var flow = [];
+
+(function(){
+	var flow = [],
+		teardowns = 0;
 	
 	TestSuite({
+		
 		'first': function(){
 			flow.push(1);
 		},
 		'second': function(){
 			flow.push(2);
 		},
-		'third': function(done){
+		'async': function(done){
 			setTimeout(function(){
 				
 				flow.push(3);
@@ -23,9 +22,18 @@ include.js('/src/utest/browser/src/UTest.js').done(function(){
 			},1000);
 		},
 		
+		before: function(){
+			flow.push(0);
+		},
 		after: function(){
-			assert.deepEqual(flow, [1,2, 3]);
+
+			assert.deepEqual(flow, [0, 1, 2, 3]);
+			assert.equal(teardowns, 3);
+
+		},
+		teardown: function(){
+			teardowns++;
 		}
 	});
 	
-})
+}())

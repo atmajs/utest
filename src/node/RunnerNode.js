@@ -2,9 +2,10 @@ var RunnerNode = (function() {
 
 	function resource_clear(resource) {
 		
-		var bin = include.getResources(),
-			type = resource.type;
-		if (type) {
+		var bin = include.getResources();
+		
+		
+		for (var type in bin) {
 			for(var key in bin[type]){
 				if (bin[type][key] === resource){
 					delete bin[type][key];
@@ -12,6 +13,7 @@ var RunnerNode = (function() {
 				}
 			}
 		}
+		
 		if (resource.includes) {
 			ruqq.arr.each(resource.includes, function(data){
 				resource_clear(data.resource);
@@ -51,6 +53,9 @@ var RunnerNode = (function() {
 			this.stats = [];
 			this.clearResources();
 			this.process();
+			
+			//
+			//-global.UTest = TestSuite;
 		},
 
 		singleComplete: function() {
@@ -84,7 +89,7 @@ var RunnerNode = (function() {
 				.instance(url)
 				.js(url)
 				.done(function(resp) {
-
+				
 				setTimeout(function() {
 					TestSuite.run(that.singleComplete);
 				});

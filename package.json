@@ -8,10 +8,10 @@
   },
   "version": "0.8.1",
   "main": "module.js",
-  "dependencies": {
+  "devDependencies": {
     "socket.io": "~0.9.13",
-    "libjs-class": "~1.0.3",
-    "socket.io-client": "~0.9.11"
+    "socket.io-client": "~0.9.11",
+    "includejs": ">0.7.0"
   },
   "repository": {
     "type": "git",

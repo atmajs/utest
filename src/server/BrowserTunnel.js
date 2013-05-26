@@ -7,8 +7,7 @@ var BrowserTunnel = Class({
 		this.socket = socket
 			.on('browser:log', function(type, args) {
 
-			(logger[type] || logger.log)
-				.apply(logger, args);
+			(logger[type] || logger.log).apply(logger, args);
 
 		})
 
@@ -22,7 +21,7 @@ var BrowserTunnel = Class({
 		})
 
 		.on('browser:assert:success', this.pipe('browser:assert:success'))
-			.on('browser:assert:failure', this.pipe('browser:assert:failure'));
+		.on('browser:assert:failure', this.pipe('browser:assert:failure'));
 	},
 
 	run: function(config) {
