@@ -11,12 +11,11 @@
 			message;
 		
 		return function(){
-			total++;
-			
+			assert.total++;
 			try {
 				original.apply(this, arguments);
 			} catch(e) {
-				failed++;
+				assert.failed++;
 				
 				message = [];
 				if (e.actual) {

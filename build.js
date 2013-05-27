@@ -47,7 +47,10 @@ global.config = {
 		action: 'custom',
 		script: 'install'
 	},
-	
+	'watch': {
+		files: 'src/**',
+		config: '#[import]'
+	},
 	
 	'defaults': ['import', 'copy', 'install']
 };

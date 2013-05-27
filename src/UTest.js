@@ -33,10 +33,11 @@
 	function async(callback, name) {
 		var isTimeouted = false,
 			fn = function(){
+				clearTimeout(timeout);
 				!isTimeouted && callback();
 			};
 		
-		setTimeout(function(){
+		var timeout = setTimeout(function(){
 			console.error('Async Suite Timeout - ', name);
 			
 			isTimeouted = true;
@@ -115,6 +116,7 @@
 				}
 				
 				this.processed.push(key);
+				
 				runCase(this.suite[key], this.nextCase, this.suite.teardown, key);
 				
 				return;
@@ -123,7 +125,6 @@
 			var that = this;
 			runCase(this.suite.after, function(){
 				UTest.trigger('complete', that);
-				
 				that.onComplete();
 			});
 		},

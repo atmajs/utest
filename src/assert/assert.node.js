@@ -10,12 +10,12 @@
 		var original = key == null ? assert : assert[key];
 		
 		return function(){
-			total++;
+			assert.total++;
 			
 			try {
 				original.apply(this, arguments);
 			} catch(e) {
-				failed++;
+				assert.failed++;
 				console.error('Actual: %1 \nExpected: %2 \nStack: %3'.format(e.actual, e.expected, e.stack));
 				return;
 			}

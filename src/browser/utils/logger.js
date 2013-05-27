@@ -24,10 +24,9 @@
 				args[i] = logger_dimissCircular(arguments[i]);
 			}
 
-			Array.prototype.slice.call(arguments);
 			socket.emit('browser:log', key, args);
 
-			return original.apply(console, arguments);
+			return original.apply(console, args);
 		};
 	}
 

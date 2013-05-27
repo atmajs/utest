@@ -67,6 +67,7 @@
 		var resources = script_getResources();
 		
 		TestSuite.run(function(){
+			
 			socket.emit('browser:utest:end', {
 				total: assert.total,
 				failed: assert.failed,

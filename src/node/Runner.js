@@ -47,11 +47,11 @@ var Runner = (function() {
 						return 0;
 					}
 					
-					if (!x[key]) {
+					if (x[key] == null) {
 						return aggr;
 					}
 					
-					if (typeof x[key] === 'object' && x[key].length) {
+					if (typeof x[key] === 'object' && 'length' in x[key]) {
 						return x[key].length + aggr;
 					}
 					
