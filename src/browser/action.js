@@ -36,8 +36,7 @@
 			return;
 		}
 		state = state_busy;
-		assert.total = 0;
-		assert.failed = 0;
+		assert.reset();
 		TestSuite.clear();
 
 		include_clearCache();
@@ -71,6 +70,9 @@
 			socket.emit('browser:utest:end', {
 				total: assert.total,
 				failed: assert.failed,
+				timeouts: assert.timeouts,
+				callbacks: assert.callbacks,
+				
 				userAgent: window.browserInfo,
 				resources: resources
 			});

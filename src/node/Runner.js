@@ -47,21 +47,35 @@ var Runner = (function() {
 						return 0;
 					}
 					
+					if (!x[key]) {
+						return aggr;
+					}
+					
+					if (typeof x[key] === 'object' && x[key].length) {
+						return x[key].length + aggr;
+					}
+					
 					return x[key] + aggr;
 				});
 			}
 
 			var total = count('total'),
 				failed = count('failed'),
+				timeouts = count('timeouts'),
+				callbacks = count('callbacks'),
 				browsers = stats.length;
 
 			if (total === 0) {
 				console.error('No assertions');
 				failed++;
 			}
+			
+			if (callbacks !== 0 || timeouts !== 0) {
+				!failed && failed++;
+			}
 
 			console.log('\nDone. ' [failed ? 'red' : 'green'].bold);
-			console.log('%1/%2'.format(total, failed)
+			console.log('Total: %1  Failed:%2  Timeouts:%3  Failed Callbacks: %4'.format(total, failed, timeouts, callbacks)
 				.green);
 
 			if (config.watch == null) {

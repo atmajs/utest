@@ -32,7 +32,17 @@ var include_clearCache = function() {
 		return;
 	}
 
-	var resources = include.getResources();
+	var resources = include.getResources(),
+		scripts = document.querySelectorAll('head > script');
+	
+	// @TODO - remove only scripts from resources
+	for (var i = 0, x, imax = scripts.length; i < imax; i++){
+		x = scripts[i];
+		x.parentNode.removeChild(x);
+	}
+	
+	
+	
 	for (var key in resources) {
 		resources[key] = {};
 	}

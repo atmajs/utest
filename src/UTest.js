@@ -3,6 +3,9 @@
 	var _tests = [],
 		_index = -1,
 		_listeners = {},
+		_options = {
+			timeout: 1500
+		},
 		_testsDone;
 		
 	
@@ -27,12 +30,32 @@
 		};
 	}
 	
-	function runCase(fn, done, teardown) {
+	function async(callback, name) {
+		var isTimeouted = false,
+			fn = function(){
+				!isTimeouted && callback();
+			};
+		
+		setTimeout(function(){
+			console.error('Async Suite Timeout - ', name);
+			
+			isTimeouted = true;
+			assert.timeouts.push(name);
+			callback();
+		}, _options.timeout);
+		
+		return fn;
+	}
+	
+	
+	function runCase(fn, done, teardown, key) {
 		try {
 				
 			if (typeof fn === 'function') {
 				if (case_isAsync(fn)) {
-					fn(teardownDelegate(teardown, done));
+					fn( //
+					async( //
+					teardownDelegate(teardown, done), key));
 					return;
 				}
 				
@@ -92,7 +115,7 @@
 				}
 				
 				this.processed.push(key);
-				runCase(this.suite[key], this.nextCase, this.suite.teardown);
+				runCase(this.suite[key], this.nextCase, this.suite.teardown, key);
 				
 				return;
 			}
@@ -143,6 +166,11 @@
 			},
 			isBusy: function(){
 				return _index < _tests.length;
+			},
+			cfg: function(options){
+				for (var key in options) {
+					_options[key] = options[key];
+				}
 			}
 		}
 	});
@@ -150,6 +178,6 @@
 	global.UTest = UTest;
 	
 	
-}(typeof window === 'undefined' ? global : window));
+}(this));
 
 

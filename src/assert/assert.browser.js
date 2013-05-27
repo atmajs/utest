@@ -1,44 +1,13 @@
-(function(){
+(function(global){
 	
 	// import assert.js
+	// import assert.wrapper.js
 	
-	var total = 0,
-		failed = 0;
-	
-	Object.defineProperty(assert, 'total', {
-		get: function(){
-			return total;
-		},
-		set: function(x){
-			total = x;
-		}
-	});
-	Object.defineProperty(assert, 'failed', {
-		get: function(){
-			return failed;
-		},
-		set: function(x){
-			failed = x;
-		}
-	});
 
-
-	for (var key in assert) {
-		if (typeof assert[key] !== 'function') {
-			continue;
-		}
-		
-		if (key[0].toLowerCase() !== key[0]){
-			// Class Function Definition
-			continue;
-		}
-		
-		assert[key] = wrapp(assert, key);
-	}
 	
 	
-	function wrapp(assert, key) {
-		var original = assert[key],
+	function wrapFn(assert, key) {
+		var original = key == null ? assert : assert[key],
 			message;
 		
 		return function(){
@@ -68,4 +37,4 @@
 		};
 	}
 	
-}());
+}(this));

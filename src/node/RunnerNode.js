@@ -62,7 +62,9 @@ var RunnerNode = (function() {
 			this.stats.push({
 				url: this.files[this.index].uri.toString(),
 				total: assert.total,
-				failed: assert.failed
+				failed: assert.failed,
+				timeouts: assert.timeouts,
+				callbacks: assert.callbacks,
 			});
 
 			var message = '\nTotal: %1. Failed: %2'.format(assert.total, assert.failed);
@@ -75,8 +77,8 @@ var RunnerNode = (function() {
 				this.onComplete(this.stats);
 				return;
 			}
-			assert.total = 0;
-			assert.failed = 0;
+			
+			assert.reset();
 			TestSuite.clear();
 
 			var that = this,
