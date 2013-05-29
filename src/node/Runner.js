@@ -3,7 +3,8 @@ var status_blank = 1,
 	status_connected = 3,
 	status_prepair = 4;
 	status_testing = 5,
-	status_ready = 6;
+	status_ready = 6,
+	util = require('util');
 	
 
 var Runner = (function() {
@@ -38,6 +39,7 @@ var Runner = (function() {
 			this.config = config;
 			this.status = status_blank;
 			this.files = utest_resolveFiles(config.base, config.scripts);
+			
 		},
 		onComplete: function(stats) {
 			this.status = status_ready;
@@ -102,6 +104,47 @@ var Runner = (function() {
 
 			watch(this.config.base, resources, this.run.bind(this));
 			console.log(' - watcher active'.red);
+		},
+		
+		
+		// assertion events
+		
+		onFailure: function(data){
+			if (!data.stack) {
+				console.error('Unknown exception - ', data);
+				return;
+			}
+			
+			data = assert.resolveData(data, this.config.base);
+			
+			console.log('\n');
+			
+			if (data.file && data.line != null) {
+				var uri = new net.URI(this.config.base).combine(data.file),
+					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
+					line = source[data.line - 1],
+					code = line && line.trim();
+				
+				if (data.actual && data.expected) {
+					var msg = 'bold{yellow{%1}} bold{red{<=>}} bold{yellow{%2}}';
+					console.log(msg
+									.colorize()
+									.format(data.actual, data.expected));
+				}
+				
+				console.log('bold{%1}:%2'.colorize().format(data.file, data.line + 1));
+				console.log('  bold{cyan{ >> }} bold{red{ %1 }}'.colorize().format(code));
+				return;
+			}
+				
+			
+			console.error(data.message);
+			console.error(data.stack);
+			
+		},
+		
+		onSuccess: function(){
+			util.print(' |'.green.bold);
 		}
 	});
 

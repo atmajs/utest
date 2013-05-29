@@ -65,7 +65,8 @@
 			teardownDelegate(teardown, done)();	
 		
 		} catch(error){
-			console.error(error);
+			console.error(error.stack || error);
+			
 			this.errors++;
 			done();
 			

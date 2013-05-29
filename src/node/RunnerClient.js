@@ -1,5 +1,8 @@
 var RunnerClient = Class({
 	Base: Runner,
+	Construct: function(){
+		
+	},
 	run: function(done) {
 		
 		this.run = this.runTests;
@@ -57,33 +60,13 @@ var RunnerClient = Class({
 		})
 
 		.on('slave:assert:failure', function(args) {
+			var data = args[0];
 			
-			var stack = args[args.length - 1];
-			if (stack && stack.stack) {
-				args.splice(args.length - 1);
-				
-				if (stack.file) {
-					var uri = new net.URI(that.config.base).combine(stack.file),
-						source = new io.File(uri).read().split(/[\r\n]+/g),
-						line = source[stack.line],
-						code = line && line.trim();
-					
-					console.log('\n');
-					console.log('bold{cyan{ >> }} bold{red{ %1 }}'.colorize().format(code));
-					
-				}
-				stack = stack.stack;
-				args.push('\n');
-				args.push(stack);
-			}
+			that.onFailure(data);
 			
-			console.error.apply(console, args);
-
 		})
 
-		.on('slave:assert:success', function() {
-			util.print(' |'.green.bold);
-		});
+		.on('slave:assert:success', that.onSuccess.bind(that));
 	},
 
 	runTests: function() {

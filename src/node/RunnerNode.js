@@ -37,6 +37,9 @@ var RunnerNode = (function() {
 	return Class({
 		Base: Runner,
 		Construct: function() {
+			assert.onsuccess = this.onSuccess.bind(this);
+			assert.onfailure = this.onFailure.bind(this);
+			
 			Class.bind(this, 'singleComplete', 'runTests');
 		},
 		run: function(done) {

@@ -1,3 +1,34 @@
+
+
+global.assert = wrapAssertFns(wrapAssert(global.assert));
+
+obj_extend(assert, {
+	total: 0,
+	failed: 0,
+	callbacks: 0,
+	timeouts: [],
+	
+	reset: function(){
+		
+		this.callbacks = 0;
+		this.failed = 0;
+		this.total = 0;
+		
+		this.timeouts = [];
+	},
+	
+	callback: function(callback){
+		this.callbacks++;
+		
+		var that = this;
+		return function(){
+			that.callbacks--;
+			
+			return callback.apply(this, arguments);
+		};
+	}
+});
+
 function obj_extend(target, source) {
 	for (var key in source) {
 		target[key] = source[key];
@@ -30,58 +61,25 @@ function wrapAssertFns(assert) {
 	return assert;
 }
 
-
-
-global.assert = wrapAssertFns(wrapAssert(global.assert));
-
-obj_extend(assert, {
-	total: 0,
-	failed: 0,
-	callbacks: 0,
-	timeouts: [],
+function wrapFn(assert, key) {
+	var original = key == null ? assert : assert[key];
 	
-	reset: function(){
-		
-		this.callbacks = 0;
-		this.failed = 0;
-		this.total = 0;
-		
-		this.timeouts = [];
-	},
-	
-	callback: function(callback){
-		this.callbacks++;
-		
-		var that = this;
-		return function(){
-			that.callbacks--;
+	return function(){
+		assert.total++;
+		try {
+			original.apply(this, arguments);
+		} catch(e) {
+			assert.failed++;
 			
-			return callback.apply(this, arguments);
-		};
-	}
-});
-
-
-function assert_stackData(stack) {
-	var data = {};
-	if (!stack) {
-		return data;
-	}
-	
-	stack = stack.split('\n').splice(2, 6);
-	for (var i = 0, x, imax = stack.length; i < imax; i++){
-		stack[i] = stack[i].replace(/http:\/\/([^\/]+)\//, '').replace('at ', '');
-	}
-	var file = /\(([^\(]+)\)[\t ]*$/.exec(stack[0]);
-	if (file) {
-		var parts = file[1].split(':');
+			assert.onfailure && assert.onfailure({
+				actual: e.actual,
+				expected: e.expected,
+				stack: e.stack,
+				message: e.message
+			});
+			return;
+		}
 		
-		data.file = parts[0];
-		data.line = parts[1] << 0;
-		data.col = parts[2] << 0;
-	}
-	
-	data.stack = stack.join('\n');
-	
-	return data;
+		assert.onsuccess && assert.onsuccess();
+	};
 }
