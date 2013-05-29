@@ -8,7 +8,8 @@
 	
 	function wrapFn(assert, key) {
 		var original = key == null ? assert : assert[key],
-			message;
+			message,
+			stackData;
 		
 		return function(){
 			assert.total++;
@@ -22,13 +23,15 @@
 					// assert.js exception
 					message.push('Actual: ' + e.actual);
 					message.push('Expected: ' + e.expected);
-					message.push('Stack: ' + e.stack);
+					
+					stackData = assert_stackData(e.stack);
+					
 				}else{
 					message.push('Message: ' + e.toString());
 					message.push('Stack: ' + e.stack);
 				}
 				
-				assert.onfailure && assert.onfailure(message.join('\n'));
+				assert.onfailure && assert.onfailure(message.join('\n'), stackData);
 				return;
 			}
 			

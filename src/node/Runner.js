@@ -1,8 +1,10 @@
 var status_blank = 1,
 	status_connecting = 2,
 	status_connected = 3,
-	status_testing = 4,
-	status_ready = 5;
+	status_prepair = 4;
+	status_testing = 5,
+	status_ready = 6;
+	
 
 var Runner = (function() {
 
@@ -75,8 +77,17 @@ var Runner = (function() {
 			}
 
 			console.log('\nDone. ' [failed ? 'red' : 'green'].bold);
-			console.log('Total: %1  Failed:%2  Timeouts:%3  Failed Callbacks: %4'.format(total, failed, timeouts, callbacks)
-				.green);
+			
+			failed > total && (failed = total);
+			console.log('bold{Assertions}: bold{green{%1}}(bold{red{%2}})'
+							.format(total - failed, failed)
+							.colorize());
+			
+			console.log('bold{Timeouts}: bold{%1{%2}}'
+							.format(timeouts ? 'red' : 'green', timeouts)
+							.colorize());
+			
+			console.log('bold{Failed Callbacks}: bold{green{%1}}'.format(callbacks).colorize());
 
 			if (config.watch == null) {
 				process.exit(failed);
@@ -89,7 +100,7 @@ var Runner = (function() {
 				resources = this.getResources();
 			}
 
-			watch(this.config.base, resources, this.runTests.bind(this));
+			watch(this.config.base, resources, this.run.bind(this));
 			console.log(' - watcher active'.red);
 		}
 	});

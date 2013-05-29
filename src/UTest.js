@@ -96,6 +96,11 @@
 			
 			this.processed = [];
 			this.errors = 0;
+			//this.snapshot = {
+			//	total: assert.total,
+			//	failed: assert.failed
+			//};
+			
 			this.onComplete = callback;
 			
 			runCase(this.suite.before, this.nextCase);
@@ -130,6 +135,11 @@
 		},
 		
 		Static: {
+			stats: function(){
+				return {
+					suites: _tests.length
+				};
+			},
 			clear: function(){
 				_tests = [];
 				_listeners = {};

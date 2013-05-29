@@ -5,7 +5,9 @@
 	include.exports = {
 		process: function(config, done) {
 
-			config = prepairConfig(config);
+			cfg_prepair(config);
+			cfg_loadConfig(config);
+			
 			
 			if (!(config.scripts && config.scripts.length)) {
 				done('No scripts to test');

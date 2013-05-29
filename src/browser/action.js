@@ -7,12 +7,19 @@
 		console.error(lines.join('\n'));
 	};
 	
+	// import notify.js
+	// import utils/logger.js
+	// import utils/script.js
+	// import utils/include.js
 
 	var TestSuite = window.UTest,
 		state_ready = 1,
 		state_busy = 2,
 		state = state_ready,
 		socket = io.connect('/browser')
+			.on('connect', function(){
+				notify('connect');
+			})
 			.on('server:utest:handshake', function(done) {
 				done({
 					userAgent: window.browserInfo,
@@ -21,10 +28,8 @@
 			})
 			.on('server:utest', utest_start);
 
+	
 
-	// import utils/logger.js
-	// import utils/script.js
-	// import utils/include.js
 
 
 	function utest_start(config) {

@@ -1,9 +1,11 @@
 var RunnerClient = Class({
 	Base: Runner,
 	run: function(done) {
-
+		
+		this.run = this.runTests;
+		
 		var that = this,
-			config = this.config,
+			confit = this.config,
 			port = config.port || 5777,
 			util = require('util'),
 			io_client = require('socket.io-client'),
@@ -42,12 +44,12 @@ var RunnerClient = Class({
 		})
 
 		.on('slave:start', function(stats) {
-			var message = 'Testing #{browser.name} #{browser.version}'
+			var message = '\n#{browser.name} #{browser.version}'.bold;
 			console.log(message.format(stats.userAgent));
 			console.log('');
 		})
 			.on('slave:end', function(stats) {
-			console.log('\nAsserts: %d Failed: %d', stats.total, stats.failed);
+			console.log('\nSlave completed'[stats.failed ? 'red' : 'green']);
 		})
 
 		.on('slave:error', function(error) {
@@ -55,7 +57,26 @@ var RunnerClient = Class({
 		})
 
 		.on('slave:assert:failure', function(args) {
-			args.unshift('\n');
+			
+			var stack = args[args.length - 1];
+			if (stack && stack.stack) {
+				args.splice(args.length - 1);
+				
+				if (stack.file) {
+					var uri = new net.URI(that.config.base).combine(stack.file),
+						source = new io.File(uri).read().split(/[\r\n]+/g),
+						line = source[stack.line],
+						code = line && line.trim();
+					
+					console.log('\n');
+					console.log('bold{cyan{ >> }} bold{red{ %1 }}'.colorize().format(code));
+					
+				}
+				stack = stack.stack;
+				args.push('\n');
+				args.push(stack);
+			}
+			
 			console.error.apply(console, args);
 
 		})
@@ -63,7 +84,6 @@ var RunnerClient = Class({
 		.on('slave:assert:success', function() {
 			util.print(' |'.green.bold);
 		});
-
 	},
 
 	runTests: function() {

@@ -37,16 +37,60 @@ var RunnerNode = (function() {
 	return Class({
 		Base: Runner,
 		Construct: function() {
-			Class.bind(this, 'singleComplete');
+			Class.bind(this, 'singleComplete', 'runTests');
 		},
 		run: function(done) {
-			this.runTests();
-		},
-		runTests: function() {
 			if (status_ready !== this.status && status_blank !== this.status) {
 				console.warn('Node is busy ... ', this.status);
 				return;
 			}
+			this.status = status_prepair;
+			
+			var that = this;
+			
+			this.loadEnv(this.config.base, this.config.env, function(env){
+				Log('Environment Loaded', env && Object.keys(env), 90);
+				that.runTests();
+			});
+			
+		},
+		
+		loadEnv: function(base, env, callback){
+			if (env == null) {
+				callback();
+				return;
+			}
+			if (Array.isArray(env) === false) {
+				console.warn('"env" property should be an array of strings', env);
+				callback();
+				return;
+			}
+			
+			var resource = include.instance();
+			
+			base = new net.URI(base);
+			ruqq.arr.each(env, function(x){
+				var file = new io.File(base.combine(x));
+				if (file.exists() === false) {
+					console.log('Resource from Env - 404 -', x);
+					return;
+				}
+				
+				resource.inject(file.uri.toString());
+			});
+			
+			
+			resource.done(function(resp){
+				setTimeout(function(){
+					callback(resp);
+				});
+			});
+		},
+		
+		runTests: function() {
+			console.log('>> runTests');
+			
+			console.log('>> continue');
 
 			this.index = -1;
 			this.status = status_testing;
@@ -67,8 +111,9 @@ var RunnerNode = (function() {
 				callbacks: assert.callbacks,
 			});
 
-			var message = '\nTotal: %1. Failed: %2'.format(assert.total, assert.failed);
-			console.log(message[assert.failed ? 'red' : 'green'].bold);
+			//var message = '\nTotal: %1. Failed: %2'.format(assert.total, assert.failed);
+			//console.log(message[assert.failed ? 'red' : 'green'].bold);
+			console.log('\n');
 
 			this.process();
 		},
@@ -84,7 +129,8 @@ var RunnerNode = (function() {
 			var that = this,
 				url = this.files[this.index].uri.toString();
 
-			console.log('Test:', url.length > 23 ? '...' + url.substr(-20) : url);
+			
+			console.log('\nTest:' + (url.length > 23 ? '...' + url.substr(-20) : url).bold);
 
 			var incl = include
 				.cfg('path', config.base)
@@ -92,7 +138,7 @@ var RunnerNode = (function() {
 				.js(url)
 				.done(function(resp) {
 				
-				setTimeout(function() {
+				process.nextTick(function() {
 					TestSuite.run(that.singleComplete);
 				});
 			});

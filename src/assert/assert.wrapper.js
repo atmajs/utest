@@ -60,3 +60,28 @@ obj_extend(assert, {
 		};
 	}
 });
+
+
+function assert_stackData(stack) {
+	var data = {};
+	if (!stack) {
+		return data;
+	}
+	
+	stack = stack.split('\n').splice(2, 6);
+	for (var i = 0, x, imax = stack.length; i < imax; i++){
+		stack[i] = stack[i].replace(/http:\/\/([^\/]+)\//, '').replace('at ', '');
+	}
+	var file = /\(([^\(]+)\)[\t ]*$/.exec(stack[0]);
+	if (file) {
+		var parts = file[1].split(':');
+		
+		data.file = parts[0];
+		data.line = parts[1] << 0;
+		data.col = parts[2] << 0;
+	}
+	
+	data.stack = stack.join('\n');
+	
+	return data;
+}
