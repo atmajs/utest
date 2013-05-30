@@ -33,10 +33,18 @@ var SocketListener = (function(){
 		}
 	});
 	
+	var __socket, __config;
+	
 	return Class({
 		Construct: function(socket, io, port) {
+			
+			if (__socket) {
+				socket.emit('server:error', 'Server UTest socket is busy with testing');
+				return;
+			}
+			
 	
-			this.socket = socket
+			__socket = this.socket = socket
 	
 			.on('disconnect', this.disconnected)
 			.on('client:utest', function(config, done) {
@@ -64,13 +72,20 @@ var SocketListener = (function(){
 	
 				;
 	
+				__config = config;
 				utest.run(config, done);
 	
 			});
 		},
 		
 		disconnected: function() {
-	
+			__socket = __config = null;
+		},
+		
+		Static: {
+			getCurrentConfig: function(){
+				return __config;
+			}
 		}
 	});
 

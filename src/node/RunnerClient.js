@@ -29,14 +29,16 @@ var RunnerClient = Class({
 		})
 
 		.on('error', function() {
-			done(
-				'Test server connection error - http://localhost:%1/test'
-				.format(port));
+			var msg = 'Test server connection error - http://localhost:%1/utest';
+			done(msg.format(port));
 		})
 
-		.on('server:utest:end', this.onComplete.bind(this))
+		.on('server:utest:end', function(){
+			that.onComplete.apply(that, arguments);
+		})
 
 		.on('server:error', function(message) {
+			that.socket.socket.disconnectSync();
 			done(message);
 		})
 
@@ -70,7 +72,7 @@ var RunnerClient = Class({
 	},
 
 	runTests: function() {
-		console.log('.. running tests');
+		console.log(' - running tests -  ', Date.format(new Date(), 'HH:mm:ss'));
 		switch (this.status) {
 			case status_blank:
 			case status_connected:

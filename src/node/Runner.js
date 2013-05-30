@@ -92,6 +92,10 @@ var Runner = (function() {
 			console.log('bold{Failed Callbacks}: bold{green{%1}}'.format(callbacks).colorize());
 
 			if (config.watch == null) {
+				if (this.socket) {
+					this.socket.socket.disconnectSync();
+				}
+				
 				process.exit(failed);
 				return;
 			}
@@ -103,7 +107,7 @@ var Runner = (function() {
 			}
 
 			watch(this.config.base, resources, this.run.bind(this));
-			console.log(' - watcher active'.red);
+			console.log(' - watcher active'.yellow);
 		},
 		
 		
@@ -120,7 +124,9 @@ var Runner = (function() {
 			console.log('\n');
 			
 			if (data.file && data.line != null) {
-				var uri = new net.URI(this.config.base).combine(data.file),
+				
+				var path = data.file.replace(/\/?utest\//i, '/'),
+					uri = new net.URI(this.config.base).combine(path),
 					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
 					line = source[data.line - 1],
 					code = line && line.trim();

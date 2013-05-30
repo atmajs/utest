@@ -3,7 +3,7 @@
 	window.onerror = function(message, file, lineNumber) {
 		var lines = [];
 		lines.push('Message: ' + message);
-		lines.push('File: ' + message + ':' + lineNumber);
+		lines.push('File: ' + file + ':' + lineNumber);
 		console.error(lines.join('\n'));
 	};
 	
