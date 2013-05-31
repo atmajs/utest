@@ -111,7 +111,7 @@ var RunnerNode = (function() {
 
 			//var message = '\nTotal: %1. Failed: %2'.format(assert.total, assert.failed);
 			//console.log(message[assert.failed ? 'red' : 'green'].bold);
-			console.log('\n');
+			//console.log('\n');
 
 			this.process();
 		},
@@ -128,7 +128,7 @@ var RunnerNode = (function() {
 				url = this.files[this.index].uri.toString();
 
 			
-			console.log('\nTest:' + (url.length > 23 ? '...' + url.substr(-20) : url).bold);
+			this.notifyTest(url);
 
 			var incl = include
 				.cfg('path', config.base)

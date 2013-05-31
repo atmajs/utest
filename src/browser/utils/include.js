@@ -49,3 +49,11 @@ var include_clearCache = function() {
 
 	include = include.instance();
 };
+
+var include_reset = function(){
+	if (typeof include === 'undefined') {
+		return;
+	}
+	
+	include = include.instance();
+}

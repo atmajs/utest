@@ -48,6 +48,19 @@ var script_insert = (function() {
 	}
 }());
 
+var script_insertMany = function(bundle, callback){
+	//if (arr_isArray(bundle) === false) {
+	//	callback();
+	//	return;
+	//}
+	//
+	for (var i = 0, x, imax = bundle.length; i < imax; i++){
+		x = bundle[i];
+		
+		script_insert({path: x}, i === imax - 1 ? callback : null);
+	}
+}
+
 var script_getResources = (function() {
 
 

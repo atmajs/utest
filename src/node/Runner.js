@@ -41,6 +41,9 @@ var Runner = (function() {
 			this.files = utest_resolveFiles(config.base, config.scripts);
 			
 		},
+		notifyTest: function(url){
+			console.log('\nTest: ', (url.length > 23 ? '...' + url.substr(-20) : url).bold);
+		},
 		onComplete: function(stats) {
 			this.status = status_ready;
 
@@ -106,6 +109,7 @@ var Runner = (function() {
 				resources = this.getResources();
 			}
 
+			
 			watch(this.config.base, resources, this.run.bind(this));
 			console.log(' - watcher active'.yellow);
 		},

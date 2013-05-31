@@ -53,12 +53,16 @@ var RunnerClient = Class({
 			console.log(message.format(stats.userAgent));
 			console.log('');
 		})
-			.on('slave:end', function(stats) {
+		.on('slave:end', function(stats) {
 			console.log('\nSlave completed'[stats.failed ? 'red' : 'green']);
 		})
 
 		.on('slave:error', function(error) {
 			console.error(error);
+		})
+		
+		.on('slave:utest:script', function(info){
+			that.notifyTest(info.script);
 		})
 
 		.on('slave:assert:failure', function(args) {
@@ -72,7 +76,7 @@ var RunnerClient = Class({
 	},
 
 	runTests: function() {
-		console.log('  -  running tests  -  ', Date.format(new Date(), 'HH:mm:ss'));
+		console.log(' -  running tests  -  ', Date.format(new Date(), 'HH:mm:ss'));
 		
 		switch (this.status) {
 			case status_blank:

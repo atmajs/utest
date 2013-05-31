@@ -20,8 +20,10 @@ var BrowserTunnel = Class({
 			that.trigger('end', this, result);
 		})
 
+		.on('browser:utest:script', this.pipe('browser:utest:script'))
 		.on('browser:assert:success', this.pipe('browser:assert:success'))
 		.on('browser:assert:failure', this.pipe('browser:assert:failure'));
+		
 	},
 
 	run: function(config) {

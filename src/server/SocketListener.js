@@ -38,13 +38,8 @@ var SocketListener = (function(){
 	return Class({
 		Construct: function(socket, io, port) {
 			
-			if (__socket) {
-				socket.emit('server:error', 'Server UTest socket is busy with testing');
-				return;
-			}
 			
-	
-			__socket = this.socket = socket
+			this.socket = socket
 	
 			.on('disconnect', this.disconnected)
 			.on('client:utest', function(config, done) {
@@ -65,11 +60,11 @@ var SocketListener = (function(){
 					.on('slave:end', Pipe(socket, 'slave:end'))
 					.on('slave:error', Pipe(socket, 'slave:error'))
 					.on('server:utest:end', Pipe(socket, 'server:utest:end'))
-	
+					.on('browser:utest:script', Pipe(socket, 'slave:utest:script'))
 	
 					.on('browser:assert:failure', Pipe(socket, 'slave:assert:failure'))
 					.on('browser:assert:success', Pipe(socket, 'slave:assert:success'))
-	
+					
 				;
 	
 				__config = config;
@@ -79,7 +74,7 @@ var SocketListener = (function(){
 		},
 		
 		disconnected: function() {
-			__socket = __config = null;
+			__config = null;
 		},
 		
 		Static: {

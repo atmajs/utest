@@ -13,7 +13,7 @@ var ServerUTest = Class({
 				.on('browser:assert:success', this.pipe('browser:assert:success'))
 				.on('browser:assert:failure', this.pipe('browser:assert:failure'))
 				.on('browser:utest:start', this.pipe('browser:utest:start'))
-				
+				.on('browser:utest:script', this.pipe('browser:utest:script'))
 				;
 				
 		}.bind(this));
