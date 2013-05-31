@@ -9,9 +9,10 @@
   "version": "0.8.1",
   "main": "module.js",
   "devDependencies": {
-    "socket.io": "~0.9.13",
-    "socket.io-client": "~0.9.11",
-    "includejs": ">0.7.0"
+    "includejs": ">0.6.8",
+  },
+  "scripts" : {
+      "test" : "node_modules/.bin/ijs test UTest"
   },
   "repository": {
     "type": "git",
