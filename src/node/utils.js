@@ -131,7 +131,7 @@ function watch(base, resources, callback) {
 		
 		if (file.exists()) {
 			io.File.watcher.watch(file, function(){
-				console.log(' - file change - ', file.uri.file);
+				console.log(' - file changed - ', file.uri.file);
 				callback();
 			});
 		}

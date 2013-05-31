@@ -85,21 +85,15 @@ include
 			scripts = [];
 		}
 
-		add_source(scripts, '/.reference/libjs/include/lib/include.js');
-		add_source(scripts, '/.reference/libjs/ruqq/lib/dom/jquery.js');
-		add_source(scripts, '/.reference/libjs/mask/lib/mask.js');
-
 		add_source(scripts, '/socket.io/socket.io.js');
 		add_source(scripts, '/.reference/ijs/plugins/utest/utest.browser.js');
 
 		var routes = globals.defaultRoutes;
 		if (routes) {
 			add_script(scripts, 'include.routes(' + JSON.stringify(routes, null, 4) + ')');
-			add_script(scripts, 'include.cfg({ path: "utest/" })');
 		}
 
-
-
+		add_script(scripts, 'include.cfg({ path: "utest/" })');		
 		return scripts;
 	}
 
