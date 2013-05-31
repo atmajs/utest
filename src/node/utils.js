@@ -22,15 +22,17 @@ function cfg_prepair(config) {
 		
 		var uri = new net.URI(base).combine(script),
 			file = new io.File(uri);
-		if (file.exists() == false) {
+		if (file.exists() === false) {
 			
 			if (/\/?test.?\//.test(script) === false) {
 				script = net.URI.combine('test/', script);
 				file.uri = new net.URI(base).combine(script);
 				
-				if (file.exists() == false) {
+				if (file.exists() === false) 
 					script = null;
-				} 
+				
+			}else{
+				script = null;
 			}
 			
 		}
