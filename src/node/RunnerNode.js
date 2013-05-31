@@ -91,18 +91,13 @@ var RunnerNode = (function() {
 		},
 		
 		runTests: function() {
-			console.log('>> runTests');
 			
-			console.log('>> continue');
-
 			this.index = -1;
 			this.status = status_testing;
 			this.stats = [];
 			this.clearResources();
 			this.process();
 			
-			//
-			//-global.UTest = TestSuite;
 		},
 
 		singleComplete: function() {

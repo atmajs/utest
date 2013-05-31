@@ -69,28 +69,48 @@ function cfg_loadConfig(config) {
 	}
 
 	if (config.scripts.length === 0 && cfg.tests) {
-		cfg_appendScript(cfg.tests, config.scripts, config.base);
+		cfg_appendScript(cfg.tests, config);
 	}
 }
 
-function cfg_appendScript(path, scripts, base) {
+function cfg_appendScript(path, config, asPath) {
+	var scripts = config.scripts,
+		base = config.base,
+		isBrowser = !!config.browser;
+		
 	if (Array.isArray(path)) {
 		ruqq.arr.each(path, function(x){
-			cfg_appendScript(x, scripts);
+			cfg_appendScript(x, config);
 		});
 		return;
 	}
 	
-	if (~path.indexOf('*')) {
-		new io.Directory(base).readFiles(path).files.forEach(function(file){
-			var url = file.uri.toRelativeString(base);
+	if (asPath !== true && ~path.indexOf('*')) {
+		// asPath here is actually to prevent recursion in case if
+		// file, which is resolved by globbing, contains '*'
+		new io.Directory(config.base).readFiles(path).files.forEach(function(file){
+			path = file.uri.toRelativeString(config.base);
 			
-			scripts.push(url);
+			cfg_appendScript(path, config, true);
 		});
 		return;
 	}
+	
+	if (isBrowser && path_isForNode(path)) 
+		return;
+	
+	
+	if (isBrowser === false && path_isForBrowser(path)) 
+		return;
 	
 	scripts.push(path);
+}
+
+function path_isForNode(path) {
+	return /\-node\.[\w]+$/.test(path) || /\/node\//.test(path);
+}
+function path_isForBrowser(path) {
+	return /\-dom\.[\w]+$/.test(path) || /\/dom\//.test(path);
 }
 
 

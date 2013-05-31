@@ -72,7 +72,8 @@ var RunnerClient = Class({
 	},
 
 	runTests: function() {
-		console.log(' - running tests -  ', Date.format(new Date(), 'HH:mm:ss'));
+		console.log('  -  running tests  -  ', Date.format(new Date(), 'HH:mm:ss'));
+		
 		switch (this.status) {
 			case status_blank:
 			case status_connected:
