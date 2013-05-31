@@ -6,9 +6,9 @@ _TDD and Unit Testing plugin for IncludeJSBuilder_
 Create Unit Tests quickly and simple. Features:
 
 - NodeJS - will run any script in nodejs environment and notifies about assertion errors, if any.
-- Browsers - with ijs you create a test server (```$ ijs server```), open test page in one or many browsers (```http://localhost:5777/test```), so slaves are captured by the server. And any test which runs with ```-browser``` flag will be executed in every opened browser instance.
-- Watcher - ```-watch``` flag allows ```ijs``` instance not to be closed after testing, but waiting for any changes in files, there were used in unit tests.
-- Environments - in nodejs and browsers ijs also loads libraries from libjs, so they are all already available in unit tests, like inludejs, maskjs.
+- Browsers - with ijs you create a test server (```$ ijs server```), open test page in one or many browsers (```http://localhost:5777/utest```), so slaves are captured by the server. And any test which runs with ```-browser``` flag will be executed in every opened browser instance.
+- Watcher - ```-watch``` flag allows ```ijs``` instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+- Environments - in nodejs and browsers ijs also loads libraries from libjs, so they are all already available in unit tests, like inludejs, maskjs. jQuery is also loaded.
 - UTest Class - thought this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly.
 
 Example:
@@ -36,3 +36,35 @@ That was the main target of this unit testing system - to create and run the scr
 
 
 
+####UTest Class
+
+```javascript
+UTest({
+	'check object': function(){
+		var A = function(){this.letter = 'A'};
+		
+		assert.deepEqual({letter: 'A'}, new A);
+	},
+	
+	'async test': function(done){
+		$.get('/rest/request').then(function(response){
+			assert.equal(response, 'foo');
+			done();
+		})
+	},
+	
+	before: function(){
+		// function is called before tests cases are run
+		// (supports async call - use done as first argument)
+	},
+	teardown: function(){
+		// function is called after each test case
+		// (supports async call)
+	},
+	
+	after: function(){
+		// function is called after all test cases from
+		// this particular Utest instance are completed
+	}
+});
+```
