@@ -37,11 +37,18 @@ function cfg_prepair(config) {
 			
 		}
 		
-		if (script == null) {
-			console.warn('Defined script not exists - ', config.script || config.args[0]);
-		}else {
+		if (script) {
 			config.scripts.push(script);
+			
+			script = script.replace('\.\w{1,5}$', '.js');
+			if (new io.File(new net.URI(base).combine(script)).exists()) {
+				(config.env || (config.env = [])).push(script);
+			}
+			
+		}else{
+			console.warn('Defined script not exists - ', config.script || config.args[0]);
 		}
+		
 	
 	}
 	

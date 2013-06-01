@@ -135,11 +135,19 @@ var Runner = (function() {
 					line = source[data.line - 1],
 					code = line && line.trim();
 				
-				if (data.actual && data.expected) {
-					var msg = 'bold{yellow{%1}} bold{red{<=>}} bold{yellow{%2}}';
+				if ('actual' in data || 'expected' in data) {
+					var msg = 'bold{yellow{%1}} bold{red{<=>}} bold{yellow{%2}}',
+						actual = typeof data.actual === 'object'
+									? JSON.stringify(data.actual)
+									: data.actual,
+									
+						expected = typeof data.expected === 'object'
+									? JSON.stringify(data.expected)
+									: data.expected;
+									
 					console.log(msg
 									.colorize()
-									.format(data.actual, data.expected));
+									.format(actual, expected));
 				}
 				
 				console.log('bold{%1}:%2'.colorize().format(data.file, data.line + 1));
