@@ -42,7 +42,7 @@ var RunnerNode = (function() {
 			
 			Class.bind(this, 'singleComplete', 'runTests');
 		},
-		run: function(done) {
+		run: function() {
 			if (status_ready !== this.status && status_blank !== this.status) {
 				console.warn('Node is busy ... ', this.status);
 				return;

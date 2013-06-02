@@ -6,6 +6,9 @@
 // import ../.reference/libjs/mask/lib/mask.js
 
 // import ../src/UTest.js
+
+// import ../src/utils/array.js
+
 // import ../src/assert/assert.browser.js
 // import ../src/browser/detect.js
 // import ../src/browser/action.js

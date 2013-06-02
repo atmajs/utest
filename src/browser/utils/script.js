@@ -49,11 +49,11 @@ var script_insert = (function() {
 }());
 
 var script_insertMany = function(bundle, callback){
-	//if (arr_isArray(bundle) === false) {
-	//	callback();
-	//	return;
-	//}
-	//
+	if (!(arr_isArray(bundle) && bundle.length)) {
+		callback();
+		return;
+	}
+	
 	for (var i = 0, x, imax = bundle.length; i < imax; i++){
 		x = bundle[i];
 		

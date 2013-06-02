@@ -35,6 +35,7 @@ var Runner = (function() {
 	
 
 	return Class({
+		Base: __EventEmitter,
 		Construct: function(config) {
 			this.config = config;
 			this.status = status_blank;
@@ -83,7 +84,7 @@ var Runner = (function() {
 
 			console.log('\nDone. ' [failed ? 'red' : 'green'].bold);
 			
-			failed > total && (failed = total);
+			
 			console.log('bold{Assertions}: bold{green{%1}}(bold{red{%2}})'
 							.format(total - failed, failed)
 							.colorize());
@@ -94,26 +95,42 @@ var Runner = (function() {
 			
 			console.log('bold{Failed Callbacks}: bold{green{%1}}'.format(callbacks).colorize());
 
-			if (config.watch == null) {
-				if (this.socket) {
-					this.socket.socket.disconnectSync();
-				}
-				
-				process.exit(failed);
-				return;
-			}
-
-			var resources = stats.resources || (stats[0] && stats[0].resources);
-
-			if (resources == null && this.getResources) {
-				resources = this.getResources();
-			}
-
+			this.failed = failed;
+			this.stats = stats;
 			
-			watch(this.config.base, resources, this.run.bind(this));
-			console.log(' - watcher active'.yellow);
+			this.trigger('complete', this);
+			////if (config.watch == null) {
+			////	if (this.socket) {
+			////		this.socket.socket.disconnectSync();
+			////	}
+			////	
+			////	process.exit(failed);
+			////	return;
+			////}
+			////
+			////var resources = stats.resources || (stats[0] && stats[0].resources);
+			////
+			////if (resources == null && this.getResources) {
+			////	resources = this.getResources();
+			////}
+			////
+			////
+			////watch(this.config.base, resources, this.run.bind(this));
+			////console.log(' - watcher active'.yellow);
 		},
 		
+		getResources: function(){
+			if (this.stats == null) 
+				return [];
+			
+			
+			var resources = this.stats.resources || (this.stats[0] && this.stats[0].resources);
+
+			if (resources == null && this.getResources) 
+				resources = this.getResources();
+				
+			return resources || [];
+		},
 		
 		// assertion events
 		
