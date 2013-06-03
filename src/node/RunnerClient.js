@@ -83,7 +83,7 @@ var RunnerClient = Class({
 			case status_connected:
 			case status_ready:
 				this.status = status_testing;
-				this.socket.emit('client:utest', this.config);
+				this.socket.emit('client:utest', this.suites);
 				return;
 		}
 		console.warn('Server is not ready');

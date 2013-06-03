@@ -43,7 +43,7 @@
 
 	function utest_start(config) {
 		
-		if (!config || !config.scripts) {
+		if (!config) {
 			socket.emit('browser:utest:end', {
 				error: 'No scripts to be tested'
 			});

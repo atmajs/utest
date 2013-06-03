@@ -54,6 +54,8 @@ var RunnerDom = (function() {
 				return _configs;
 			}
 		},
+		
+		// Class
 		Construct: function(config){
 			this.config = config;
 			this.scripts = config.scripts;
