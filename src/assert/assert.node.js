@@ -35,6 +35,7 @@
 		
 		
 		
+		
 		data.stack = stack.join('\n');
 		
 		return data;

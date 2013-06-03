@@ -145,7 +145,7 @@ var Runner = (function() {
 			
 			if (data.file && data.line != null) {
 				
-				var path = data.file.replace(/\/?utest\//i, '/'),
+				var path = data.file.replace(/(\/)?utest\//i, '$1'),
 					uri = new net.URI(this.config.base).combine(path),
 					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
 					line = source[data.line - 1],
