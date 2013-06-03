@@ -1,13 +1,16 @@
 var RunnerSuite = Class({
-	Construct: function(config) {
+	Construct: function(configs, settings) {
 		
 		/**
 		 *	this.watch
 		 *	this.base
 		 */
-		this.handleConfig(config);
+		this.handleConfig(configs);
 
-		Log(JSON.stringify(this), 90);
+		this.base = settings.base;
+		this.watch = settings.watch;
+		
+		Log('RunnerSuite:', JSON.stringify(configs), settings, 90);
 		
 		Class.bind(this, 'onComplete', 'process', 'runTests');
 	},
@@ -39,7 +42,7 @@ var RunnerSuite = Class({
 	
 	getResources: function(){
 		return ruqq.arr.aggr(this.runners, [], function(x, aggr) {
-			return aggr.concat(x.getResource());
+			return aggr.concat(x.getResources());
 		});
 	},
 	
@@ -89,6 +92,11 @@ var RunnerSuite = Class({
 		
 		if (this.base == null && config.base) {
 			this.base = config;
+		}
+		
+		if (this.watch == null && config.watch) {
+			this.watch = config.watch;
+			console.log('WWWWAAATCH')
 		}
 
 		if (config.exec === 'browser') {

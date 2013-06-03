@@ -32,7 +32,74 @@ var RunnerNode = (function() {
 		}
 	}
 	
-
+	function suite_loadEnv(suite, callback) {
+		var base = suite.base,
+			env = suite.env;
+			
+		if (env == null) {
+			callback();
+			return;
+		}
+		if (Array.isArray(env) === false) {
+			console.warn('"env" property should be an array of strings', env);
+			callback();
+			return;
+		}
+		
+		var resource = include.instance();
+		
+		base = new net.URI(base);
+		ruqq.arr.each(env, function(x){
+			var	parts = x.split('::'),
+				src = parts[0],
+				alias = parts[1],
+				file = new io.File(base.combine(src));
+			if (file.exists() === false) {
+				console.log('Resource from Env - 404 -', x);
+				return;
+			}
+			
+			var path = file.uri.toString();
+			if (alias) {
+				path += '::' + alias;
+			}
+			
+			resource.inject(path);
+		});
+		
+		
+		resource.done(function(resp){
+			setTimeout(function(){
+				for (var lib in resp) {
+					global[lib] = resp[lib];
+				}
+				
+				callback(resp);
+			});
+		});
+	}
+	
+	var _suites = null,
+		_suite = null,
+		_suiteIndex = -1,
+		
+		_runner = null;
+		
+		
+	function suite_next(callback) {
+		_suite = _suites[++_suiteIndex];
+		
+		if (_suite == null){
+			
+			_runner.onComplete(_runner.stats);
+			return;
+		}
+		
+		_runner.files = _suite.files;
+		_runner.config = _suite;
+		
+		suite_loadEnv(_suite, callback);
+	}
 
 	return Class({
 		Base: Runner,
@@ -40,7 +107,9 @@ var RunnerNode = (function() {
 			assert.onsuccess = this.onSuccess.bind(this);
 			assert.onfailure = this.onFailure.bind(this);
 			
-			Class.bind(this, 'singleComplete', 'runTests');
+			Class.bind(this, 'singleComplete', 'runTests', 'process');
+			
+			_runner = this;
 		},
 		run: function() {
 			if (status_ready !== this.status && status_blank !== this.status) {
@@ -48,47 +117,9 @@ var RunnerNode = (function() {
 				return;
 			}
 			this.status = status_prepair;
-			
-			var that = this;
-			
-			this.loadEnv(this.config.base, this.config.env, function(env){
-				Log('Environment Loaded', env && Object.keys(env), 90);
-				that.runTests();
-			});
-			
+			this.runTests();
 		},
 		
-		loadEnv: function(base, env, callback){
-			if (env == null) {
-				callback();
-				return;
-			}
-			if (Array.isArray(env) === false) {
-				console.warn('"env" property should be an array of strings', env);
-				callback();
-				return;
-			}
-			
-			var resource = include.instance();
-			
-			base = new net.URI(base);
-			ruqq.arr.each(env, function(x){
-				var file = new io.File(base.combine(x));
-				if (file.exists() === false) {
-					console.log('Resource from Env - 404 -', x);
-					return;
-				}
-				
-				resource.inject(file.uri.toString());
-			});
-			
-			
-			resource.done(function(resp){
-				setTimeout(function(){
-					callback(resp);
-				});
-			});
-		},
 		
 		runTests: function() {
 			
@@ -96,8 +127,11 @@ var RunnerNode = (function() {
 			this.status = status_testing;
 			this.stats = [];
 			this.clearResources();
-			this.process();
 			
+			_suites = this.suites;
+			_suiteIndex = -1;
+			
+			suite_next(this.process);
 		},
 
 		singleComplete: function() {
@@ -109,15 +143,12 @@ var RunnerNode = (function() {
 				callbacks: assert.callbacks,
 			});
 
-			//var message = '\nTotal: %1. Failed: %2'.format(assert.total, assert.failed);
-			//console.log(message[assert.failed ? 'red' : 'green'].bold);
-			//console.log('\n');
-
 			this.process();
 		},
 		process: function() {
 			if (++this.index > this.files.length - 1) {
-				this.onComplete(this.stats);
+				this.index = -1;
+				suite_next(this.process);
 				return;
 			}
 			
@@ -131,7 +162,7 @@ var RunnerNode = (function() {
 			this.notifyTest(url);
 
 			var incl = include
-				.cfg('path', config.base)
+				.cfg('path', _suite.base)
 				.instance(url)
 				.js(url)
 				.done(function(resp) {

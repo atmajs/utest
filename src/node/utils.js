@@ -53,10 +53,14 @@ function cfg_prepair(config) {
 			
 			cfg_addScript(script, config.base, nodeScripts, domScripts, executor);
 			
-			script = script.replace('\.\w{1,5}$', '.js');
-			if (new io.File(new net.URI(base).combine(script)).exists()) {
-				(config.env || (config.env = [])).push(script);
+			var ext = /\.\w{1,5}$/.exec(script)
+			if (ext && ext[0] === '.test') {
+				script = script.replace(/\.\w{1,5}$/, '.js');
+				if (new io.File(new net.URI(base).combine(script)).exists()) {
+					(config.env || (config.env = [])).push(script);
+				}	
 			}
+			
 			
 		}else{
 			console.warn('Defined script not exists - ', config.script || config.args[0]);
@@ -69,6 +73,7 @@ function cfg_prepair(config) {
 
 
 /**
+ * base: [String]
  * env: [String]
  * tests: String | [String]
  */
@@ -103,8 +108,33 @@ function cfg_loadConfig(baseConfig) {
 			
 		cfg_addScript(tests, base, nodeScripts, domScripts, executor);
 	}
+	
+	baseConfig.suites = cfg_parseSuites(cfg.suites, baseConfig.base);
 }
 
+function cfg_parseSuites(suites, base) {
+	var array = [],
+		key, x, config;
+	
+	for (key in suites) {
+		x = suites[key];
+		
+		config = {
+			base: x.base || base,
+			exec: x.exec,
+			env: x.env,
+			nodeScripts: [],
+			domScripts: []
+		};
+		
+		
+		cfg_addScript(x.tests, config.base, config.nodeScripts, config.domScripts, config.exec);
+		
+		
+		array.push(config);
+	}
+	return array;
+}
 
 function cfg_addScript(path, base, nodeScripts, domScripts, executor, forceAsPath) {
 	
@@ -151,6 +181,7 @@ function cfg_split(config) {
 	if (!arr_isEmpty(config.domScripts) && !config.node) {
 		configs.push({
 			exec: 'browser',
+			env: config.env,
 			scripts: config.domScripts,
 			base: config.base,
 		});
@@ -159,10 +190,20 @@ function cfg_split(config) {
 	if (!arr_isEmpty(config.nodeScripts) && !config.browser) {
 		configs.push({
 			exec: 'node',
+			env: config.env,
 			scripts: config.nodeScripts,
 			base: config.base,
 		});
 	}
+	
+	if (config.suites) {
+		
+		ruqq.arr.each(config.suites, function(suite){
+			configs = configs.concat(cfg_split(suite));
+		});
+		
+	}
+	
 	
 	
 	return configs;

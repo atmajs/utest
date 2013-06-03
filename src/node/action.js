@@ -3,29 +3,25 @@
 	var TestSuite = global.UTest;
 		
 	include.exports = {
-		process: function(config, done) {
+		process: function(setts, done) {
 
-			cfg_prepair(config);
+			cfg_prepair(setts);
 			
-			if (arr_isEmpty(config.nodeScripts) && arr_isEmpty(config.domScripts)) {
-				cfg_loadConfig(config);
+			if (arr_isEmpty(setts.nodeScripts) && arr_isEmpty(setts.domScripts)) {
+				cfg_loadConfig(setts);
 			}
 			
 			
 			
-			var configs = cfg_split(config);
+			var configs = cfg_split(setts);
 			
 			if (configs.length === 0) {
 				done('No scripts to test');
 				return;
 			}
 			
+			new RunnerSuite(configs, setts).run(done);
 			
-			new RunnerSuite(configs).run(done);
-			
-			//var Runner = config.browser ? RunnerClient : RunnerNode;
-			//
-			//new Runner(config).run(done);
 		}
 	};
 	

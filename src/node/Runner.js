@@ -10,8 +10,20 @@ var status_blank = 1,
 var Runner = (function() {
 
 	
-	function utest_resolveFiles(base, scripts) {
+	function utest_resolveFiles(config) {
 		var files = [];
+		
+		if (arr_isArray(config)) {
+			for (var i = 0, x, imax = config.length; i < imax; i++){
+				x = config[i];
+				
+				files = files.concat(utest_resolveFiles(x));
+			}
+			return files;
+		}
+		
+		var scripts = config.scripts,
+			base = config.base;
 		
 		base = new net.URI(base);
 		
@@ -39,8 +51,13 @@ var Runner = (function() {
 		Construct: function(config) {
 			this.config = config;
 			this.status = status_blank;
-			this.files = utest_resolveFiles(config.base, config.scripts);
+			this.files = utest_resolveFiles(config);
 			
+			this.suites = arr_isArray(config) ? config : [config];
+			
+			ruqq.arr.each(this.suites, function(x){
+				x.files = utest_resolveFiles(x);
+			});
 		},
 		notifyTest: function(url){
 			console.log('\nTest: ', (url.length > 23 ? '...' + url.substr(-20) : url).bold);
@@ -98,25 +115,7 @@ var Runner = (function() {
 			this.failed = failed;
 			this.stats = stats;
 			
-			this.trigger('complete', this);
-			////if (config.watch == null) {
-			////	if (this.socket) {
-			////		this.socket.socket.disconnectSync();
-			////	}
-			////	
-			////	process.exit(failed);
-			////	return;
-			////}
-			////
-			////var resources = stats.resources || (stats[0] && stats[0].resources);
-			////
-			////if (resources == null && this.getResources) {
-			////	resources = this.getResources();
-			////}
-			////
-			////
-			////watch(this.config.base, resources, this.run.bind(this));
-			////console.log(' - watcher active'.yellow);
+			this.trigger('complete', this)
 		},
 		
 		getResources: function(){
