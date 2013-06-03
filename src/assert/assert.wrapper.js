@@ -61,8 +61,8 @@ function wrapAssertFns(assert) {
 	return assert;
 }
 
-function wrapFn(assert, key) {
-	var original = key == null ? assert : assert[key];
+function wrapFn(assertFn, key) {
+	var original = key == null ? assertFn : assertFn[key];
 	
 	return function(){
 		assert.total++;
