@@ -5,11 +5,31 @@
 	include.exports = {
 		process: function(setts, done) {
 
-			cfg_prepair(setts);
+			var arg = setts.script || (setts.args && setts.args[0]),
+				config;
+		
+			cfg_prepair(setts, arg);
 			
-			if (arr_isEmpty(setts.nodeScripts) && arr_isEmpty(setts.domScripts)) {
-				cfg_loadConfig(setts);
+			config = cfg_loadConfig(setts);
+			
+			cfg_getEnv(setts, config);
+			
+			if (cfg_hasScripts(setts) === false) {
+				cfg_getScripts(setts, config);
+				
+				if (arg) {
+					setts.suites = setts.suites && setts.suites[arg];
+					
+					if (!setts.suites) {
+						done('Argument is not resolved as script, nor as suite name: ' + arg);
+						return;
+					}
+					setts.nodeScripts = [];
+					setts.domScripts = [];
+				}
+					
 			}
+			
 			
 			
 			

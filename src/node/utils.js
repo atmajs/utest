@@ -1,4 +1,4 @@
-function cfg_prepair(config) {
+function cfg_prepair(config, arg) {
 		
 	var base = config.base;
 	if (base) {
@@ -15,7 +15,7 @@ function cfg_prepair(config) {
 	config.domScripts = [];
 	
 	
-	var script = config.script || (config.args && config.args[0]);
+	var script = arg;
 	if (script) {
 		if (/\.[\w]+$/.test(script) === false) {
 			script += '.test';
@@ -62,11 +62,7 @@ function cfg_prepair(config) {
 			}
 			
 			
-		}else{
-			console.warn('Defined script not exists - ', config.script || config.args[0]);
 		}
-		
-	
 	}
 	
 }
@@ -86,21 +82,30 @@ function cfg_loadConfig(baseConfig) {
 	
 	var file = new io.File(path);
 	
-	if (file.exists() === false) {
-		return;
-	}
+	if (file.exists() === false) 
+		return {};
 	
-	cfg = require(file.uri.toLocalFile());
-		
-	if (Array.isArray(cfg.env)) {
-		var array = (baseConfig.env || []).concat(cfg.env);
-		
-		baseConfig.env = ruqq.arr.distinct(array);
-	}
+	
+	return require(file.uri.toLocalFile());
+}
 
-	if (arr_isEmpty(baseConfig.scripts) && cfg.tests) {
+function cfg_getEnv(baseConfig, config) {
+	
+	if (typeof config.env === 'string')
+		config.env = [config.env];
+	
+	if (baseConfig.env == null)
+		baseConfig.env = [];
+	
+	if (Array.isArray(config.env)) 
+		baseConfig.env = ruqq.arr.distinct(baseConfig.env.concat(config.env));
+	
+}
+
+function cfg_getScripts(baseConfig, config) {
+	if (config.tests) {
 		
-		var tests = cfg.tests,
+		var tests = config.tests,
 			base = baseConfig.base,
 			nodeScripts = baseConfig.nodeScripts,
 			domScripts = baseConfig.domScripts,
@@ -109,7 +114,21 @@ function cfg_loadConfig(baseConfig) {
 		cfg_addScript(tests, base, nodeScripts, domScripts, executor);
 	}
 	
-	baseConfig.suites = cfg_parseSuites(cfg.suites, baseConfig.base);
+	baseConfig.suites = cfg_parseSuites(config.suites, baseConfig.base);
+}
+
+function cfg_hasScripts(config) {
+	if (!config)
+		return false;
+	
+	if (arr_isEmpty(config.nodeScripts) === false)
+		return true;
+	
+	if (arr_isEmpty(config.domScripts) === false)
+		return true;
+	
+	
+	return false;
 }
 
 function cfg_parseSuites(suites, base) {
@@ -227,6 +246,7 @@ function watch(base, resources, callback) {
 		if (file.exists()) {
 			io.File.watcher.watch(file, function(){
 				console.log(' - file changed - ', file.uri.file);
+				io.File.clearCache(file.uri.toLocalFile());
 				callback();
 			});
 		}
