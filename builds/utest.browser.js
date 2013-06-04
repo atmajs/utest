@@ -13,3 +13,6 @@
 // import ../src/browser/detect.js
 // import ../src/browser/action.js
 
+
+// import ../vendor/sinon.js
+

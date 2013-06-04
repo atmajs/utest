@@ -14,3 +14,6 @@ include.js({
 	// import ../src/node/action.js
 
 });
+
+
+// import ../vendor/sinon.js

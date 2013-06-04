@@ -29,6 +29,16 @@ obj_extend(assert, {
 	}
 });
 
+/** GLOBALS */
+global.eq = assert.equal;
+global.notEq = assert.equal;
+global.deepEq = assert.deepEqual;
+global.notDeepEq = assert.notDeepEqual;
+global.strictEq = assert.strictEqual;
+global.notStrictEq = assert.notStrictEqual;
+
+// <!---
+
 function obj_extend(target, source) {
 	for (var key in source) {
 		target[key] = source[key];
