@@ -32,7 +32,7 @@ var RunnerNode = (function() {
 		}
 	}
 	
-	function suite_loadEnv(suite, callback) {
+	function suite_loadEnv(runner, suite, callback) {
 		var base = suite.base,
 			env = suite.env;
 			
@@ -67,7 +67,6 @@ var RunnerNode = (function() {
 			resource.inject(path);
 		});
 		
-		
 		resource.done(function(resp){
 			setTimeout(function(){
 				for (var lib in resp) {
@@ -77,6 +76,8 @@ var RunnerNode = (function() {
 				callback(resp);
 			});
 		});
+		
+		_runner.envResource = resource;
 	}
 	
 	var _suites = null,
@@ -98,7 +99,7 @@ var RunnerNode = (function() {
 		_runner.files = _suite.files;
 		_runner.config = _suite;
 		
-		suite_loadEnv(_suite, callback);
+		suite_loadEnv(_runner, _suite, callback);
 	}
 
 	return Class({
@@ -177,10 +178,15 @@ var RunnerNode = (function() {
 
 		clearResources: function() {
 			this.resources && ruqq.arr.each(this.resources, resource_clear);
+			this.envResource && resource_clear(this.envResource);
+			
 			this.resources = [];
+			this.envResource = null;
 		},
 
 		getResources: function() {
+			this.envResource && this.resources.push(this.envResource);
+			
 			return ruqq.arr.aggr(this.resources, [], resource_aggrIncludes);
 		}
 	});
