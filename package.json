@@ -9,7 +9,7 @@
   "version": "0.8.1",
   "main": "module.js",
   "devDependencies": {
-    "includejs": "~0.9.23"
+    "includejs": "~0.9.27"
   },
   "scripts" : {
       "test" : "node_modules/.bin/ijs test UTest"
