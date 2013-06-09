@@ -44,7 +44,7 @@ var SocketListener = (function(){
 			.on('disconnect', this.disconnected)
 			.on('client:utest', function(config, done) {
 	
-				var clients = io.of('/browser')
+				var clients = io.of('/utest-browser')
 					.clients();
 	
 				if (clients.length === 0) {

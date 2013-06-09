@@ -25,7 +25,7 @@
 		state_ready = 1,
 		state_busy = 2,
 		state = state_ready,
-		socket = io.connect('/browser')
+		socket = io.connect('/utest-browser')
 			.on('connect', function(){
 				notify('connect');
 			})
