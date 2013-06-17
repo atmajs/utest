@@ -4,6 +4,7 @@
 // import ../.reference/libjs/include/lib/include.js
 // import ../.reference/libjs/ruqq/lib/dom/jquery.js
 // import ../.reference/libjs/mask/lib/mask.js
+// import ../.reference/libjs/ruqq/lib/arr.js
 
 // import ../src/UTest.js
 

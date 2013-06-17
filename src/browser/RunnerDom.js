@@ -89,7 +89,30 @@ var RunnerDom = (function() {
 				return;
 			}
 			
-			script_insertMany(this.config.env, callback);
+			if (typeof include === 'undefined') {
+				script_insertMany(this.config.env, callback);
+				return;
+			}
+			
+			var resource = include.instance();
+			
+			ruqq.arr.each(this.config.env, function(x){
+				resource.js(x);
+			});
+			
+			resource.done(function(resp){
+				setTimeout(function(){
+					for (var lib in resp) {
+						var exports = resp[lib];
+						
+						if (exports != null) {
+							window[lib] = exports;
+						}
+					}
+					
+					callback(resp);
+				});
+			});
 		},
 
 		process: function() {
