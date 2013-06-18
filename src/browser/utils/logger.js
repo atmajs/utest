@@ -1,5 +1,9 @@
 (function() {
 
+	console.print = function(){
+		console.log.apply(console, arguments);
+	};
+
 	for (var key in console) {
 		if (typeof console[key] !== 'function') {
 			continue;

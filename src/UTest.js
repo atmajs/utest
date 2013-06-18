@@ -104,8 +104,30 @@
 			
 			this.onComplete = callback;
 			
+			this.handleBangs();
 			runCase(this.suite.before, this.nextCase);
 		},
+		
+		handleBangs: function(){
+			var has = ruqq.arr.any(Object.keys(this.suite), function(x){
+				return x[0] === '!';
+			});
+			
+			if (!has)
+				return;
+			
+			for (var key in this.suite) {
+				// reserved
+				if (['before','after','teardown'].indexOf(key) !== -1) {
+					continue;
+				}
+				
+				if (key[0] !== '!') {
+					delete this.suite[key];
+				}
+			}
+		},
+		
 		nextCase: function(){
 			for (var key in this.suite) {
 				if (~this.processed.indexOf(key)) {
@@ -117,12 +139,20 @@
 					continue;
 				}
 				
+				if (key.substring(0,2) === '//') {
+					console.warn(key.substring(2), '(skipped)'.bold);
+					this.processed.push(key);
+					continue;
+					
+				}
+				
 				if (typeof this.suite[key] !== 'function') {
 					continue;
 				}
 				
 				this.processed.push(key);
 				
+				console.print((' ' + key + ': ').bold);
 				runCase(this.suite[key], this.nextCase, this.suite.teardown, key);
 				
 				return;
