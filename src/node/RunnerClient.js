@@ -44,7 +44,6 @@ var RunnerClient = Class({
 
 		.on('server:log', function(type, args) {
 			var fn = console[type] || console.log;
-
 			fn.apply(console, args);
 		})
 

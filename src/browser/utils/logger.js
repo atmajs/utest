@@ -1,7 +1,9 @@
 (function() {
 
+	var orig_log = console.log;
+
 	console.print = function(){
-		console.log.apply(console, arguments);
+		orig_log.apply(console, arguments);
 	};
 
 	for (var key in console) {
