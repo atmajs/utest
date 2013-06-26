@@ -1,34 +1,41 @@
 UTEST
 ----
-_TDD and Unit Testing plugin for IncludeJSBuilder_
+_TDD and Unit Testing_
+
+###### Install
+```$ npm install -g ijs```
 
 
-Create Unit Tests quickly and simple. Features:
+Create Tests simple and fast. Overview:
 
-- NodeJS - will run any script in nodejs environment and notifies about assertion errors, if any ```$ ijs test foo.js```.
-- Browsers - with ijs you create a test server (```$ ijs server```), open test page in one or many browsers (```http://localhost:5777/utest```), so slaves are captured by the server. And you are ready to run your scripts in dom environment using nodejs as a runner ```$ ijs test foo.js -browser```.
-- Watcher - ```-watch``` flag allows ijs test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
-- Environments - in nodejs and browsers ijs also loads libraries from libjs, so they are all already available in unit tests, like inludejs, maskjs. jQuery/SinonJS are also loaded.
-- UTest Class - thought this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly.
+- **Node.js** Runner  - ```$ ijs test foo```.
+- **Browser** Runner - with ijs you create a test server (```$ ijs server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ ijs test foo -browser```.
+- **Watcher**      - ```-watch``` flag allows ijs test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+- **Environments** -  ijs also loads additional libraries, so they are available in unit tests, like inludejs, maskjs,  jQuery, SinonJS.
+- **Test Suites**  - (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
+- **Configs**      - (optional) configurations for more complex projects
 
 Example:
-
+```
+/myscript
+   app.js
+   app.text
+```
 _app.js_
 ```javascript
 var Application = {version: 1};
 ```
-
 _app.test_
 ```javascript
 eq(Application.version, 1); // alias for assert.equal()
 ```
 
-- nodejs - ```$ ijs test app.test```, or ```$ ijs test app.test -watch``` (now any changes to app.test or app.js will rerun the tests)
-- browser - 
-	- capture slave, if not already with starting the server and opening "test" page (```ijs server```, navigate to ```http://localhost:5777/test```)
-	- ```$ cd directory/with/app``` ```$ ijs test app -browser ```, or ```$ ijs test app -browser -watch```
+- _[nodejs]_ ```$ cd myscript```; ```$ ijs test app``` / ```$ ijs test app.test -watch```
+- _[browser]_
+	- capture slave, (if not already), with starting the server and opening "test" page (```$ ijs server```, navigate to ```http://localhost:5777/test```)
+	- ```$ cd myscript```; ```$ ijs test app -browser ``` / ```$ ijs test app -browser -watch```
 
-This is the simpliest test case. And as here the 2 (app.js/app.test) files are in the same directory, app.js will be preloaded in app.test. If required app.js is located in some other location, you can alwas preload it using includejs, or from test configuration file, that will be explained latly. 
+This is the simpliest test case. And as here 2 files(app.js/app.test) are in the same directory, 'app.js' will be preloaded when 'app.test' is started. But with includejs any amount of scripts could be preloaded.
 
 _app.test_
 ```javascript
@@ -37,13 +44,33 @@ include.inject('subfolder/app.js').done(function(){
 })
 ```
 
-- ```include.inject``` - matters only in nodejs test executor - as ```include.js``` is like require() - scripts are evaluated in there module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit test.
-
-That was the main target of this unit testing system - to create and run the scripts as quick and simple as possible - there are no need in any config files or some other unneeded definitions - but with growing complexity, you may also want some default configurations and some Class to group your tests.
+- ```include.inject``` - matters only in nodejs test runner. As ```include.js``` is like require() - scripts are evaluated in there module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit tests one.
 
 
+###### Assertions
+```javascript
+  assert.equal(arg1, arg2, ?message); 
+  // alias
+  // eq(arg1, arg2, ?message);
 
-####UTest Class
+  assert.notEqual(arg1, arg2, ?message); 
+  // notEq
+
+  assert.strictEqual(arg1, arg2, ?message); 
+  // strictEq
+
+  assert.notStrictEqual(arg1, arg2, ?message); 
+  // notStrictEq
+
+  assert.deepEq(arg1, arg2, ?message); 
+  // deepEq
+
+  assert.notDeepEq(arg1, arg2, ?message); 
+  // notDeepEq
+
+```
+
+###### UTest Class
 
 ```javascript
 UTest({
@@ -75,3 +102,58 @@ UTest({
 	}
 });
 ```
+
+###### Config
+
+```
+/app-project
+    /src
+        ...
+    /test
+        config.js
+        ...
+```
+
+```javascript
+module.exports = {
+	suites: {
+		'suite name': {
+			exec: <String> 'node' | 'dom',
+
+			/** preloading scripts */
+			env: ['path relative to projects path'],
+			tests: <e.g.> 'test/**-node.test'
+		}
+	}
+};
+```
+
+###### _CommonJS Module tests_
+_src/some.js_
+```javascript
+module.exports = {
+	addOne: function(n){
+		return n + 1;
+    }	
+}
+```
+
+_test/mytest.test_
+```javascript
+eq(foo.addOne(1), 2);
+```
+
+_test/config.js_
+```javascript
+module.exports = {
+	env: ['src/some.js::foo'],
+	tests: 'test/*.test'
+};
+```
+
+```$ cd app-project```
+```$ ijs test```
+
+Here was used alias-feature of an includejs. So when 'some.js' is required, its exports object is then set to globals with alias var name , from example, it was 'foo'
+
+
