@@ -68,6 +68,8 @@
 			console.error(error.stack || error);
 			
 			this.errors++;
+			
+			assert.errors++;
 			done();
 			
 		}

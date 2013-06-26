@@ -61,6 +61,7 @@
 					failed: assert.failed,
 					timeouts: assert.timeouts,
 					callbacks: assert.callbacks,
+					errors: assert.errors,
 					
 					userAgent: window.browserInfo,
 					resources: resources

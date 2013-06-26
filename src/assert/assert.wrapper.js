@@ -6,6 +6,7 @@ obj_extend(assert, {
 	total: 0,
 	failed: 0,
 	callbacks: 0,
+	errors: 0,
 	timeouts: [],
 	
 	reset: function(){
@@ -13,6 +14,7 @@ obj_extend(assert, {
 		this.callbacks = 0;
 		this.failed = 0;
 		this.total = 0;
+		this.errors = 0;
 		
 		this.timeouts = [];
 	},

@@ -151,12 +151,9 @@ var RunnerDom = (function() {
 				total: assert.total,
 				failed: assert.failed,
 				timeouts: assert.timeouts,
+				errors: assert.errors,
 				callbacks: assert.callbacks,
 			});
-
-			//var message = '\nTotal: %1. Failed: %2'.format(assert.total, assert.failed);
-			//console.log(message[assert.failed ? 'red' : 'green'].bold);
-			//console.log('\n');
 
 			this.process();
 		},

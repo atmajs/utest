@@ -20,7 +20,13 @@ var RunnerSuite = Class({
 		if (this.watch !== true) {
 			
 			this.closeSockets();
-			process.exit(this.getFailed());
+			
+			var failed = this.getFailed();
+			
+			console.log('');
+			console.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
+			
+			process.exit(failed);
 			
 		}
 		

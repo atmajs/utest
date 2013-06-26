@@ -88,10 +88,15 @@ var Runner = (function() {
 				failed = count('failed'),
 				timeouts = count('timeouts'),
 				callbacks = count('callbacks'),
+				errors = count('errors'),
 				browsers = stats.length;
 
 			if (total === 0) {
 				console.error('No assertions');
+				failed++;
+			}
+			
+			if (errors > 0) {
 				failed++;
 			}
 			

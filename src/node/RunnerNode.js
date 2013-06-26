@@ -141,6 +141,7 @@ var RunnerNode = (function() {
 				total: assert.total,
 				failed: assert.failed,
 				timeouts: assert.timeouts,
+				errors: assert.errors,
 				callbacks: assert.callbacks,
 			});
 

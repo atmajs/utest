@@ -41,7 +41,10 @@
 			
 			
 			
-			return new RunnerSuite(configs, setts).run(done);
+			return new RunnerSuite(configs, setts).run(function(){
+				console.log('>> done', arguments);
+				done.apply(this, arguments);
+			});
 		}
 	};
 	
