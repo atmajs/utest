@@ -94,7 +94,7 @@ var RunnerDom = (function() {
 				return;
 			}
 			
-			var resource = include.instance();
+			var resource = include.instance('/utest/');
 			
 			ruqq.arr.each(this.config.env, function(x){
 				resource.js(x);
