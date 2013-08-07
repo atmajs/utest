@@ -48,7 +48,7 @@ var RunnerNode = (function() {
 		
 		var resource = include.instance();
 		
-		base = new net.URI(base);
+		base = new net.Uri(base);
 		ruqq.arr.each(env, function(x){
 			var	parts = x.split('::'),
 				src = parts[0],

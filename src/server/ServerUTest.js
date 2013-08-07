@@ -1,7 +1,7 @@
 
 
 var ServerUTest = Class({
-	Base: __EventEmitter,
+	Base: Class.EventEmitter,
 	Construct: function(sockets, logger) {
 		this.index = 0;
 		this.tunnels = ruqq.arr.map(sockets, function(x) {

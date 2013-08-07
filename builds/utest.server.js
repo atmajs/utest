@@ -1,11 +1,8 @@
 
-include.js({
-	script: 'base/EventEmitter'
-})
 
-.done(function(resp){
+(function(){
 	
-	var __EventEmitter = resp.EventEmitter;
+	
 
 	// import ../src/node/utils/logger.js
 	
@@ -15,4 +12,4 @@ include.js({
 
 
 	include.exports = SocketListener;
-});
+}());

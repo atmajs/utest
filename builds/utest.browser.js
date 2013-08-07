@@ -1,7 +1,7 @@
 
 // import ../.reference/libjs/class/lib/class.js
 
-// import ../.reference/libjs/include.builder/src/helper/colorize.js
+// import ../.reference/libjs/atma-tool/src/helper/colorize.js
 
 // import ../.reference/libjs/include/lib/include.js
 // import ../.reference/libjs/ruqq/lib/dom/jquery.js

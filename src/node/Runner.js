@@ -25,10 +25,10 @@ var Runner = (function() {
 		var scripts = config.scripts,
 			base = config.base;
 		
-		base = new net.URI(base);
+		base = new net.Uri(base);
 		
 		for (var i = 0, x, imax = scripts.length; i < imax; i++){
-			x = new net.URI(scripts[i]);
+			x = new net.Uri(scripts[i]);
 			
 			if (x.isRelative()) {
 				x = base.combine(x);
@@ -47,7 +47,7 @@ var Runner = (function() {
 	
 
 	return Class({
-		Base: __EventEmitter,
+		Base: Class.EventEmitter,
 		Construct: function(config) {
 			this.config = config;
 			this.status = status_blank;
@@ -151,7 +151,7 @@ var Runner = (function() {
 			if (data.file && data.line != null) {
 				
 				var path = data.file.replace(/(\/)?utest\//i, '$1'),
-					uri = new net.URI(this.config.base).combine(path),
+					uri = new net.Uri(this.config.base).combine(path),
 					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
 					line = source[data.line - 1],
 					code = line && line.trim();

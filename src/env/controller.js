@@ -53,7 +53,7 @@ include
 				}
 				
 				if (config && config.base) {
-					var base = new net.URI(config.base).toLocalDir();
+					var base = new net.Uri(config.base).toLocalDir();
 					
 					request.url = resource;
 					StaticHandler.request(request, response, base);

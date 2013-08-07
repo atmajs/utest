@@ -1,6 +1,6 @@
 
 var BrowserTunnel = Class({
-	Base: __EventEmitter,
+	Base: Class.EventEmitter,
 	Construct: function(socket, logger) {
 		var that = this;
 

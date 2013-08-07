@@ -2,7 +2,7 @@ function cfg_prepair(config, arg) {
 		
 	var base = config.base;
 	if (base) {
-		base = new net.URI(net.URI.combine(base, '/'));
+		base = new net.Uri(net.Uri.combine(base, '/'));
 		if (base.isRelative()){
 			base = io.env.currentDir.combine(base);
 		}
@@ -10,7 +10,7 @@ function cfg_prepair(config, arg) {
 		base = io.env.currentDir;
 	}
 	
-	config.base = net.URI.combine(base.toDir(), '/');
+	config.base = net.Uri.combine(base.toDir(), '/');
 	config.nodeScripts = [];
 	config.domScripts = [];
 	
@@ -21,13 +21,13 @@ function cfg_prepair(config, arg) {
 			script += '.test';
 		}
 		
-		var uri = new net.URI(base).combine(script),
+		var uri = new net.Uri(base).combine(script),
 			file = new io.File(uri);
 		if (file.exists() === false) {
 			
 			if (/\/?test.?\//.test(script) === false) {
-				script = net.URI.combine('test/', script);
-				file.uri = new net.URI(base).combine(script);
+				script = net.Uri.combine('test/', script);
+				file.uri = new net.Uri(base).combine(script);
 				
 				if (file.exists() === false) 
 					script = null;
@@ -56,7 +56,7 @@ function cfg_prepair(config, arg) {
 			var ext = /\.\w{1,5}$/.exec(script)
 			if (ext && ext[0] === '.test') {
 				script = script.replace(/\.\w{1,5}$/, '.js');
-				if (new io.File(new net.URI(base).combine(script)).exists()) {
+				if (new io.File(new net.Uri(base).combine(script)).exists()) {
 					(config.env || (config.env = [])).push(script);
 				}	
 			}
@@ -77,7 +77,7 @@ function cfg_loadConfig(baseConfig) {
 	var path = baseConfig.config;
 		
 	if (path == null) {
-		path = net.URI.combine(config.base, /test.?[\\\/]?$/.test(config.base) ? 'config.js' : 'test/config.js');
+		path = net.Uri.combine(config.base, /test.?[\\\/]?$/.test(config.base) ? 'config.js' : 'test/config.js');
 	}
 	
 	var file = new io.File(path);
@@ -234,10 +234,10 @@ function watch(base, resources, callback) {
 	watch = function(){};
 	
 	
-	base = new net.URI(base);
+	base = new net.Uri(base);
 	ruqq.arr.each(resources, function(url){
 		
-		var uri = new net.URI(url);
+		var uri = new net.Uri(url);
 		if (uri.isRelative()) {
 			uri = base.combine(uri);
 		}
