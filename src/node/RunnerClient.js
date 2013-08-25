@@ -7,8 +7,12 @@ var RunnerClient = Class({
 		
 		this.run = this.runTests;
 		
+		//@ HACKY - io client workaround
+		var _io = global.io;
+		delete global.io;
+		
 		var that = this,
-			confit = this.config,
+			config = this.config,
 			port = config.port || 5777,
 			util = require('util'),
 			io_client = require('socket.io-client'),
@@ -17,12 +21,14 @@ var RunnerClient = Class({
 				'connect timeout': 2000
 			});
 
+		global.io = _io;
+			
 		this.socket = socket;
 		this.status = status_connecting;
 
 		socket
 			.on('connect', function() {
-			Log('utest - connected to server - ', 90);
+			logger(90).log('utest - connected to server - ');
 
 			that.status = status_connected;
 			that.runTests();
@@ -43,21 +49,22 @@ var RunnerClient = Class({
 		})
 
 		.on('server:log', function(type, args) {
-			var fn = console[type] || console.log;
-			fn.apply(console, args);
+			var fn = logger[type] || logger.log;
+			fn.apply(logger, args);
 		})
 
 		.on('slave:start', function(stats) {
-			var message = '\n#{browser.name} #{browser.version}'.bold;
-			console.log(message.format(stats.userAgent));
-			console.log('');
+			var message = '#{browser.name} #{browser.version}'.bold;
+			logger
+				.log(message.format(stats.userAgent))
+				.log('');
 		})
 		.on('slave:end', function(stats) {
-			console.log('\nSlave completed'[stats.failed ? 'red' : 'green']);
+			logger.log('Slave completed'[stats.failed ? 'red' : 'green']);
 		})
 
 		.on('slave:error', function(error) {
-			console.error(error);
+			logger.error(error);
 		})
 		
 		.on('slave:utest:script', function(info){
@@ -75,7 +82,7 @@ var RunnerClient = Class({
 	},
 
 	runTests: function() {
-		console.log(' -  running tests  -  ', Date.format(new Date(), 'HH:mm:ss'));
+		logger.log(' -  running tests  -  ', Date.format(new Date(), 'HH:mm:ss'));
 		
 		switch (this.status) {
 			case status_blank:
@@ -85,6 +92,6 @@ var RunnerClient = Class({
 				this.socket.emit('client:utest', this.suites);
 				return;
 		}
-		console.warn('Server is not ready');
+		logger.warn('Server is not ready');
 	}
 });

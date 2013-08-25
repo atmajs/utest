@@ -1,12 +1,12 @@
 
-// import ../.reference/libjs/class/lib/class.js
+// import ../.reference/atma/class/lib/class.js
 
-// import ../.reference/libjs/atma-tool/src/helper/colorize.js
+// import ../.reference/atma/node/logger/src/color/color.js
 
-// import ../.reference/libjs/include/lib/include.js
-// import ../.reference/libjs/ruqq/lib/dom/jquery.js
-// import ../.reference/libjs/mask/lib/mask.js
-// import ../.reference/libjs/ruqq/lib/arr.js
+// import ../.reference/atma/include/lib/include.js
+// import ../.reference/atma/ruqq/lib/dom/jquery.js
+// import ../.reference/atma/mask/lib/mask.js
+// import ../.reference/atma/ruqq/lib/arr.js
 
 // import ../src/UTest.js
 

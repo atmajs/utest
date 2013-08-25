@@ -1,16 +1,19 @@
 include.exports = {
-	process: function(){
-
-		var base = 'c:/Users/Tenbits/AppData/Roaming/npm/node_modules/includejs/'
-
+	process: function(config, done){
 		
-		new io.Directory(io.env.currentDir.combine('lib/').toLocalDir())
-				.readFiles()
-				.copyTo(new net.URI(base + 'plugins/utest/'));
-
-		new io.File(io.env.currentDir.combine('utest-plugin.js'))
-				.copyTo(new net.URI(base + 'plugins/utest/utest-plugin.js'));
-		
-				
+		setTimeout(function(){
+			var base = 'c:/Users/Tenbits/AppData/Roaming/npm/node_modules/atma/'
+	
+			
+			new io.Directory(io.env.currentDir.combine('lib/').toLocalDir())
+					.readFiles()
+					.copyTo(new net.Uri(base + 'plugins/utest/'));
+	
+			new io.File(io.env.currentDir.combine('utest-plugin.js'))
+					.copyTo(new net.Uri(base + 'plugins/utest/utest-plugin.js'));
+			
+					
+			done();
+		}, 500);
 	}
-}
+};

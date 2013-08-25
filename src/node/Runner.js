@@ -60,7 +60,7 @@ var Runner = (function() {
 			});
 		},
 		notifyTest: function(url){
-			console.log('\nTest: ', (url.length > 23 ? '...' + url.substr(-20) : url).bold);
+			logger.log('Test: ', (url.length > 23 ? '...' + url.substr(-20) : url).bold);
 		},
 		onComplete: function(stats) {
 			this.status = status_ready;
@@ -68,7 +68,7 @@ var Runner = (function() {
 			function count(key) {
 				return ruqq.arr.aggr(stats, 0, function(x, aggr) {
 					if (x.error) {
-						console.log(x.error);
+						logger.error(x.error);
 						return 0;
 					}
 					
@@ -103,24 +103,31 @@ var Runner = (function() {
 			if (callbacks !== 0 || timeouts !== 0) {
 				!failed && failed++;
 			}
+			
 
-			console.log('\nDone. ' [failed ? 'red' : 'green'].bold);
+			logger.log('\nDone. '[failed ? 'red' : 'green'].bold);
 			
 			
-			console.log('bold{Assertions}: bold{green{%1}}(bold{red{%2}})'
-							.format(total - failed, failed)
-							.colorize());
+			logger.log(
+				'bold<Assertions>: bold<green<%1>>(bold<red<%2>>)'
+					.format(total - failed, failed)
+					.color);
 			
-			console.log('bold{Timeouts}: bold{%1{%2}}'
-							.format(timeouts ? 'red' : 'green', timeouts)
-							.colorize());
+			logger.log(
+				'bold<Timeouts>: bold<%1<%2>>'
+					.format(timeouts ? 'red' : 'green', timeouts)
+					.color);
 			
-			console.log('bold{Failed Callbacks}: bold{green{%1}}'.format(callbacks).colorize());
+			logger.log(
+				'bold<Failed Callbacks>: bold<green<%1>>'
+					.format(callbacks)
+					.color);
 
 			this.failed = failed;
 			this.stats = stats;
 			
-			this.trigger('complete', this)
+			this.trigger('complete', this);
+			
 		},
 		
 		getResources: function(){
@@ -140,13 +147,13 @@ var Runner = (function() {
 		
 		onFailure: function(data){
 			if (!data.stack) {
-				console.error('Unknown exception - ', data);
+				logger.error('Unknown exception - ', data);
 				return;
 			}
 			
 			data = assert.resolveData(data, this.config.base);
 			
-			console.log('\n');
+			logger.log('');
 			
 			if (data.file && data.line != null) {
 				
@@ -157,28 +164,28 @@ var Runner = (function() {
 					code = line && line.trim();
 				
 				if ('actual' in data || 'expected' in data) {
-					var msg = 'bold{yellow{%1}} bold{red{<=>}} bold{yellow{%2}}',
-						actual = typeof data.actual === 'object'
-									? JSON.stringify(data.actual)
-									: data.actual,
+					var msg = '%s bold<red<↔>> %s';
+						//actual = typeof data.actual === 'object'
+						//			? JSON.stringify(data.actual)
+						//			: data.actual,
+						//			
+						//expected = typeof data.expected === 'object'
+						//			? JSON.stringify(data.expected)
+						//			: data.expected;
 									
-						expected = typeof data.expected === 'object'
-									? JSON.stringify(data.expected)
-									: data.expected;
-									
-					console.log(msg
-									.colorize()
-									.format(actual, expected));
+					logger.log(msg.color, data.actual, data.expected);
 				}
 				
-				console.log('bold{%1}:%2'.colorize().format(data.file, data.line + 1));
-				console.log('  bold{cyan{ >> }} bold{red{ %1 }}'.colorize().format(code));
+				logger
+					.log('  bold<%1>:%2'.color.format(data.file, data.line + 1))
+					.log('  bold<cyan< → >> bold<red< %1 >>'.color.format(code));
 				return;
 			}
 				
 			
-			console.error(data.message);
-			console.error(data.stack);
+			logger
+				.error(data.message)
+				.error(data.stack);
 			
 		},
 		

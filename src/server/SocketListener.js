@@ -5,7 +5,7 @@ var SocketListener = (function(){
 		var slice = Array.prototype.slice,
 			args;
 		return function() {
-			Log('Socket.Pipe', event, 95);
+			logger(95).log('Socket.Pipe', event);
 			args = slice.call(arguments);
 			args.unshift(event);
 			socket.emit.apply(socket, args);

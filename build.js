@@ -47,9 +47,10 @@ global.config = {
 		action: 'custom',
 		script: 'install'
 	},
-	'watch': {
+	'infinite': {
+		action: 'watch',
 		files: 'src/**',
-		config: '#[import]'
+		actions: ['import', 'copy', 'install']
 	},
 	
 	'defaults': ['import', 'copy', 'install']

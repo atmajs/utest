@@ -10,7 +10,7 @@ var RunnerSuite = Class({
 		this.base = settings.base;
 		this.watch = settings.watch;
 		
-		Log('RunnerSuite:', JSON.stringify(configs), settings, 90);
+		logger(90).log('RunnerSuite:', configs, settings);
 		
 		Class.bind(this, 'onComplete', 'process', 'runTests');
 	},
@@ -23,15 +23,16 @@ var RunnerSuite = Class({
 			
 			var failed = this.getFailed();
 			
-			console.log('');
-			console.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
+			logger
+				.log('')
+				.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
 			
 			process.exit(failed);
 			
 		}
 		
 		watch(this.base, this.getResources(), this.runTests);
-		console.log(' - watcher active'.yellow);
+		logger.log(' - watcher active'.yellow);
 	},
 	
 	closeSockets: function(){
@@ -102,7 +103,6 @@ var RunnerSuite = Class({
 		
 		if (this.watch == null && config.watch) {
 			this.watch = config.watch;
-			console.log('WWWWAAATCH')
 		}
 
 		if (config.exec === 'browser') {

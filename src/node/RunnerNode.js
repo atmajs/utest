@@ -35,13 +35,13 @@ var RunnerNode = (function() {
 	function suite_loadEnv(runner, suite, callback) {
 		var base = suite.base,
 			env = suite.env;
-			
+		
 		if (env == null) {
 			callback();
 			return;
 		}
 		if (Array.isArray(env) === false) {
-			console.warn('"env" property should be an array of strings', env);
+			logger.warn('"env" property should be an array of strings', env);
 			callback();
 			return;
 		}
@@ -55,7 +55,7 @@ var RunnerNode = (function() {
 				alias = parts[1],
 				file = new io.File(base.combine(src));
 			if (file.exists() === false) {
-				console.log('Resource from Env - 404 -', x);
+				logger.warn('Resource from Env - 404 -', x);
 				return;
 			}
 			
@@ -114,7 +114,7 @@ var RunnerNode = (function() {
 		},
 		run: function() {
 			if (status_ready !== this.status && status_blank !== this.status) {
-				console.warn('Node is busy ... ', this.status);
+				logger.warn('Node is busy ... ', this.status);
 				return;
 			}
 			this.status = status_prepair;

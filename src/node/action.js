@@ -5,7 +5,7 @@
 	include.exports = {
 		process: function(setts, done) {
 
-			var arg = setts.script || (setts.args && setts.args[0]),
+			var arg = setts.script || app.config.cli.args[1],
 				config;
 		
 			cfg_prepair(setts, arg);
@@ -40,9 +40,8 @@
 				return done('No scripts to test');
 			
 			
-			
 			return new RunnerSuite(configs, setts).run(function(){
-				console.log('>> done', arguments);
+				logger.log('>> done', arguments);
 				done.apply(this, arguments);
 			});
 		}

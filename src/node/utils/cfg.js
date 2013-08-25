@@ -74,10 +74,15 @@ function cfg_prepair(config, arg) {
  * tests: String | [String]
  */
 function cfg_loadConfig(baseConfig) {
+	
 	var path = baseConfig.config;
 		
 	if (path == null) {
-		path = net.Uri.combine(config.base, /test.?[\\\/]?$/.test(config.base) ? 'config.js' : 'test/config.js');
+		path = /test.?[\\\/]?$/.test(baseConfig.base)
+			? 'config.js'
+			: 'test/config.js';
+			
+		path = net.Uri.combine(baseConfig.base, path);
 	}
 	
 	var file = new io.File(path);
@@ -99,10 +104,10 @@ function cfg_getEnv(baseConfig, config) {
 	
 	if (Array.isArray(config.env)) 
 		baseConfig.env = ruqq.arr.distinct(baseConfig.env.concat(config.env));
-	
 }
 
 function cfg_getScripts(baseConfig, config) {
+	
 	if (config.tests) {
 		
 		var tests = config.tests,
