@@ -1,22 +1,21 @@
 {
-  "name": "ijs-utest",
-  "description": "Testing toolkit / TDD plugin for IncludeJS",
+  "name": "atma-utest",
+  "description": "TDD plugin for Atma Toolkit",
   "preferGlobal": true,
   "author": {
     "name": "Alexander Kit",
     "email": "source.kit@gmail.com"
   },
   "version": "0.8.1",
-  "main": "module.js",
   "devDependencies": {
-    "includejs": "~0.9.27"
+    "atma": ">0.9.27"
   },
   "scripts" : {
-      "test" : "node_modules/.bin/ijs test UTest"
+      "test" : "node_modules/.bin/atma test UTest"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tenbits/ijs-utest.git"
+    "url": "git://github.com/tenbits/atma-utest.git"
   },
   "license": "MIT"
 }
