@@ -33,7 +33,7 @@ obj_extend(assert, {
 
 /** GLOBALS */
 global.eq = assert.equal;
-global.notEq = assert.equal;
+global.notEq = assert.netEqual;
 global.deepEq = assert.deepEqual;
 global.notDeepEq = assert.notDeepEqual;
 global.strictEq = assert.strictEqual;
