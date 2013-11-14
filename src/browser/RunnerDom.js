@@ -21,8 +21,7 @@ var RunnerDom = (function() {
 	return Class({
 		Static: {
 			run: function(configs, socket, callback){
-				state = state_busy;
-			
+				
 				_runners = [];
 				_socket = socket;
 				_configs = arr_isArray(configs) ? configs : [configs];

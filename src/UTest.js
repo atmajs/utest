@@ -7,7 +7,11 @@
 			timeout: 1500
 		},
 		_testsDone;
-		
+	
+	var RESERVED = ['$before', '$after', '$teardown', '$config'];
+	
+	// import UTest.config.js
+	// import utils/object.js
 	
 	function nextUTest() {
 		if (++_index > _tests.length - 1) {
@@ -54,9 +58,7 @@
 				
 			if (typeof fn === 'function') {
 				if (case_isAsync(fn)) {
-					fn( //
-					async( //
-					teardownDelegate(teardown, done), key));
+					fn(async(teardownDelegate(teardown, done), key));
 					return;
 				}
 				
@@ -89,11 +91,23 @@
 			this.suite = suite;
 			this.processed = [];
 			
-			Class.bind(this, 'nextCase');
+			// @obsolete properties
+			['before', 'after', 'teardown', 'config']
+				.forEach(function(key){
+					if (suite[key] == null) 
+						return;
+					
+					console.warn('<UTest>', key, 'property is deprecated. Use: $' + key);
+					
+					suite['$' + key] = suite[key];
+					delete suite[key];
+				});
 			
 			_tests.push(this);
 			return this;
 		},
+		
+		configurate: UTestConfiguration.configurate,
 		
 		run: function(callback){
 			
@@ -107,7 +121,7 @@
 			this.onComplete = callback;
 			
 			this.handleBangs();
-			runCase(this.suite.before, this.nextCase);
+			this.configurate(this._start);
 		},
 		
 		handleBangs: function(){
@@ -120,7 +134,7 @@
 			
 			for (var key in this.suite) {
 				// reserved
-				if (['before','after','teardown'].indexOf(key) !== -1) {
+				if (RESERVED.indexOf(key) !== -1) {
 					continue;
 				}
 				
@@ -130,43 +144,47 @@
 			}
 		},
 		
-		nextCase: function(){
-			for (var key in this.suite) {
-				if (~this.processed.indexOf(key)) {
-					continue;
-				}
-				
-				// reserved
-				if (['before','after','teardown'].indexOf(key) !== -1) {
-					continue;
-				}
-				
-				if (key.substring(0,2) === '//') {
-					console.warn(key.substring(2), '(skipped)'.bold);
-					this.processed.push(key);
-					continue;
+		Self: {
+			_start: function(){
+				runCase(this.suite.$before, this._nextCase);	
+			},
+			_nextCase: function(){
+				for (var key in this.suite) {
+					if (~this.processed.indexOf(key)) {
+						continue;
+					}
 					
+					// reserved
+					if (RESERVED.indexOf(key) !== -1) {
+						continue;
+					}
+					
+					if (key.substring(0,2) === '//') {
+						console.warn(key.substring(2), '(skipped)'.bold);
+						this.processed.push(key);
+						continue;
+						
+					}
+					
+					if (typeof this.suite[key] !== 'function') {
+						continue;
+					}
+					
+					this.processed.push(key);
+					
+					console.print((' ' + key + ': ').bold);
+					runCase(this.suite[key], this._nextCase, this.suite.$teardown, key);
+					
+					return;
 				}
 				
-				if (typeof this.suite[key] !== 'function') {
-					continue;
-				}
-				
-				this.processed.push(key);
-				
-				console.print((' ' + key + ': ').bold);
-				runCase(this.suite[key], this.nextCase, this.suite.teardown, key);
-				
-				return;
+				var that = this;
+				runCase(this.suite.$after, function(){
+					UTest.trigger('complete', that);
+					that.onComplete();
+				});
 			}
-			
-			var that = this;
-			runCase(this.suite.after, function(){
-				UTest.trigger('complete', that);
-				that.onComplete();
-			});
 		},
-		
 		Static: {
 			stats: function(){
 				return {

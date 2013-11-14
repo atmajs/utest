@@ -29,8 +29,9 @@
 			for (var i = 0, x, imax = arguments.length; i < imax; i++) {
 				args[i] = logger_dimissCircular(arguments[i]);
 			}
-
-			socket.emit('browser:log', key, args);
+			
+			if (socket) 
+				socket.emit('browser:log', key, args);
 
 			return original.apply(console, args);
 		};

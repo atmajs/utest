@@ -249,8 +249,8 @@ function watch(base, resources, callback) {
 		var file = new io.File(uri);
 		
 		if (file.exists()) {
-			io.File.watcher.watch(file, function(){
-				console.log(' - file changed - ', file.uri.file);
+			io.watcher.watch(file.uri.toLocalFile(), function(){
+				logger.log(' - file changed - '.green, file.uri.file.bold);
 				io.File.clearCache(file.uri.toLocalFile());
 				callback();
 			});

@@ -11,28 +11,6 @@ var RunnerSuite = Class({
 		this.watch = settings.watch;
 		
 		logger(90).log('RunnerSuite:', configs, settings);
-		
-		Class.bind(this, 'onComplete', 'process', 'runTests');
-	},
-	
-	onComplete: function(){
-		
-		if (this.watch !== true) {
-			
-			this.closeSockets();
-			
-			var failed = this.getFailed();
-			
-			logger
-				.log('')
-				.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
-			
-			process.exit(failed);
-			
-		}
-		
-		watch(this.base, this.getResources(), this.runTests);
-		logger.log(' - watcher active'.yellow);
 	},
 	
 	closeSockets: function(){
@@ -53,16 +31,43 @@ var RunnerSuite = Class({
 		});
 	},
 	
-	process: function(){
-		var runner = this.runners[++this.index];
+	Self: {
 		
-		if (runner == null) {
-			this.onComplete();
-			return;
-		}
-		runner.run(this.callback);
+		onComplete: function(){
+			
+			if (this.watch !== true) {
+				
+				this.closeSockets();
+				
+				var failed = this.getFailed();
+				
+				logger
+					.log('')
+					.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
+				
+				process.exit(failed);
+				
+			}
+			
+			watch(this.base, this.getResources(), this.runTests);
+			logger.log(' - watcher active'.yellow);
+		},
+		
+		process: function(){
+			var runner = this.runners[++this.index];
+			
+			if (runner == null) {
+				this.onComplete();
+				return;
+			}
+			runner.run(this.callback);
+		},
+		
+		runTests: function(){
+			this.index = -1;
+			this.process();
+		},
 	},
-	
 	run: function(done){
 		this.callback = done;
 		this.runners = [];
@@ -81,10 +86,7 @@ var RunnerSuite = Class({
 		this.runTests();
 	},
 	
-	runTests: function(){
-		this.index = -1;
-		this.process();
-	},
+	
 	
 	handleConfig: function(mix) {
 		if (Array.isArray(mix)) {

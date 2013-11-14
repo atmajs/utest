@@ -39,7 +39,7 @@ global.config = {
 	},
 	'copy': {
 		files: {
-			'src/env/controller.js': 'lib/env/controller.js',
+			'src/env/HttpTestHandler.js': 'lib/env/HttpTestHandler.js',
 			'src/env/template.mask': 'lib/env/template.mask'
 		}		
 	},

@@ -1,5 +1,7 @@
 (function() {
 	
+	var _suite;
+	
 	var TestSuite = global.UTest;
 		
 	include.exports = {
@@ -40,7 +42,7 @@
 				return done('No scripts to test');
 			
 			
-			return new RunnerSuite(configs, setts).run(function(){
+			return _suite = new RunnerSuite(configs, setts).run(function(){
 				logger.log('>> done', arguments);
 				done.apply(this, arguments);
 			});
@@ -49,7 +51,7 @@
 	
 	
 
-	
+	// import utils/io.js
 	// import utils/cfg.js
 	// import utils/logger.js
 	
@@ -59,6 +61,6 @@
 	
 	// import Suite.js
 	
-		
+	// import utest.extend.js
 		
 }());

@@ -2,7 +2,7 @@ include.exports = {
 	process: function(config, done){
 		
 		setTimeout(function(){
-			var base = 'c:/Users/Tenbits/AppData/Roaming/npm/node_modules/atma/'
+			var base = '../atma-tool/'
 	
 			
 			new io.Directory(io.env.currentDir.combine('lib/').toLocalDir())

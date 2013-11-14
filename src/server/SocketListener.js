@@ -7,7 +7,7 @@ var SocketListener = (function(){
 		var slice = Array.prototype.slice,
 			args;
 		return function() {
-			logger(95).log('Socket.Pipe', event);
+			logger(90).log('Socket.Pipe'.green.bold, event);
 			args = slice.call(arguments);
 			args.unshift(event);
 			socket.emit.apply(socket, args);
@@ -40,14 +40,16 @@ var SocketListener = (function(){
 	return Class({
 		Construct: function(socket, io, port) {
 			
-			console.log('\tNode Client Connected'.green);
+			logger.log('\tNode Client Connected'.green);
 			
 			this.socket = socket
 				.on('disconnect', this.disconnected)
 				.on('client:utest', function(config, done) {
 					
 					client_tryTest(io, socket, config, done, port, 0);
-				});
+				})
+				.on('>server:utest:action', Actions.run)
+				;
 		},
 		
 		disconnected: function() {
@@ -109,6 +111,7 @@ var SocketListener = (function(){
 		;
 
 		__config = config;
+		
 		utest.run(config, done);
 	}
 	
