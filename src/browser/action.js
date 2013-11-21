@@ -27,7 +27,7 @@
 		state_ready = 1,
 		state_busy = 2,
 		state = state_ready,
-		configuration = new Class.Await(),
+		configuration = new Class.Await,
 		socket = io.connect('/utest-browser')
 			.on('connect', function(){
 				console.log('browser:connected to utest-browser socket');
@@ -58,7 +58,7 @@
 		
 		state = state_busy;
 		
-		if (configuration.isBusy()) {
+		if (configuration._wait > 0) {
 			configuration.always(utest_start.bind(null, config));
 			return;
 		}
@@ -91,7 +91,7 @@
 		var args = Array.prototype.slice.call(arguments);
 		
 		args.unshift('>server:utest:action');
-		args.push(configuration.promise());
+		args.push(configuration.delegate());
 		
 		socket
 			.emit

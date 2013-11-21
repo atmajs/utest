@@ -2,7 +2,6 @@
 (function(){
 	
 	// import ../src/utils/array.js
-	// import ../src/utils/Await.js
 	
 	// import ../src/UTest.js
 	// import ../src/assert/assert.node.js

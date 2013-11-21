@@ -34,9 +34,7 @@ var UTestConfiguration = (function(){
 	function configurate(key, args, done) {
 		var fn = obj_getProperty(Configurations, key);
 		if (fn == null) {
-			logger.error('<utest:config> Undefined configuration', key);
-			
-			return done();
+			return done('<utest:config> Undefined configuration' + key);
 		}
 		
 		fn(args, done)
@@ -51,12 +49,12 @@ var UTestConfiguration = (function(){
 			if (cfg == null) 
 				return done();
 			
-			var await = new Class.Await();
+			var await = new Class.Await;
 			
 			
 			for(var key in cfg){
 				
-				configurate(key, cfg[key], await.promise());
+				configurate(key, cfg[key], await.delegate());
 			}
 			
 			await
