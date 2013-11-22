@@ -14,6 +14,8 @@
 			
 			config = cfg_loadConfig(setts);
 			
+			
+				
 			cfg_getEnv(setts, config);
 			
 			if (cfg_hasScripts(setts) === false) {
@@ -42,10 +44,23 @@
 				return done('No scripts to test');
 			
 			
-			return _suite = new RunnerSuite(configs, setts).run(function(){
-				logger.log('>> done', arguments);
-				done.apply(this, arguments);
-			});
+			var $before = configs.$config && configs.$config.$before,
+				$after = configs.$config && configs.$config.$after
+				;
+			
+			cfg_runConfigurationScript($before, function(){
+				
+				_suite = new RunnerSuite(configs, setts).run(function(){
+					logger.log('>> completed'.cyan.bold, arguments);
+					
+					cfg_runConfigurationScript($after, function(){
+						done.apply(this, arguments);	
+					});
+				});	
+			})
+			
+		
+			
 		}
 	};
 	

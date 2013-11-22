@@ -6,7 +6,7 @@ UTest.getSocket = function(callback){
 	
 	io_connect(cfg)
 		.done(callback)
-		.reject(function(error){
+		.fail(function(error){
 			
 			logger.error('<Exit> sockets could not be connected');
 			

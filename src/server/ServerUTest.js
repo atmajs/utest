@@ -4,7 +4,7 @@ var ServerUTest = Class({
 	Base: Class.EventEmitter,
 	Construct: function(sockets, logger) {
 		this.index = 0;
-		this.tunnels = ruqq.arr.map(sockets, function(socket) {
+		this.tunnels = sockets.map(function(socket) {
 			
 			return new BrowserTunnel(socket, logger)
 				.on('start', this.pipe('slave:start'))
@@ -17,7 +17,7 @@ var ServerUTest = Class({
 				.on('browser:utest:script', this.pipe('browser:utest:script'))
 				;
 				
-		}.bind(this));
+		}, this);
 	},
 	
 	Self: {
