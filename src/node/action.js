@@ -1,6 +1,8 @@
 (function() {
 	
-	var _suite;
+	var _suite,
+		_configs
+		;
 	
 	var TestSuite = global.UTest;
 		
@@ -13,8 +15,6 @@
 			cfg_prepair(setts, arg);
 			
 			config = cfg_loadConfig(setts);
-			
-			
 				
 			cfg_getEnv(setts, config);
 			
@@ -23,7 +23,7 @@
 				
 				
 				if (arg && !(config.suites && config.suites[arg])) 
-					return done('Argument is not resolved as script, nor as suite name: ' + arg);
+					return done('Argument is not resolved as a script, nor as a suite name: ' + arg);
 				
 				
 				if (arg) {
@@ -38,19 +38,23 @@
 			}
 			
 			
-			var configs = cfg_split(setts);
+			_configs = cfg_split(setts);
 			
-			if (configs.length === 0) 
+			if (_configs.length === 0) 
 				return done('No scripts to test');
 			
 			
-			var $before = configs.$config && configs.$config.$before,
-				$after = configs.$config && configs.$config.$after
+			var $before = config.$config && config.$config.$before,
+				$after = config.$config && config.$config.$after
 				;
+			
+			
+			
+			_suite = new RunnerSuite(_configs, setts);
 			
 			cfg_runConfigurationScript($before, function(){
 				
-				_suite = new RunnerSuite(configs, setts).run(function(){
+				_suite.run(function(){
 					logger.log('>> completed'.cyan.bold, arguments);
 					
 					cfg_runConfigurationScript($after, function(){

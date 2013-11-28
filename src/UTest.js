@@ -107,7 +107,9 @@
 			return this;
 		},
 		
-		configurate: UTestConfiguration.configurate,
+		configurate: function(done){
+			UTestConfiguration.configurate(this.suite.$config, done);
+		},
 		
 		run: function(callback){
 			
@@ -233,6 +235,10 @@
 				for (var key in options) {
 					_options[key] = options[key];
 				}
+			},
+			
+			configurate: function($config, done){
+				UTestConfiguration.configurate($config, done);
 			}
 		}
 	});

@@ -40,7 +40,13 @@ var SocketListener = (function(){
 	return Class({
 		Construct: function(socket, io, port) {
 			
-			logger.log('\tNode Client Connected'.green);
+			if (__config) {
+				socket.emit('server:error', 'Server is busy');
+				socket.disconnect();
+				return;
+			}
+			
+			logger.log('<Node Client Connected>'.green);
 			
 			this.socket = socket
 				.on('disconnect', this.disconnected)
@@ -63,36 +69,41 @@ var SocketListener = (function(){
 		}
 	});
 
-	function client_tryTest(io, socket, config, done, port, retryCount){
+	function client_tryTest(io, socket, config, done, port, retryIndex){
+		__config = config;
+		
 		var clients = io.of('/utest-browser').clients(),
 			message;
 		
 		if (clients.length === 0) {
 			
-			if (++retryCount <= wait_COUNT) {
+			if (++retryIndex <= wait_COUNT) {
 				
 				message = 'Waiting for some slaves: %1/%2'
-					.format(retryCount, wait_COUNT);
+					.format(retryIndex, wait_COUNT);
 				
 				socket.emit('server:log', 'warn', [message]);
 				
 				setTimeout(function(){
 					
-					client_tryTest(io, socket, config, done, port, retryCount);
+					client_tryTest(io, socket, config, done, port, retryIndex);
 				}, wait_DURATION);
 				
 				return;
 			}
 			
+			__config = null;
+			
 			message = 'No Slaves Captured - navigate to http://localhost:%1/utest/'
 				.format(port || 5777);
-				
 			socket.emit('server:error', message);
+			socket.disconnect();
 			return;
 		}
-
+		
 		client_doTest(clients, socket, config, done);
 	}
+	
 	
 	function client_doTest(clients, socket, config, done){
 		

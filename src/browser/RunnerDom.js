@@ -14,8 +14,16 @@ var RunnerDom = (function() {
 			return;
 		}
 		
-		var runner = new RunnerDom(_configs[_configIndex]).run(cfg_runNext);
-		_runners.push(runner);
+		var config = _configs[_configIndex];
+		
+		_socket.emit('browser:utest:beforestart', {
+			config: config
+		}, function(){
+			
+			_runners
+				.push(new RunnerDom(config).run(cfg_runNext));
+		});
+		
 	}
 	
 	return Class({
@@ -58,7 +66,6 @@ var RunnerDom = (function() {
 		Construct: function(config){
 			this.config = config;
 			this.scripts = config.scripts;
-			Class.bind(this, 'process', 'processSingle', 'singleComplete');
 		},
 		run: function(callback) {
 			this.onComplete = callback;
@@ -113,49 +120,52 @@ var RunnerDom = (function() {
 				});
 			});
 		},
-
-		process: function() {
-
-			if (++this.index > this.scripts.length - 1) {
-				this.resources = script_getResources();
-				this.onComplete(this);
-				return;
-			}
-			
-			var path = this.scripts[this.index];
-			
-			_socket.emit('browser:utest:script',{
-				script: path
-			});
-			
-			include_reset();
-			TestSuite.clear();
-			
-			script_insert({path: path}, this.processSingle);
-			
-		},
 		
-		processSingle: function(force){
+		Self: {
+		
+			process: function() {
+	
+				if (++this.index > this.scripts.length - 1) {
+					this.resources = script_getResources();
+					this.onComplete(this);
+					return;
+				}
+				
+				var path = this.scripts[this.index];
+				
+				_socket.emit('browser:utest:script',{
+					script: path
+				});
+				
+				include_reset();
+				TestSuite.clear();
+				
+				script_insert({path: path}, this.processSingle);
+				
+			},
 			
-			var that = this;
-			
-			include_ready(function(){
-				TestSuite.run(that.singleComplete);
-			});
-		},
-
-		singleComplete: function() {
-			this.stats.push({
-				url: this.scripts[this.index],
-				total: assert.total,
-				failed: assert.failed,
-				timeouts: assert.timeouts,
-				errors: assert.errors,
-				callbacks: assert.callbacks,
-			});
-
-			this.process();
-		},
+			processSingle: function(force){
+				
+				var that = this;
+				
+				include_ready(function(){
+					TestSuite.run(that.singleComplete);
+				});
+			},
+	
+			singleComplete: function() {
+				this.stats.push({
+					url: this.scripts[this.index],
+					total: assert.total,
+					failed: assert.failed,
+					timeouts: assert.timeouts,
+					errors: assert.errors,
+					callbacks: assert.callbacks,
+				});
+	
+				this.process();
+			}
+		}
 	});
 
 }());

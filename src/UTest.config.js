@@ -5,13 +5,17 @@ var UTestConfiguration = (function(){
 	var Configurations = {
 		http: {
 			service: function(routes, done){
-				http_config('http.services', routes, done);
+				http_config('http.service', routes, done);
 			},
 			config: function(configDir, done) {
 				http_config('http.config', configDir, done);
 			},
 			include: function(pckg, done){
 				http_config('include', pckg, done);
+			},
+			
+			eval: function(fn, done){
+				http_config('eval', fn.toString(), done);
 			}
 		}
 		
@@ -20,10 +24,15 @@ var UTestConfiguration = (function(){
 	function http_config(args){
 		var args = Array.prototype.slice.call(arguments);
 		
+		
+		args.splice(1, 0, null); // populate later with current configuration
+		
 		args.unshift('>server:utest:action');
 		
 		UTest
-			.getSocket(function(socket){
+			.getSocket(function(socket, config){
+				
+				args[2] = config;
 				socket
 					.emit
 					.apply(socket, args)
@@ -42,9 +51,7 @@ var UTestConfiguration = (function(){
 	
 	return {
 		
-		configurate: function(done){
-			
-			var cfg = this.suite.$config;
+		configurate: function(cfg, done){
 			
 			if (cfg == null) 
 				return done();

@@ -151,14 +151,16 @@ var Runner = (function() {
 				return;
 			}
 			
-			data = assert.resolveData(data, this.config.base);
+			var base = this.suites[0].base || '';
+			
+			data = assert.resolveData(data, base);
 			
 			logger.log('');
 			
 			if (data.file && data.line != null) {
 				
 				var path = data.file.replace(/(\/)?utest\//i, '$1'),
-					uri = new net.Uri(this.config.base).combine(path),
+					uri = new net.Uri(base).combine(path),
 					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
 					line = source[data.line - 1],
 					code = line && line.trim();

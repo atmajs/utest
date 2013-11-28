@@ -10,7 +10,23 @@ var BrowserTunnel = Class({
 				(logger[type] || logger.log).apply(logger, args);
 	
 			})
-	
+			
+			.on('browser:utest:beforestart', function(data, done){
+				var config = data.config;
+				
+				atma
+					.server
+					.app
+					.handlers
+					.subapps
+					.get('/utest/')
+					.value
+					._app
+					.config = config
+					;
+					
+				done();
+			})
 			.on('browser:utest:start', function(stats) {
 				that.trigger('start', stats);
 			})
