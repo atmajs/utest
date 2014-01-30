@@ -1,26 +1,29 @@
 {
-  "name": "atma-utest",
-  "description": "TDD-Plugin for the Atma Toolkit",
-  "author": {
-    "name": "Alexander Kit",
-    "email": "alex.kit@atmajs.com"
-  },
-  "version": "0.8.1",
-  "devDependencies": {
-    "atma": ">0.9.27",
-    "atma-utest": ">0.0.0"
-  },
-  "atma": {
-    "plugins": [
-      "atma-utest"
-    ]
-  },
-  "scripts" : {
-      "test" : "node_modules/.bin/atma test UTest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/tenbits/atma-utest.git"
-  },
-  "license": "MIT"
+    "name": "atma-utest",
+    "description": "TDD-Plugin for the Atma Toolkit",
+    "author": {
+        "name": "Alexander Kit",
+        "email": "alex.kit@atmajs.com"
+    },
+    "version": "0.8.2",
+    "devDependencies": {
+        "atma": ">0.9.27",
+        "atma-utest": ">0.0.0"
+    },
+    "dependencies": {
+        "socket.io-client": "~0.9.11"
+    },
+    "atma": {
+        "plugins": [
+            "atma-utest"
+        ]
+    },
+    "scripts": {
+        "test": "node_modules/.bin/atma test UTest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tenbits/atma-utest.git"
+    },
+    "license": "MIT"
 }

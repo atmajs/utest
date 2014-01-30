@@ -3,7 +3,7 @@
  * includejs:server will pipe all matched reqs (@see attach function)
  * to this controller
  */
-
+throw 'TestHandler?'
 include
 	.js({
 		server: ['middleware/static::static']
@@ -112,7 +112,7 @@ include
 		}
 
 		add_source(scripts, '/socket.io/socket.io.js');
-		add_source(scripts, '/.reference/atma.toolkit/plugins/utest/utest.browser.js');
+		add_source(scripts, '/.reference/atma_toolkit/plugins/utest/utest.browser.js');
 
 		var routes = appConfig.defaultRoutes;
 		if (routes) {

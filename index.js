@@ -1,4 +1,8 @@
 
+if (typeof include === 'undefined' ) 
+	throw new Error('<atma-utest> should be loaded by the `atma` package.');
+
+
 var uri = new net.Uri(include.url);
 
 include.exports = {
@@ -9,9 +13,6 @@ include.exports = {
 				test: getPath('/utest.node.js')
 			},
 			server: {
-				//handlers: {
-				//	'^/utest' : getPath('env/HttpTestHandler.js')
-				//},
 				subapps: {
 					'utest': getPath('env/HttpTestApplication.js')
 				},
@@ -26,5 +27,9 @@ include.exports = {
 };
 
 function getPath(path) {
-	return uri.combine(path).toString();
+	return uri
+		.combine('lib/')
+		.combine(path)
+		.toString()
+		;
 }
