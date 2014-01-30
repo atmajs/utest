@@ -44,10 +44,7 @@ module.exports = {
 			'src/env/template.mask': 'lib/env/template.mask'
 		}		
 	},
-	'install':{
-		action: 'custom',
-		script: 'install'
-	},
+
 	'watch': {
 		files: 'src/**',
 		actions: ['import', 'copy', 'install']
