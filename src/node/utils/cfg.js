@@ -18,6 +18,11 @@ var cfg_prepairSettings,
 		if (base) {
 			base = new net.Uri(net.Uri.combine(base, '/'));
 			
+			if (base[0] === '/')
+				// relative to CWD
+				base = base.substring(1);
+			
+			
 			if (base.isRelative())
 				base = io.env.currentDir.combine(base);
 			
@@ -26,10 +31,11 @@ var cfg_prepairSettings,
 			base = io.env.currentDir;
 		}
 		
-		setts.base = net.Uri.combine(base.toDir(), '/');
+		setts.base = net.Uri.combine(base.toLocalDir(), '/');
 		setts.nodeScripts = [];
 		setts.domScripts = [];
 		setts.env = [];
+		
 		
 		if (script == null) 
 			return;
@@ -47,7 +53,8 @@ var cfg_prepairSettings,
 					return;
 			}
 		}
-	
+		
+		logger.log('uTest settings'.cyan, setts, script);
 		
 		cfg_addScript(
 			script,

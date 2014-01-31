@@ -1,39 +1,36 @@
 
-var TestSuite = UTest;
-
-
 (function(){
 	var flow = [],
 		teardowns = 0;
 	
-	TestSuite({
+	UTest({
 		
 		'first': function(){
 			flow.push(1);
 		},
-		'second': function(){
-			flow.push(2);
-		},
 		'async': function(done){
+			
 			setTimeout(function(){
-				
-				flow.push(3);
+				flow.push(2);
 				done();
 			},1000);
 		},
+		'third': function(){
+			flow.push(3);
+		},
 		
-		before: function(){
+		
+		'$before': function(){
 			flow.push(0);
 		},
-		after: function(){
+		'$after': assert.callback(function(){
 
-			assert.deepEqual(flow, [0, 1, 2, 3]);
-			assert.equal(teardowns, 3);
+			deepEq(flow, [0, 1, 2, 3]);
+			eq(teardowns, 3);
 
-		},
-		teardown: function(){
+		}),
+		'$teardown': function(){
 			teardowns++;
 		}
 	});
-	
 }())

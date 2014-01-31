@@ -25,12 +25,12 @@
 		test.run(nextUTest);
 	}
 	
-	function teardownDelegate(teardown, done) {
+	function teardownDelegate(ctx, teardown, done) {
 		if (teardown == null) {
 			return done;
 		}
 		return function(){
-			runCase(teardown, done);
+			runCase(ctx, teardown, done);
 		};
 	}
 	
@@ -56,21 +56,21 @@
 	}
 	
 	
-	function runCase(fn, done, teardown, key) {
+	function runCase(ctx, fn, done, teardown, key) {
 		
 		var asyncData;
 		try {
 				
 			if (typeof fn === 'function') {
 				if (case_isAsync(fn)) {
-					asyncData = async(teardownDelegate(teardown, done), key);
-					fn(asyncData.fn);
+					asyncData = async(teardownDelegate(ctx, teardown, done), key);
+					fn.call(ctx, asyncData.fn);
 					return;
 				}
 				
-				fn();
+				fn.call(ctx);
 			}
-			teardownDelegate(teardown, done)();	
+			teardownDelegate(ctx, teardown, done)();	
 		
 		} catch(error){
 			
@@ -93,7 +93,7 @@
 	
 	var UTestProto = {
 		$run: function(key, done){
-			runCase(this.suite[key], done || function(){}, null, key);
+			runCase(this.proto, this.suite[key], done || function(){}, null, key);
 		}
 	};
 	
@@ -105,10 +105,9 @@
 		}
 		
 		for (key in suite) {
-			if (typeof suite[key] === 'function')
-				proto[key] = suite[key] = suite[key].bind(proto);
+			proto[key] = suite[key];
 		}
-		
+		return proto;
 	};
 	
 	var UTest = Class({
@@ -120,8 +119,8 @@
 			
 			this.suite = suite;
 			this.processed = [];
+			this.proto = UTestProtoDelegate(this, suite);
 			
-			UTestProtoDelegate(this, suite);
 			// @obsolete properties
 			['before', 'after', 'teardown', 'config']
 				.forEach(function(key){
@@ -179,7 +178,7 @@
 		
 		Self: {
 			_start: function(){
-				runCase(this.suite.$before, this._nextCase);	
+				runCase(this.proto, this.suite.$before, this._nextCase);	
 			},
 			_nextCase: function(){
 				for (var key in this.suite) {
@@ -206,13 +205,13 @@
 					this.processed.push(key);
 					
 					console.print((' ' + key + ': ').bold);
-					runCase(this.suite[key], this._nextCase, this.suite.$teardown, key);
+					runCase(this.proto, this.suite[key], this._nextCase, this.suite.$teardown, key);
 					
 					return;
 				}
 				
 				var that = this;
-				runCase(this.suite.$after, function(){
+				runCase(this.proto, this.suite.$after, function(){
 					UTest.trigger('complete', that);
 					that.onComplete();
 				});
