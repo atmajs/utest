@@ -54,8 +54,6 @@ var cfg_prepairSettings,
 			}
 		}
 		
-		logger.log('uTest settings'.cyan, setts, script);
-		
 		cfg_addScript(
 			script,
 			setts.base,
