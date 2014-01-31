@@ -1,17 +1,17 @@
-UTEST
+µTEST
 ----
 _TDD and Unit Testing_
 
 ###### Install
-```$ npm install -g ijs```
+```$ npm install atma -g```
 
 
 Create Tests simple and fast. Overview:
 
-- **Node.js** Runner  - ```$ ijs test foo```.
-- **Browser** Runner - with ijs you create a test server (```$ ijs server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ ijs test foo -browser```.
-- **Watcher**      - ```-watch``` flag allows ijs test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
-- **Environments** -  ijs also loads additional libraries, so they are available in unit tests, like inludejs, maskjs,  jQuery, SinonJS.
+- **Node.js** Runner  - ```$ atma test foo```.
+- **Browser** Runner - with `atma` you create a test server (```$ atma server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ atma test foo -browser```.
+- **Watcher**      - ```-watch``` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+- **Environments** -  `atma` also loads additional libraries, so they are available in unit tests, like [atma-libs](https://github.com/atmajs/atma.libs),  jQuery, SinonJS.
 - **Test Suites**  - (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
 - **Configs**      - (optional) configurations for more complex projects
 
@@ -23,19 +23,19 @@ Example:
 ```
 _app.js_
 ```javascript
-var Application = {version: 1};
+var Application = { version: 1 };
 ```
 _app.test_
 ```javascript
 eq(Application.version, 1); // alias for assert.equal()
 ```
 
-- _[nodejs]_ ```$ cd myscript```; ```$ ijs test app``` / ```$ ijs test app.test -watch```
+- _[nodejs]_ ```$ cd myscript```; ```$ atma test app``` / ```$ atma test app.test -watch```
 - _[browser]_
-	- capture slave, (if not already), with starting the server and opening "test" page (```$ ijs server```, navigate to ```http://localhost:5777/test```)
-	- ```$ cd myscript```; ```$ ijs test app -browser ``` / ```$ ijs test app -browser -watch```
+	- capture slave, (if not already), with starting the server and opening "test" page (```$ atma server```, navigate to ```http://localhost:5777/test```)
+	- ```$ cd myscript```; ```$ atma test app -browser ``` / ```$ atma test app -browser -watch```
 
-This is the simpliest test case. And as here 2 files(app.js/app.test) are in the same directory, 'app.js' will be preloaded when 'app.test' is started. But with includejs any amount of scripts could be preloaded.
+This is the simpliest test case. And as here 2 files(app.js/app.test) are in the same directory, 'app.js' will be preloaded when 'app.test' is started. But with IncludeJS any amount of scripts could be preloaded.
 
 _app.test_
 ```javascript
@@ -87,16 +87,16 @@ UTest({
 		})
 	},
 	
-	before: function(){
+	'$before': function(){
 		// function is called before tests cases are run
 		// (supports async call - use done as first argument)
 	},
-	teardown: function(){
+	'$teardown': function(){
 		// function is called after each test case
 		// (supports async call)
 	},
 	
-	after: function(){
+	'$after': function(){
 		// function is called after all test cases from
 		// this particular Utest instance are completed
 	}
@@ -120,9 +120,13 @@ module.exports = {
 		'suite name': {
 			exec: <String> 'node' | 'dom',
 
-			/** preloading scripts */
-			env: ['path relative to projects path'],
-			tests: <e.g.> 'test/**-node.test'
+			// preloading scripts
+            // (path is relative to projects directory)
+			env: String | Array<String>,
+            
+            // path to tests, glob pattern is also supported
+            // e.g. test/**-node.test
+			tests: String | Array<String>
 		}
 	}
 };
@@ -152,8 +156,6 @@ module.exports = {
 ```
 
 ```$ cd app-project```
-```$ ijs test```
+```$ atma test```
 
-Here was used alias-feature of an includejs. So when 'some.js' is required, its exports object is then set to globals with alias var name , from example, it was 'foo'
-
-
+Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its exports object is then set to globals with alias var name , from example, it was 'foo'.
