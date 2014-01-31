@@ -53,7 +53,8 @@ var RunnerNode = (function() {
 			var	parts = x.split('::'),
 				src = parts[0],
 				alias = parts[1],
-				file = new io.File(base.combine(src));
+				file = new io.File(base.combine(src[0] === '/' ? src.substring(1) : src))
+				;
 			if (file.exists() === false) {
 				logger.warn('Resource from Env - 404 -', x);
 				return;

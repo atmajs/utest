@@ -31,7 +31,7 @@ var cfg_prepairSettings,
 			base = io.env.currentDir;
 		}
 		
-		setts.base = net.Uri.combine(base.toLocalDir(), '/');
+		setts.base = net.Uri.combine(base.toDir(), '/');
 		setts.nodeScripts = [];
 		setts.domScripts = [];
 		setts.env = [];
