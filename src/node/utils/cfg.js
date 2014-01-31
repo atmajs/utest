@@ -1,4 +1,4 @@
-var cfg_prepair,
+var cfg_prepairSettings,
 	cfg_loadConfig,
 	cfg_runConfigurationScript,
 	cfg_hasScripts,
@@ -12,72 +12,62 @@ var cfg_prepair,
 
 (function(){
 	
-	cfg_prepair = function(config, arg) {
+	cfg_prepairSettings = function(setts, script) {
 			
-		var base = config.base;
+		var base = setts.base;
 		if (base) {
 			base = new net.Uri(net.Uri.combine(base, '/'));
-			if (base.isRelative()){
+			
+			if (base.isRelative())
 				base = io.env.currentDir.combine(base);
-			}
-		}else{
+			
+		}
+		else {
 			base = io.env.currentDir;
 		}
 		
-		config.base = net.Uri.combine(base.toDir(), '/');
-		config.nodeScripts = [];
-		config.domScripts = [];
+		setts.base = net.Uri.combine(base.toDir(), '/');
+		setts.nodeScripts = [];
+		setts.domScripts = [];
+		setts.env = [];
+		
+		if (script == null) 
+			return;
 		
 		
-		var script = arg;
-		if (script) {
-			if (/\.[\w]+$/.test(script) === false) {
-				script += '.test';
-			}
+		if (/\.[\w]+$/.test(script) === false) 
+			script += '.test';
+		
+		if (!io.File.exists(base.combine(script))) {
 			
-			var uri = new net.Uri(base).combine(script),
-				file = new io.File(uri);
-			if (file.exists() === false) {
+			if (/\/?test.?\//.test(script) === false) {
+				script = net.Uri.combine('test/', script);
 				
-				if (/\/?test.?\//.test(script) === false) {
-					script = net.Uri.combine('test/', script);
-					file.uri = new net.Uri(base).combine(script);
-					
-					if (file.exists() === false) 
-						script = null;
-					
-				}else{
-					script = null;
-				}
-				
-			}
-			
-			if (script) {
-				
-				var nodeScripts = config.nodeScripts,
-					domScripts = config.domScripts,
-					executor = null;
-					
-				if (config.browser)
-					executor = 'dom';
-				
-				if (config.node)
-					executor = 'node';
-					
-				
-				cfg_addScript(script, config.base, nodeScripts, domScripts, executor);
-				
-				var ext = /\.\w{1,5}$/.exec(script)
-				if (ext && ext[0] === '.test') {
-					script = script.replace(/\.\w{1,5}$/, '.js');
-					if (new io.File(new net.Uri(base).combine(script)).exists()) {
-						(config.env || (config.env = [])).push(script);
-					}	
-				}
-				
-				
+				if (!io.File.exists(base.combine(script))) 
+					return;
 			}
 		}
+	
+		
+		cfg_addScript(
+			script,
+			setts.base,
+			setts.nodeScripts,
+			setts.domScripts,
+			
+			// if not defined, executor will be resolved from the path
+			(setts.browser && 'dom') || (setts.node && 'node')
+		);
+		
+		var ext = /\.\w{1,5}$/.exec(script)
+		if (ext && ext[0] === '.test') {
+			script = script.replace(/\.\w{1,5}$/, '.js');
+			
+			if (io.File.exists(base.combine(script))) 
+				setts.env.push(script);
+		}
+		
+	
 		
 	}; // cfg_prepair
 	
@@ -194,16 +184,30 @@ var cfg_prepair,
 		return array;
 	};
 	
-	cfg_getEnv = function(baseConfig, config) {
+	cfg_getEnv = function(setts, config) {
 		
 		if (typeof config.env === 'string')
-			config.env = [config.env];
-		
-		if (baseConfig.env == null)
-			baseConfig.env = [];
+			config.env = [ config.env ];
 		
 		if (Array.isArray(config.env)) 
-			baseConfig.env = ruqq.arr.distinct(baseConfig.env.concat(config.env));
+			setts.env = ruqq.arr.distinct(setts.env.concat(config.env));
+			
+		if (!cfg_hasScripts(setts) || config.suites == null) 
+			return;
+		
+		var path = (setts.nodeScripts && setts.nodeScripts[0]) || (setts.domScripts && setts.domScripts[0]),
+			suite = suite_getForPath(config.suites, path)
+			;
+		
+		if (suite && suite.env) {
+			
+			if (typeof suite.env === 'string') 
+				suite.env = [ suite.env ];
+			
+			if (Array.isArray(suite.env)) 
+				setts.env = ruqq.arr.distinct(setts.env.concat(suite.env));
+		}
+		
 	};
 	
 	
@@ -269,7 +273,7 @@ var cfg_prepair,
 	function cfg_addScript(path, base, nodeScripts, domScripts, executor, forceAsPath) {
 		
 		if (Array.isArray(path)) {
-			ruqq.arr.each(path, function(x){
+			path.forEach(function(x){
 				cfg_addScript(x, base, nodeScripts, domScripts, executor, forceAsPath);
 			});
 			return;
@@ -278,11 +282,15 @@ var cfg_prepair,
 		if (forceAsPath !== true && ~path.indexOf('*')) {
 			// asPath here is actually to prevent recursion in case if
 			// file, which is resolved by globbing, contains '*'
-			new io.Directory(base).readFiles(path).files.forEach(function(file){
-				path = file.uri.toRelativeString(base);
-				
-				cfg_addScript(path, base, nodeScripts, domScripts, executor, true);
-			});
+			new io
+				.Directory(base)
+				.readFiles(path)
+				.files
+				.forEach(function(file){
+					path = file.uri.toRelativeString(base);
+					
+					cfg_addScript(path, base, nodeScripts, domScripts, executor, true);
+				});
 			return;
 		}
 		
@@ -305,5 +313,36 @@ var cfg_prepair,
 		return /\-dom\.[\w]+$/.test(path) || /\/dom\//.test(path);
 	}
 	
+	
+	function path_matchTests(test, path){
+		if (Array.isArray(test)) {
+			return test.some(function(x){
+				return path_matchTests(x, path);
+			});
+		}
+		
+		if (typeof test !== 'string') 
+			return false;
+		
+		if (test.indexOf('*') === -1) {
+			var a = test.toLowerCase(),
+				b = path.toLowerCase()
+				;
+			return a.indexOf(b) !== -1 || b.indexOf(a) !== -1;
+		}
+		
+		
+	}
+	
+	function suite_getForPath(suites, path){
+		var key, suite;
+		for(key in suites){
+			suite = suites[key];
+			
+			if (path_matchTests(suite.tests, path)) 
+				return suite;
+		}
+		
+	}
 	
 }());

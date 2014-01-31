@@ -8,7 +8,7 @@
 		},
 		_testsDone;
 	
-	var RESERVED = ['$before', '$after', '$teardown', '$config'];
+	var RESERVED = ['$before', '$after', '$teardown', '$config', '$run'];
 	
 	// import UTest.config.js
 	// import utils/object.js
@@ -91,6 +91,26 @@
 		return /^\s*function\s*([\w]+)?\s*\([\s]*[\w]+/.test(fn.toString());
 	}
 	
+	var UTestProto = {
+		$run: function(key, done){
+			runCase(this.suite[key], done || function(){}, null, key);
+		}
+	};
+	
+	var UTestProtoDelegate = function(instance, suite){
+		var proto = {},
+			key;
+		for (key in UTestProto) {
+			proto[key] = UTestProto[key].bind(instance);
+		}
+		
+		for (key in suite) {
+			if (typeof suite[key] === 'function')
+				proto[key] = suite[key] = suite[key].bind(proto);
+		}
+		
+	};
+	
 	var UTest = Class({
 		Construct: function(suite){
 			
@@ -101,6 +121,7 @@
 			this.suite = suite;
 			this.processed = [];
 			
+			UTestProtoDelegate(this, suite);
 			// @obsolete properties
 			['before', 'after', 'teardown', 'config']
 				.forEach(function(key){

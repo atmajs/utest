@@ -69,8 +69,23 @@ var RunnerNode = (function() {
 		
 		resource.done(function(resp){
 			setTimeout(function(){
-				for (var lib in resp) {
-					global[lib] = resp[lib];
+				var key, lib;
+				for(key in resp) {
+					lib = resp[key];
+					
+					if (lib == null) {
+						
+						if (global[key] == null) {
+							logger
+								.error('<utest:Environment> Loaded dependency has no exports', key)
+								.warn('Should it be global variables, to dismiss this error use smth like this:')
+								.log('`{ env: [ "someLib.js:globalVarName" ] }')
+								;
+						}
+						continue;
+					}
+					
+					global[key] = lib;
 				}
 				
 				callback(resp);

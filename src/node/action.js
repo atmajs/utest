@@ -12,7 +12,7 @@
 			var arg = setts.script || app.config.$cli.args[1],
 				config;
 		
-			cfg_prepair(setts, arg);
+			cfg_prepairSettings(setts, arg);
 			
 			config = cfg_loadConfig(setts);
 				

@@ -47,8 +47,8 @@ module.exports = {
 
 	'watch': {
 		files: 'src/**',
-		actions: ['import', 'copy', 'install']
+		actions: ['import', 'copy']
 	},
 	
-	'defaults': ['import', 'copy', 'install']
+	'defaults': ['import', 'copy']
 };
