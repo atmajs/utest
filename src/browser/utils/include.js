@@ -47,7 +47,10 @@ var include_clearCache = function() {
 		resources[key] = {};
 	}
 
-	include = include.instance();
+	include = include
+		.cfg('version', +(new Date))
+		.instance()
+		;
 };
 
 var include_reset = function(){
