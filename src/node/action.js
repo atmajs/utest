@@ -8,6 +8,8 @@
 		
 	include.exports = {
 		process: function(setts, done) {
+			
+			io.File.disableCache();
 
 			var arg = setts.script || app.config.$cli.args[1],
 				config;

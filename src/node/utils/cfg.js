@@ -40,6 +40,18 @@ var cfg_prepairSettings,
 		if (script == null) 
 			return;
 		
+		if (script.indexOf('*') !== -1) {
+			
+			cfg_addScript(
+				script,
+				setts.base,
+				setts.nodeScripts,
+				setts.domScripts,
+				(setts.browser && 'dom') || (setts.node && 'node')
+			);
+			return;
+		}
+		
 		
 		if (/\.[\w]+$/.test(script) === false) 
 			script += '.test';
