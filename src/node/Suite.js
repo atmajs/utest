@@ -49,6 +49,7 @@ var RunnerSuite = Class({
 				
 			}
 			
+			closeSocketsOnExit(this);
 			watch(this.base, this.getResources(), this.runTests);
 			logger.log(' - watcher active'.yellow);
 		},
@@ -127,4 +128,26 @@ function cfg_add(that, prop, value) {
 	}
 
 	that[prop] = [that[prop], value];
+}
+function closeSocketsOnExit(suite) {
+	closeSocketsOnExit = function() {};
+
+	var readLine = require('readline');
+	if (process.platform === 'win32') {
+		var rl = readLine.createInterface({
+			input: process.stdin,
+			output: process.stdout
+		});
+
+		rl.on('SIGINT', function() {
+			process.emit('SIGINT');
+		});
+
+	}
+
+	process.on('SIGINT', function() {
+		suite.closeSockets();
+		process.exit();
+	});
+
 }
