@@ -347,8 +347,8 @@ var cfg_prepairSettings,
 				;
 			return a.indexOf(b) !== -1 || b.indexOf(a) !== -1;
 		}
-		
-		
+	
+		return io.glob.matchPath(test, path);
 	}
 	
 	function suite_getForPath(suites, path){
