@@ -269,10 +269,13 @@ var cfg_prepairSettings,
 		base = new net.Uri(base);
 		ruqq.arr.each(resources, function(url){
 			
+			url = url.replace(/^\/utest\//i, '');
+			
 			var uri = new net.Uri(url);
 			if (uri.isRelative()) {
 				uri = base.combine(uri);
 			}
+			
 			var file = new io.File(uri);
 			
 			if (file.exists()) {
@@ -281,6 +284,17 @@ var cfg_prepairSettings,
 					io.File.clearCache(file.uri.toLocalFile());
 					callback();
 				});
+			}
+			else {
+				var path = file.uri.toLocalFile();
+				
+				if (/\.reference\//i.test(path)) 
+					return;
+				
+				if (/socket\.io/i.test(path)) 
+					return;
+				
+				logger.warn('<utest: watcher> File 404 - ', path);
 			}
 		});
 	};

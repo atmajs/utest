@@ -22,7 +22,8 @@ var script_insert = (function() {
 		tag.type = 'text/javascript';
 
 		if (path) {
-			//path += (~path.indexOf('?') ? '&' : '?') + Date.now();
+			//
+			path += (~path.indexOf('?') ? '&' : '?') + Date.now();
 
 			tag.src = path;
 

@@ -140,6 +140,8 @@ var RunnerDom = (function() {
 				include_reset();
 				TestSuite.clear();
 				
+				path = '/utest/' + path;
+				
 				script_insert({path: path}, this.processSingle);
 				
 			},
