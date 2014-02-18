@@ -39,9 +39,7 @@ module.exports = {
 	},
 	'copy': {
 		files: {
-			'src/env/HttpTestHandler.js': 'lib/env/HttpTestHandler.js',
-			'src/env/HttpTestApplication.js': 'lib/env/HttpTestApplication.js',
-			'src/env/template.mask': 'lib/env/template.mask'
+			'src/env/**': 'lib/env/**'
 		}		
 	},
 

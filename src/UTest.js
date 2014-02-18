@@ -10,8 +10,12 @@
 	
 	var RESERVED = ['$before', '$after', '$teardown', '$config', '$run'];
 	
-	// import UTest.config.js
 	// import utils/object.js
+	
+	// import UTest.config.js
+	// import UTest.page.js
+	// import UTest.server.js
+	
 	
 	function nextUTest() {
 		if (++_index > _tests.length - 1) {
@@ -111,6 +115,7 @@
 	};
 	
 	var UTest = Class({
+		Extends: UTestServer,
 		Construct: function(suite){
 			
 			if (this instanceof UTest === false) {

@@ -1,5 +1,4 @@
 :document {
-    
     body {
         
         style {
@@ -11,15 +10,11 @@
             }
             '''
         }
-        
     
         % each='scripts' {
-            
-            if (path) >
-                script src='~[path]';
-            
-            if (script) >
-                script > :html > '~[script]'
+            % if=path > script src='~[path]';
+            % if=script > script > :html > '~[script]'
         }
+        
     }
 }
