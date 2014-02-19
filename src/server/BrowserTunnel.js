@@ -14,15 +14,23 @@ var BrowserTunnel = Class({
 			.on('browser:utest:beforestart', function(data, done){
 				var config = data.config;
 				
+				//atma
+				//	.server
+				//	.app
+				//	.handlers
+				//	.subapps
+				//	.get('/utest/')
+				//	.value
+				//	._app
+				//	.config = config
+				//	;
+				
 				atma
 					.server
 					.app
-					.handlers
-					.subapps
-					.get('/utest/')
-					.value
-					._app
-					.config = config
+					.getSubApp('/utest/')
+					.config
+					.$set('static', config.base)
 					;
 					
 				done();
