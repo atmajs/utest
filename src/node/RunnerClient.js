@@ -2,7 +2,7 @@ var RunnerClient = Class({
 	Base: Runner,
 	run: function(done) {
 		
-		this.run = this.runTests;
+		
 		this.status = status_connecting;
 		
 		var that = this,
@@ -10,15 +10,39 @@ var RunnerClient = Class({
 			port = config.port || 5777
 			;
 			
-		
+		logger.log('>> connecting'.red.bold);
 		io_connect(this.config)
 		
 			.fail(function(error){
-				var msg = 'Test server connection error - http://localhost:%1/utest';
-				done(msg.format(port));
+				
+				logger.log('>> failed'.green.bold);
+				
+				io_clean();
+				
+				if (that.starting === true) {
+						
+					var msg = 'Test server connection error - http://localhost:%1/utest';
+					done(msg.format(port));
+					return;
+				}
+				
+				
+				that.starting = true;
+				logger.log('<utest:server not started> green<starting...>'.colorize)
+				
+				slave_start(function(error){
+					
+					if (error) 
+						return done('Server-Slave failed: ' + error);
+					
+					that.run(done);
+				})
+				
 			})
 			
 			.done(function(socket){
+				
+				logger.log('>> connected'.green.bold);
 				
 				that.socket = socket;
 				
@@ -70,7 +94,8 @@ var RunnerClient = Class({
 				// RUN
 				
 				that.status = status_connected;
-				that.runTests();
+				that.run = that.runTests;
+				that.run();
 			});
 
 	},
@@ -86,6 +111,6 @@ var RunnerClient = Class({
 				this.socket.emit('client:utest', this.suites);
 				return;
 		}
-		logger.warn('Server is not ready');
+		logger.warn('Server is not ready', this.status);
 	}
 });

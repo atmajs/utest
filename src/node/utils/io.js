@@ -1,29 +1,44 @@
-var io_connect = (function(){
+var io_connect,
+	io_reset;
 	
-	var dfr;
+(function(){
 	
+	var dfr, client;
 	
-	return function(config){
+	io_clean = function(){
+		
+		if (dfr == null) 
+			return;
+		
+		if (dfr._resolved == null) {
+			dfr = null;
+			return;
+		}
+		
+		var socket = dfr._resolved[0];
+		
+		socket.socket.disconnectSync();
+		dfr = null;
+	};
+	
+	io_connect = function(config){
 		
 		if (dfr) 
 			return dfr;
 		
 		dfr = new Class.Deferred();
 		
-		//@ HACKY - io client workaround
-		var _io = global.io;
-		delete global.io;
+		
+		if (client == null) 
+			client = getClient();
 		
 		var port = config.port || 5777,
+			url = 'http://localhost:%1/node'.format(port),
 			
-			io_client = require('socket.io-client'),
-			io_url = 'http://localhost:%1/node'.format(port),
-			
-			socket = io_client.connect(io_url, {
-				'connect timeout': 2000
+			socket = client.connect(url, {
+				'connect timeout': 2000,
+				'force new connection': true
 			});
-			
-		global.io = _io;
 		
 		socket
 			.on('connect', function() {
@@ -31,10 +46,29 @@ var io_connect = (function(){
 			})
 	
 			.on('error', function(error) {
+				
+				socket.socket.disconnectSync();
+				socket.socket.removeAllListeners();
+				
 				dfr.reject(error);
 			})
 			
 		
 		return dfr;
 	};
+	
+	
+	function getClient(){
+		//@ HACKY - io client workaround
+		
+		var _io = global.io;
+		delete global.io;
+		
+		var client = require('socket.io-client');
+		
+		global.io = _io;
+		
+		return client;
+	}
+	
 }());
