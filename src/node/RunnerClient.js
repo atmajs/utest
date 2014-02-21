@@ -10,16 +10,14 @@ var RunnerClient = Class({
 			port = config.port || 5777
 			;
 			
-		logger.log('>> connecting'.red.bold);
+		
 		io_connect(this.config)
 		
 			.fail(function(error){
 				
-				logger.log('>> failed'.green.bold);
-				
 				io_clean();
 				
-				if (that.starting === true) {
+				if (that.startServer === true) {
 						
 					var msg = 'Test server connection error - http://localhost:%1/utest';
 					done(msg.format(port));
@@ -27,13 +25,13 @@ var RunnerClient = Class({
 				}
 				
 				
-				that.starting = true;
-				logger.log('<utest:server not started> green<starting...>'.colorize)
+				that.startServer = true;
+				logger.log('<utest:server not started> bold<green<starting...>>'.color)
 				
 				slave_start(function(error){
 					
 					if (error) 
-						return done('Server-Slave failed: ' + error);
+						return done('Failed to start server: ' + error);
 					
 					that.run(done);
 				})

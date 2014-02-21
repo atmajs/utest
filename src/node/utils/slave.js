@@ -8,7 +8,6 @@ var slave_start;
 	
 	slave_start = function(callback){
 		
-		logger.log('<start> atma.toolkit server');
 		app.runAction('shell', {
 			command: {
 				command: 'atma server',
@@ -17,7 +16,7 @@ var slave_start;
 		}, function(error){
 			
 			if (error) 
-				return callback('<not possible to start an Atma.js server');
+				return callback(error);
 			
 			ensurePortIsBusy(function(error){
 				
@@ -25,18 +24,9 @@ var slave_start;
 					return callback(error);
 				
 				
-				require('openurl')
-					.open(String.format('http://%1:%2/utest/', HOST, PORT), function(){
-						
-						logger.log('>>>'.green.bold);
-						setTimeout(function(){
-							logger.log('>>>'.cyan.bold);
-							callback();
-						}, 1000);
-					});
+				var url = 'http://%1:%2/utest/'.format(HOST, PORT);
 				
-				
-				
+				require('openurl').open(url, callback);
 			}, 0);
 		});
 		
