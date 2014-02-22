@@ -8,16 +8,21 @@ _TDD and Unit Testing_
 ```$ npm install atma -g```
 
 
-Create Tests simple and fast. Overview:
+Create Tests. Covers all use cases - from most simple test to complex-application test.
+
+Overview:
 
 - **Node.js**-runner — ```$ atma test foo```.
 - **Browser**-runner — 
 	- with `atma` you create a test server (```$ atma server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ atma test foo -browser```
-	- UPD: (up from v.8.14) if the server is not running, uTest starts the server, launches the system default browser, navigates to the slave capture url and resumes test runner.
+	- UPD: (up from v.8.14) if the server is not running, uTest starts the server, launches the system default browser, navigates to the slave capture url and resumes the runner.
 - **Watcher**      — ```-watch``` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
 - **Environments** —  `atma` also loads additional libraries, so they are available in unit tests, like [atma-libs](https://github.com/atmajs/atma.libs),  jQuery, SinonJS.
 - **Test Suites**  — (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
 - **Configs**      — (optional) configurations for more complex projects
+- Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
+	- Launch slave url in any browser - Chrome, IE(9+), Opera, Mozilla. _PhantomJS is only webkit based._
+	- Much better debugging. Use browsers developer tools to set breakpoints in your tests and assertions.
 
 Default test extension: `*.test*`
 
