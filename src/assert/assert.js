@@ -46,6 +46,57 @@ var util = {
         configurable: true
       }
     });
+  },
+  isArray: function(ar) {
+    return Array.isArray(ar);
+  },
+  isBoolean: function(arg) {
+    return typeof arg === 'boolean';
+  },
+  isNull: function(arg) {
+    return arg === null;
+  },
+  isNullOrUndefined: function(arg) {
+    return arg == null;
+  },
+  isNumber: function(arg) {
+    return typeof arg === 'number';
+  },
+  isString: function(arg) {
+    return typeof arg === 'string';
+  },
+  isSymbol: function(arg) {
+    return typeof arg === 'symbol';
+  },
+  isUndefined: function(arg) {
+    return arg === void 0;
+  },
+  isRegExp: function(re) {
+    return util.isObject(re) && util.objectToString(re) === '[object RegExp]';
+  },
+  isObject: function(arg) {
+    return typeof arg === 'object' && arg !== null;
+  },
+  isDate: function(d) {
+    return util.isObject(d) && util.objectToString(d) === '[object Date]';
+  },
+  isError: function(e) {
+    return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+  },
+  isFunction: function(arg) {
+    return typeof arg === 'function';
+  },
+  isPrimitive: function(arg) {
+    return arg === null ||
+      typeof arg === 'boolean' ||
+      typeof arg === 'number' ||
+      typeof arg === 'string' ||
+      typeof arg === 'symbol' ||  // ES6 symbol
+      typeof arg === 'undefined';
+  },
+  objectToString: function(o) {
+    return Object.prototype.toString.call(o);
   }
 };
 
@@ -80,14 +131,26 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 
 assert.AssertionError = function AssertionError(options) {
   this.name = 'AssertionError';
-  this.message = options.message;
   this.actual = options.actual;
   this.expected = options.expected;
   this.operator = options.operator;
+  if (options.message) {
+    this.message = options.message;
+    this.generatedMessage = false;
+  } else {
+    this.message = getMessage(this);
+    this.generatedMessage = true;
+  }
   var stackStartFunction = options.stackStartFunction || fail;
 
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, stackStartFunction);
+  } else {
+    // try to throw an error now, and from the stack property
+    // work out the line that called in to assert.js.
+    try {
+      this.stack = (new Error).stack.toString();
+    } catch (e) {}
   }
 };
 
@@ -95,38 +158,31 @@ assert.AssertionError = function AssertionError(options) {
 util.inherits(assert.AssertionError, Error);
 
 function replacer(key, value) {
-  if (value === undefined) {
+  if (util.isUndefined(value)) {
     return '' + value;
   }
-  if (typeof value === 'number' && (isNaN(value) || !isFinite(value))) {
+  if (util.isNumber(value) && (isNaN(value) || !isFinite(value))) {
     return value.toString();
   }
-  if (typeof value === 'function' || value instanceof RegExp) {
+  if (util.isFunction(value) || util.isRegExp(value)) {
     return value.toString();
   }
   return value;
 }
 
 function truncate(s, n) {
-  if (typeof s == 'string') {
+  if (util.isString(s)) {
     return s.length < n ? s : s.slice(0, n);
   } else {
     return s;
   }
 }
 
-assert.AssertionError.prototype.toString = function() {
-  if (this.message) {
-    return [this.name + ':', this.message].join(' ');
-  } else {
-    return [
-      this.name + ':',
-      truncate(JSON.stringify(this.actual, replacer), 128),
-      this.operator,
-      truncate(JSON.stringify(this.expected, replacer), 128)
-    ].join(' ');
-  }
-};
+function getMessage(self) {
+  return truncate(JSON.stringify(self.actual, replacer), 128) + ' ' +
+         self.operator + ' ' +
+         truncate(JSON.stringify(self.expected, replacer), 128);
+}
 
 // At present only the three keys mentioned above are used and
 // understood by the spec. Implementations or sub modules can pass
@@ -160,7 +216,7 @@ assert.fail = fail;
 // assert.strictEqual(true, guard, message_opt);.
 
 function ok(value, message) {
-  if (!!!value) fail(value, true, message, '==', assert.ok);
+  if (!value) fail(value, true, message, '==', assert.ok);
 }
 assert.ok = ok;
 
@@ -195,24 +251,24 @@ function _deepEqual(actual, expected) {
   if (actual === expected) {
     return true;
 
-//  } else if (Buffer.isBuffer(actual) && Buffer.isBuffer(expected)) {
-//    if (actual.length != expected.length) return false;
-//
-//    for (var i = 0; i < actual.length; i++) {
-//      if (actual[i] !== expected[i]) return false;
-//    }
-//
-//    return true;
-//
+  // } else if (util.isBuffer(actual) && util.isBuffer(expected)) {
+  //   if (actual.length != expected.length) return false;
+  //
+  //   for (var i = 0; i < actual.length; i++) {
+  //     if (actual[i] !== expected[i]) return false;
+  //   }
+  //
+  //   return true;
+
   // 7.2. If the expected value is a Date object, the actual value is
   // equivalent if it is also a Date object that refers to the same time.
-  } else if (actual instanceof Date && expected instanceof Date) {
+  } else if (util.isDate(actual) && util.isDate(expected)) {
     return actual.getTime() === expected.getTime();
 
   // 7.3 If the expected value is a RegExp object, the actual value is
   // equivalent if it is also a RegExp object with the same source and
   // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
-  } else if (actual instanceof RegExp && expected instanceof RegExp) {
+  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
     return actual.source === expected.source &&
            actual.global === expected.global &&
            actual.multiline === expected.multiline &&
@@ -221,7 +277,7 @@ function _deepEqual(actual, expected) {
 
   // 7.4. Other pairs that do not both pass typeof value == 'object',
   // equivalence is determined by ==.
-  } else if (typeof actual != 'object' && typeof expected != 'object') {
+  } else if (!util.isObject(actual) && !util.isObject(expected)) {
     return actual == expected;
 
   // 7.5 For all other Object pairs, including Array objects, equivalence is
@@ -235,16 +291,12 @@ function _deepEqual(actual, expected) {
   }
 }
 
-function isUndefinedOrNull(value) {
-  return value === null || value === undefined;
-}
-
 function isArguments(object) {
   return Object.prototype.toString.call(object) == '[object Arguments]';
 }
 
 function objEquiv(a, b) {
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
+  if (util.isNullOrUndefined(a) || util.isNullOrUndefined(b))
     return false;
   // an identical 'prototype' property.
   if (a.prototype !== b.prototype) return false;
@@ -332,7 +384,7 @@ function expectedException(actual, expected) {
 function _throws(shouldThrow, block, expected, message) {
   var actual;
 
-  if (typeof expected === 'string') {
+  if (util.isString(expected)) {
     message = expected;
     expected = null;
   }
@@ -367,6 +419,228 @@ assert.throws = function(block, /*optional*/error, /*optional*/message) {
   _throws.apply(this, [true].concat(pSlice.call(arguments)));
 };
 
+// 12. Contains-assertions
+(function(){
+  
+  
+  assert.has = function has(actual, expected, message) {
+    _performHas(actual, expected, true, message, assert.has);
+  };
+  
+  assert.hasNot = function hasNot(actual, expected, message) {
+    _performHas(actual, expected, false, message, assert.hasNot);
+  }
+  
+  // = private
+  var OPERATOR = '\u2287';
+  
+  var t_Date = 'Date',
+      t_Array = 'Array',
+      t_Object = 'Object',
+      t_String = 'String',
+      t_RegExp = 'RegExp',
+      t_Number = 'Number',
+      t_Boolean = 'Boolean',
+      t_Function = 'Function',
+      t_NullOrUndefined = '<undefined>',
+      t_Reference = '<reference-check>'
+      ;
+  
+  function obj_typeof(x) {
+      var type = Object
+          .prototype
+          .toString
+          .call(x)
+          .replace('[object ', '')
+          .replace(']', '');
+      
+      switch(type){
+        case t_Date:
+        case t_Array:
+        case t_String:
+        case t_RegExp:
+        case t_Boolean:
+        case t_Number:
+        case t_Function:
+          return type;
+        case t_Object:
+          if (typeof x.length === 'number'
+                && typeof x.splice === 'function'
+                && typeof x.indexOf === 'function') {
+            // Array-Alike
+            return t_Array;
+          }
+          return t_Object;
+        case 'Null':
+        case 'Undefined':
+          return t_NullOrUndefined;
+        
+        default:
+          // Not supported type.
+          // Not possible to run `contains` check
+          // -> perform simple `==` comparison
+          return t_Reference;
+      }
+  }
+  
+  function _performHas(actual, expected, expectedResult, message, stackStartFunction){
+    
+    var result = _has(actual, expected);
+    if (result === expectedResult) {
+      return;
+    }
+    
+    if (expectedResult === false && result !== true) {
+      // structur missmatch
+      return;
+    }
+    
+    if (typeof result === 'string') {
+      message = '(' + result + ') ' + message;
+    }
+    
+    fail(actual, expected, message, OPERATOR, stackStartFunction);
+  }
+  
+  function _has(a, b) {
+    
+    var AType = obj_typeof(a),
+        BType = obj_typeof(b);
+      
+    var _AType, _BType;
+    
+    switch (AType) {
+      case t_String:
+        if (t_String === BType) {
+          return a.indexOf(b) !== -1
+            || ('Not a substring of ' + a);
+        }
+        if (t_RegExp === BType) {
+          return b.test(a)
+            || ('RegExp failed: ' + a);
+        }
+        
+        return 'Unexpected types: String-' + BType;
+      
+      case t_RegExp:
+      case t_Date:
+      case t_Number:
+      case t_Boolean:
+      case t_Function:
+        return (a).toString() === (b).toString()
+          || ('Unexpected value: ' + a);
+      
+      case t_Reference:
+        return a === b
+          || ('Reference check');
+      
+      case t_Object:
+        if (t_String === BType) {
+          return b in a
+            || ('Property expected:' + b);
+        }
+        if (t_Object === BType) {
+          for(var key in b){
+            if (key in a === false) {
+              return 'Property expected: ' + key;
+            }
+            
+            _AType = obj_typeof(a[key]);
+            _BType = obj_typeof(b[key]);
+            
+            if (_BType === t_NullOrUndefined) {
+              // property existance
+              continue;
+            }
+            if (_AType !== _BType) {
+              return 'Type missmatch: ' + _AType + '-' + _BType;
+            }
+            if (t_String === _AType) {
+              if (a[key] !== b[key]) {
+                return 'Unexpected value: ' + a[key];
+              }
+              continue;
+            }
+            
+            var result = _has(a[key], b[key]);
+            if (result !== true) {
+              return result;
+            }
+          }
+          return true;
+        }
+        
+        return 'Unexpected types: Object-' + BType;
+    }
+    
+    if (t_Array === AType) {
+      
+      switch(BType){
+        case t_Number:
+        case t_String:
+        case t_Boolean:
+          return a.indexOf(b) !== -1
+            || ('Array should contain: ' + b);
+        
+        case t_Date:
+        case t_RegExp:
+        case t_Function:
+          var val = (b).toString();
+          return a.some(function(x){
+            return (x).toString() === val;
+          }) || ('Array should contain: ' + val);
+        
+        case t_Array:
+          var ib = 0,
+              ibmax = b.length,
+              ia,
+              iamax = a.length
+              ;
+          bloop: for (; ib < ibmax; ib++){
+            
+            _BType = obj_typeof(b[ib]);
+            
+            switch(_BType){
+              case t_String:
+              case t_Number:
+              case t_Boolean:
+              case t_RegExp:
+              case t_Date:
+              case t_Function:
+                var result = _has(a, b[ib])
+                if (result !== true) {
+                  return result;
+                }
+                continue bloop;
+              
+              case t_Object:
+              case t_Array:
+                ia = 0;
+                for(; ia < iamax; ia++){
+                  
+                  if (_BType !== obj_typeof(a[ia])) {
+                    continue;
+                  }
+                  if (_has(a[ia], b[ib]) === true) {
+                    break;
+                  }
+                }
+                
+                if (ia === iamax) {
+                  return _BType + ' is not a subset';
+                }
+                continue bloop;
+            }
+          }
+          return true;
+      }
+    }
+    
+    return 'Unexpected types: ' + AType + '-' + BType;
+  }
+  
+}());
+
 // EXTENSION! This is annoying to write outside this module.
 assert.doesNotThrow = function(block, /*optional*/message) {
   _throws.apply(this, [false].concat(pSlice.call(arguments)));
@@ -381,3 +655,4 @@ if (typeof define === 'function' && define.amd) {
 }
 
 })(this);
+

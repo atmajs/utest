@@ -10,18 +10,22 @@ _TDD and Unit Testing_
 
 Create Tests simple and fast. Overview:
 
-- **Node.js** Runner  - ```$ atma test foo```.
-- **Browser** Runner - with `atma` you create a test server (```$ atma server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ atma test foo -browser```.
-- **Watcher**      - ```-watch``` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
-- **Environments** -  `atma` also loads additional libraries, so they are available in unit tests, like [atma-libs](https://github.com/atmajs/atma.libs),  jQuery, SinonJS.
-- **Test Suites**  - (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
-- **Configs**      - (optional) configurations for more complex projects
+- **Node.js**-runner — ```$ atma test foo```.
+- **Browser**-runner — 
+	- with `atma` you create a test server (```$ atma server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ atma test foo -browser```
+	- UPD: (up from v.8.14) if the server is not running, uTest starts the server, launches the system default browser, navigates to the slave capture url and resumes test runner.
+- **Watcher**      — ```-watch``` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+- **Environments** —  `atma` also loads additional libraries, so they are available in unit tests, like [atma-libs](https://github.com/atmajs/atma.libs),  jQuery, SinonJS.
+- **Test Suites**  — (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
+- **Configs**      — (optional) configurations for more complex projects
+
+Default test extension: `*.test*`
 
 Example:
 ```
 /myscript
    app.js
-   app.text
+   app.test
 ```
 _app.js_
 ```javascript
@@ -32,12 +36,23 @@ _app.test_
 eq(Application.version, 1); // alias for assert.equal()
 ```
 
-- _[nodejs]_ ```$ cd myscript```; ```$ atma test app``` / ```$ atma test app.test -watch```
-- _[browser]_
-	- capture slave, (if not already), with starting the server and opening "test" page (```$ atma server```, navigate to ```http://localhost:5777/test```)
-	- ```$ cd myscript```; ```$ atma test app -browser ``` / ```$ atma test app -browser -watch```
+> More Examples you can find in most [Atma.js Libraries](https://github.com/atmajs)
 
-This is the simpliest test case. And as here 2 files(app.js/app.test) are in the same directory, 'app.js' will be preloaded when 'app.test' is started. But with IncludeJS any amount of scripts could be preloaded.
+- Node.js: 
+	```bash
+		cd myscript
+		atma test app
+		# OR atma test app -watch
+	```
+- Browser:
+	```bash
+		cd myscript
+		atma test app -browser
+		# OR atma test app -browser -watch
+	```
+
+This is the simpliest test case. 
+> As those 2 files ` app.js/app.test ` are in the same directory, `app.js` will be preloaded when 'app.test' is started
 
 _app.test_
 ```javascript
@@ -50,6 +65,9 @@ include.inject('subfolder/app.js').done(function(){
 
 
 ###### Assertions
+
+Credits to [Jxck/assert](https://github.com/Jxck/assert)
+
 ```javascript
   assert.equal(arg1, arg2, ?message); 
   // alias
@@ -69,6 +87,19 @@ include.inject('subfolder/app.js').done(function(){
 
   assert.notDeepEq(arg1, arg2, ?message); 
   // notDeepEq
+
+  // Contains check
+  assert.has(arg1, arg2, ?message); 
+  // has
+  has(String, String)
+  has(String, RegExp)
+  has(Object, String) // key check
+  has(Object, Object) // subset check
+  has(Array, String|Number|RegExp|Boolean)
+  has(Array, Array) // subset check
+
+  assert.hasNot(arg1, arg2, ?message); 
+  // hasNot
 
 ```
 
