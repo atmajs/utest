@@ -82,6 +82,18 @@ var Runner = (function() {
 					return x[key] + aggr;
 				});
 			}
+			function aggr(key) {
+				return ruqq.arr.aggr(stats, [], function(x, aggr){
+					if (x[key] == null) 
+						return;
+					
+					if (typeof x[key] === 'object' && 'length' in x[key]) {
+						aggr.push.apply(aggr, x[key]);
+						return;
+					}
+					aggr.push(x[key]);
+				})
+			}
 
 			var total = count('total'),
 				failed = count('failed'),
@@ -104,13 +116,13 @@ var Runner = (function() {
 				if (callbacks) 
 					logger
 						.error('Expected callbacks were not fired. More info...')
-						.log(stats.callbacks)
+						.log(aggr(stats, 'callbacks'))
 						;
 						
 				if (timeouts) 
 					logger
 						.error('Asynchronous suites were not completed. More info...')
-						.log('stats.timeouts')
+						.log(aggr(stats, 'timeouts'))
 						;
 				
 				

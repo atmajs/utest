@@ -73,7 +73,7 @@ include.inject('subfolder/app.js').done(function(){
 
 Embedded Assertion Library - [Documentation](https://github.com/atmajs/assertion).
 
-Quick overview (note the global aliases):
+Quick overview (note the global aliases and jQuery assertions for browser tests):
 
 ```javascript
   assert.equal(arg1, arg2, ?message);
@@ -104,6 +104,14 @@ Quick overview (note the global aliases):
   assert.isNot
   
   assert.await(Function, name)
+  
+  $.fn.$has
+  $.fn.$hasNot
+  $.fn.$eq
+  $.fn.$notEq
+  $.fn.$deepEq
+  $.fn.$notDeepEq
+  
 ```
 
 ###### UTest Class

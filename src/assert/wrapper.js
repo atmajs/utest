@@ -52,10 +52,12 @@ function wrapAssert(original) {
 function wrapAssertFns(assert) {
 		
 	for (var key in assert) {
-		if (typeof assert[key] !== 'function') {
+		if (typeof assert[key] !== 'function') 
 			continue;
-		}
-	
+		
+		if (key === 'await') 
+			continue;
+		
 		if (key[0].toLowerCase() !== key[0]) {
 			// Class Function Definition
 			continue;
@@ -75,6 +77,12 @@ function wrapFn(assertFn, key) {
 			original.apply(this, arguments);
 		} catch(error) {
 			assert.failed++;
+			
+			// force stack calculation
+			// (otherwise stack is not sent from browsers to the server)
+			error.stack = error.stack;
+			error.file = error.file;
+			error.line = error.line;
 			
 			assert.onfailure && assert.onfailure(error);
 			return;
