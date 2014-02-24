@@ -10,7 +10,7 @@ _TDD and Unit Testing_
 
 Create Tests. Covers all use cases - from most simple test to complex-application test.
 
-Overview:
+###### Overview
 
 - **Node.js**-runner — ```$ atma test foo```.
 - **Browser**-runner — 
@@ -26,7 +26,7 @@ Overview:
 
 Default test extension: `*.test*`
 
-Example:
+###### Simplest example
 ```
 /myscript
    app.js
@@ -44,13 +44,13 @@ eq(Application.version, 1); // alias for assert.equal()
 > More Examples you can find in most [Atma.js Libraries](https://github.com/atmajs)
 
 - Node.js: 
-	```bash
+	```coffeescript
 		cd myscript
 		atma test app
 		# OR atma test app -watch
 	```
 - Browser:
-	```bash
+	```coffeescript
 		cd myscript
 		atma test app -browser
 		# OR atma test app -browser -watch
@@ -71,41 +71,39 @@ include.inject('subfolder/app.js').done(function(){
 
 ###### Assertions
 
-Credits to [Jxck/assert](https://github.com/Jxck/assert)
+Embedded Assertion Library - [Documentation](https://github.com/atmajs/assertion).
+
+Quick overview (note the global aliases):
 
 ```javascript
-  assert.equal(arg1, arg2, ?message); 
-  // alias
-  // eq(arg1, arg2, ?message);
-
-  assert.notEqual(arg1, arg2, ?message); 
+  assert.equal(arg1, arg2, ?message);
+  // eq
+  
+  assert.notEqual
   // notEq
 
-  assert.strictEqual(arg1, arg2, ?message); 
+  assert.strictEqual
   // strictEq
 
-  assert.notStrictEqual(arg1, arg2, ?message); 
+  assert.notStrictEqual
   // notStrictEq
 
-  assert.deepEq(arg1, arg2, ?message); 
+  assert.deepEq
   // deepEq
 
-  assert.notDeepEq(arg1, arg2, ?message); 
+  assert.notDeepEq
   // notDeepEq
 
-  // Contains check
-  assert.has(arg1, arg2, ?message); 
+  assert.has
   // has
-  has(String, String)
-  has(String, RegExp)
-  has(Object, String) // key check
-  has(Object, Object) // subset check
-  has(Array, String|Number|RegExp|Boolean)
-  has(Array, Array) // subset check
-
-  assert.hasNot(arg1, arg2, ?message); 
+  
+  assert.hasNot
   // hasNot
-
+  
+  assert.is
+  assert.isNot
+  
+  assert.await(Function, name)
 ```
 
 ###### UTest Class

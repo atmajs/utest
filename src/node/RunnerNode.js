@@ -40,6 +40,11 @@ var RunnerNode = (function() {
 			callback();
 			return;
 		}
+		
+		if (typeof env === 'string') 
+			env = [ env ];
+		
+		
 		if (Array.isArray(env) === false) {
 			logger.warn('"env" property should be an array of strings', env);
 			callback();
@@ -61,14 +66,14 @@ var RunnerNode = (function() {
 			}
 			
 			var path = file.uri.toString();
-			if (alias) {
+			if (alias) 
 				path += '::' + alias;
-			}
 			
 			resource.inject(path);
 		});
 		
 		resource.done(function(resp){
+			
 			setTimeout(function(){
 				var key, lib;
 				for(key in resp) {
@@ -78,9 +83,9 @@ var RunnerNode = (function() {
 						
 						if (global[key] == null) {
 							logger
-								.error('<utest:Environment> Loaded dependency has no exports', key)
-								.warn('Should it be global variables, to dismiss this error use smth like this:')
-								.log('`{ env: [ "someLib.js:globalVarName" ] }')
+								.log('<utest:Environment> Loaded dependency has no exports `%s`.'.yellow.bold, key)
+								.log('yellow<Should it be global variables, to bold<dismiss> this error use smth like this:>'.color)
+								.log('`{ env: [ "someLib.js::globalVarName" ] }`'.bold)
 								;
 						}
 						continue;
@@ -93,7 +98,7 @@ var RunnerNode = (function() {
 			});
 		});
 		
-		_runner.envResource = resource;
+		runner.envResource = resource;
 	}
 	
 	var _suites = null,
@@ -202,9 +207,13 @@ var RunnerNode = (function() {
 		},
 
 		getResources: function() {
-			this.envResource && this.resources.push(this.envResource);
+			var arr = [];
 			
-			return ruqq.arr.aggr(this.resources, [], resource_aggrIncludes);
+			this.envResource &&
+				resource_aggrIncludes(this.envResource, arr);
+		
+			ruqq.arr.aggr(this.resources, arr, resource_aggrIncludes);
+			return arr;
 		}
 	});
 

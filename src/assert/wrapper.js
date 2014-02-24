@@ -1,17 +1,16 @@
 
 
-global.assert = wrapAssertFns(wrapAssert(global.assert));
+global.assert = assert = wrapAssertFns(wrapAssert(assert));
 
 obj_extend(assert, {
 	total: 0,
 	failed: 0,
-	callbacks: 0,
 	errors: 0,
 	timeouts: [],
 	
 	reset: function(){
 		
-		this.callbacks = 0;
+		this.callbacks.length = 0;
 		this.failed = 0;
 		this.total = 0;
 		this.errors = 0;
@@ -19,15 +18,9 @@ obj_extend(assert, {
 		this.timeouts = [];
 	},
 	
+	// @obsolete
 	callback: function(callback){
-		this.callbacks++;
-		
-		var that = this;
-		return function(){
-			that.callbacks--;
-			
-			return callback.apply(this, arguments);
-		};
+		return this.await(callback);
 	}
 });
 
@@ -80,18 +73,15 @@ function wrapFn(assertFn, key) {
 		assert.total++;
 		try {
 			original.apply(this, arguments);
-		} catch(e) {
+		} catch(error) {
 			assert.failed++;
 			
-			assert.onfailure && assert.onfailure({
-				actual: e.actual,
-				expected: e.expected,
-				stack: e.stack,
-				message: e.message
-			});
+			assert.onfailure && assert.onfailure(error);
 			return;
 		}
 		
 		assert.onsuccess && assert.onsuccess();
 	};
 }
+
+

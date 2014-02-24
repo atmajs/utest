@@ -1,7 +1,6 @@
 (function(global){
 	
-	// import assert.js
-	// import assert.wrapper.js
-	// import assert.jquery.js
+	// import /node_modules/assertion/lib/assert.embed.js
+	// import wrapper.js
 	
 }(this));

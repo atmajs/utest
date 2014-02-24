@@ -72,9 +72,8 @@ var Runner = (function() {
 						return 0;
 					}
 					
-					if (x[key] == null) {
+					if (x[key] == null) 
 						return aggr;
-					}
 					
 					if (typeof x[key] === 'object' && 'length' in x[key]) {
 						return x[key].length + aggr;
@@ -101,27 +100,39 @@ var Runner = (function() {
 			}
 			
 			if (callbacks !== 0 || timeouts !== 0) {
+				
+				if (callbacks) 
+					logger
+						.error('Expected callbacks were not fired. More info...')
+						.log(stats.callbacks)
+						;
+						
+				if (timeouts) 
+					logger
+						.error('Asynchronous suites were not completed. More info...')
+						.log('stats.timeouts')
+						;
+				
+				
 				!failed && failed++;
 			}
 			
 
-			logger.log('\nDone. '[failed ? 'red' : 'green'].bold);
-			
-			
-			logger.log(
-				'bold<Assertions>: bold<green<%1>>(bold<red<%2>>)'
-					.format(total - failed, failed)
-					.color);
-			
-			logger.log(
-				'bold<Timeouts>: bold<%1<%2>>'
-					.format(timeouts ? 'red' : 'green', timeouts)
-					.color);
-			
-			logger.log(
-				'bold<Failed Callbacks>: bold<green<%1>>'
-					.format(callbacks)
-					.color);
+			logger
+				.log('\n\nDone. '[failed ? 'red' : 'green'].bold)
+				.log(
+					'bold<Assertions>: bold<green<%1>>(bold<red<%2>>)'
+						.format(Math.max(total - failed, 0), failed)
+						.color)
+				.log(
+					'bold<Timeouts>: bold<%1<%2>>'
+						.format(timeouts ? 'red' : 'green', timeouts)
+						.color)
+				.log(
+					'bold<Failed Callbacks>: bold<green<%1>>'
+						.format(callbacks)
+						.color)
+				;
 
 			this.failed = failed;
 			this.stats = stats;
