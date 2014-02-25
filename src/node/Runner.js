@@ -182,7 +182,11 @@ var Runner = (function() {
 			
 			if (data.file && data.line != null) {
 				
-				var path = data.file.replace(/(\/)?utest\//i, '$1'),
+				var path = data
+						.file
+						.replace(/(\/)?utest\//i, '$1')
+						.replace(/\?.+/, ''),
+						
 					uri = new net.Uri(base).combine(path),
 					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
 					line = source[data.line - 1],
@@ -198,8 +202,8 @@ var Runner = (function() {
 					logger.log(' :: '.red.bold + data.message.yellow);
 					
 				logger
-					.log('  bold<%1>:%2'.color.format(data.file, data.line + 1))
-					.log('  bold<cyan< → >> bold<red< %1 >>'.color.format(code))
+					.log('  bold<%1>'.color.format(path))
+					.log('  bold<cyan< → >> bold<%1 |> bold<red< %2 >>'.color.format(data.line + 1, code))
 					.log('');
 				
 				

@@ -10,6 +10,7 @@
 		process: function(setts, done) {
 			
 			io.File.disableCache();
+			logger.cfg('logCaller', false);
 
 			var arg = setts.script || app.config.$cli.args[1],
 				config;

@@ -36,7 +36,7 @@ obj_extend(assert, {
 		assert.onsuccess && assert.onsuccess();
 	});
 	
-	assert.on('error', function(error){
+	assert.on('fail', function(error){
 		
 		// force stack calculation
 		// (otherwise stack is not sent from browsers to the server)

@@ -7,7 +7,7 @@
 	assert.resolveData = function(stackData, base){
 		
 		var data = Object.extend({}, stackData),
-			stack = stackData.stack.split('\n').splice(2, 6),
+			stack = stackData.stack.split('\n').splice(1),
 			rgx_http = /http:\/\/([^\/]+)\//,
 			rgx_local = RegExp.fromString(base.replace('file:///','')),
 			rgx_file = /([^\(]+\:\d+\:\d+)\)?$/;
