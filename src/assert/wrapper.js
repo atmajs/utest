@@ -49,13 +49,31 @@ obj_extend(assert, {
 	
 }(assert));
 
-/** GLOBALS */
+/* GLOBALS */
+
+global.eq_ = assert.equal;
+global.notEq_ = assert.notEqual;
+global.deepEq_ = assert.deepEqual;
+global.notDeepEq_ = assert.notDeepEqual;
+global.strictEq_ = assert.strictEqual;
+global.notStrictEq_ = assert.notStrictEqual;
+global.has_ = assert.has;
+global.hasNot_ = assert.hasNot;
+global.is_ = assert.is;
+global.isNot_ = assert.isNot;
+
+
+// obsolete for underscored
 global.eq = assert.equal;
 global.notEq = assert.notEqual;
 global.deepEq = assert.deepEqual;
 global.notDeepEq = assert.notDeepEqual;
 global.strictEq = assert.strictEqual;
 global.notStrictEq = assert.notStrictEqual;
+global.has = assert.has;
+global.hasNot = assert.hasNot;
+global.is = assert.is;
+global.isNot = assert.isNot;
 
 // <!---
 

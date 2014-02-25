@@ -77,40 +77,44 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
 
 ```javascript
   assert.equal(arg1, arg2, ?message);
-  // eq
+  // eq_
   
   assert.notEqual
-  // notEq
+  // notEq_
 
   assert.strictEqual
-  // strictEq
+  // strictEq_
 
   assert.notStrictEqual
-  // notStrictEq
+  // notStrictEq_
 
   assert.deepEq
-  // deepEq
+  // deepEq_
 
   assert.notDeepEq
-  // notDeepEq
+  // notDeepEq_
 
   assert.has
-  // has
+  // has_
   
   assert.hasNot
-  // hasNot
+  // hasNot_
   
   assert.is
+  // is_
   assert.isNot
+  // isNot_
   
   assert.await(Function, name)
   
-  $.fn.$has
-  $.fn.$hasNot
-  $.fn.$eq
-  $.fn.$notEq
-  $.fn.$deepEq
-  $.fn.$notDeepEq
+  $.fn.has_
+  $.fn.hasNot_
+  $.fn.eq_
+  $.fn.notEq_
+  $.fn.deepEq_
+  $.fn.notDeepEq_
+  $.fn.is_
+  $.fn.isNot_
   
 ```
 
