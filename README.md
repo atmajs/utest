@@ -4,6 +4,14 @@
 
 _TDD and Unit Testing plugin for Atma.Toolkit_
 
+- [Overview](#overview)
+- [Simplest example](#simplestexample)
+- [Assertions](#assertions)
+- [UTest Class](#utestclass)
+- [Config](#config)
+- [CLI Sugar](#clisugar)
+- [Simplest CommonJS test](simplestcommonjstest)
+
 ###### Install
 ```$ npm install atma -g```
 
@@ -12,12 +20,21 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 
 ###### Overview
 
-- **Node.js**-runner — ```$ atma test foo```.
+- **Node.js**-runner — ` $ atma test foo `.
 - **Browser**-runner — 
-	- with `atma` you create a test server (```$ atma server```), open a test-runner-page in one or many browsers (```http://localhost:5777/utest/```), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ```$ atma test foo -browser```
+	- with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ` $ atma test foo -browser `
 	- UPD: (up from v.8.14) if the server is not running, uTest starts the server, launches the system default browser, navigates to the slave capture url and resumes the runner.
-- **Watcher**      — ```-watch``` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
-- **Environments** —  `atma` also loads additional libraries, so they are available in unit tests, like [atma-libs](https://github.com/atmajs/atma.libs),  jQuery, SinonJS.
+- **Watcher**      — ` -watch ` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+- **Environments** By default,  there will be available additional libraries in all tests
+	
+	- [IncludeJS](https://github.com/atmajs/IncludeJS)
+	- [MaskJS](https://github.com/atmajs/MaskJS)
+	-— [ClassJS](https://github.com/atmajs/ClassJS)
+	- [IO](https://github.com/atmajs/atma-io)
+	- [Logger](https://github.com/atmajs/atma-logger)
+	- jQuery
+	- SinonJS
+	
 - **Test Suites**  — (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
 - **Configs**      — (optional) configurations for more complex projects
 - Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
@@ -180,23 +197,56 @@ module.exports = {
 };
 ```
 
-###### _CommonJS Module tests_
-_src/some.js_
+###### CLI Sugar
+- `atma test`
+
+	Load the configuration from `%CWD%/test/config.js` and run all tests and suites
+
+- `atma test foo`
+
+	Run the test `%CWD%/test/foo.test`. If exists, the configuration will also be loaded and the `ENV` property for this path will be extracted to preload the required resources.
+	
+	```javascript
+	// test/config.js
+	module.exports = {
+		suites: {
+			baz: {
+				exec: 'dom',
+				env: 'lib/baz.js'
+				tests: 'test/baz/**.test
+			}
+		}
+	}
+	```
+	`atma test baz/quux` - run single file test and the `lib/baz.js` will be preloaded.
+
+- `atma test baz/**.test`
+
+	Run files by glob matching
+	
+- CLI flags
+	- `-browser` runs a test in browser
+	- `-node` runs a test in Node.js
+	- `-watch` watches for file changes and reruns the tests
+
+###### Simplest CommonJS test
+The first possible solution to test CommonJS Modules is just to `require` them as usual in tests and perform some assertions.
+But there is simpler approach to load it once for all tests with exporting the module's exports to the globals.
 ```javascript
+// src/some.js
 module.exports = {
 	addOne: function(n){
 		return n + 1;
     }	
-}
+};
 ```
-
-_test/mytest.test_
 ```javascript
+// test/mytest.test
 eq(foo.addOne(1), 2);
 ```
 
-_test/config.js_
 ```javascript
+// test/config.js
 module.exports = {
 	env: ['src/some.js::foo'],
 	tests: 'test/*.test'
@@ -206,4 +256,4 @@ module.exports = {
 ```$ cd app-project```
 ```$ atma test```
 
-Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its exports object is then set to globals with alias var name , from example, it was 'foo'.
+Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its exports object is then set to globals with alias var name. From the example - it was 'foo'.
