@@ -5,12 +5,12 @@
 _TDD and Unit Testing plugin for Atma.Toolkit_
 
 - [Overview](#overview)
-- [Simplest example](#simplestexample)
+- [Simplest example](#simplest-example)
 - [Assertions](#assertions)
-- [UTest Class](#utestclass)
+- [UTest Class](#utest-class)
 - [Config](#config)
-- [CLI Sugar](#clisugar)
-- [Simplest CommonJS test](simplestcommonjstest)
+- [CLI Sugar](#cli-sugar)
+- [Simplest CommonJS test](#simplest-commonjs-test)
 
 ###### Install
 ```$ npm install atma -g```
@@ -29,7 +29,7 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 	
 	- [IncludeJS](https://github.com/atmajs/IncludeJS)
 	- [MaskJS](https://github.com/atmajs/MaskJS)
-	-— [ClassJS](https://github.com/atmajs/ClassJS)
+	- [ClassJS](https://github.com/atmajs/ClassJS)
 	- [IO](https://github.com/atmajs/atma-io)
 	- [Logger](https://github.com/atmajs/atma-logger)
 	- jQuery
