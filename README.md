@@ -11,6 +11,7 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 - [Config](#config)
 - [CLI Sugar](#cli-sugar)
 - [Simplest CommonJS test](#simplest-commonjs-test)
+- [Screenshot](#screenshot)
 
 ###### Install
 ```$ npm install atma -g```
@@ -257,3 +258,7 @@ module.exports = {
 ```$ atma test```
 
 Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its exports object is then set to globals with alias var name. From the example - it was 'foo'.
+
+###### Screenshot
+
+![utest screenshot](https://github.com/atmajs/utest/raw/master/resources/screen.png)
