@@ -8,7 +8,6 @@ var BrowserTunnel = Class({
 			.on('browser:log', function(type, args) {
 
 				(logger[type] || logger.log).apply(logger, args);
-	
 			})
 			
 			.on('browser:utest:beforestart', function(data, done){

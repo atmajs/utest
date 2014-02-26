@@ -60,7 +60,7 @@ var Runner = (function() {
 			});
 		},
 		notifyTest: function(url){
-			logger.log('Test: ', (url.length > 23 ? '...' + url.substr(-20) : url).bold);
+			logger.log('Test: ', url.replace(this.config.base, '').cyan.bold);
 		},
 		onComplete: function(stats) {
 			this.status = status_ready;
@@ -116,13 +116,13 @@ var Runner = (function() {
 				if (callbacks) 
 					logger
 						.error('Expected callbacks were not fired. More info...')
-						.log(aggr(stats, 'callbacks'))
+						.log(aggr('callbacks'))
 						;
 						
 				if (timeouts) 
 					logger
 						.error('Asynchronous suites were not completed. More info...')
-						.log(aggr(stats, 'timeouts'))
+						.log(aggr('timeouts'))
 						;
 				
 				

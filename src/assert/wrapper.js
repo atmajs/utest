@@ -19,7 +19,7 @@ obj_extend(assert, {
 	},
 	
 	// @obsolete
-	callback: function(callback){
+	callback: function assert_callback(callback){
 		return this.await(callback);
 	}
 });

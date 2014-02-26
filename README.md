@@ -1,4 +1,4 @@
-µTEST
+ÂµTEST
 ----
 [![Build Status](https://travis-ci.org/atmajs/utest.png?branch=master)](https://travis-ci.org/atmajs/utest)
 
@@ -20,11 +20,11 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 
 ###### Overview
 
-- **Node.js**-runner — ` $ atma test foo `.
-- **Browser**-runner — 
+- **Node.js**-runner Â— ` $ atma test foo `.
+- **Browser**-runner Â— 
 	- with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ` $ atma test foo -browser `
 	- UPD: (up from v.8.14) if the server is not running, uTest starts the server, launches the system default browser, navigates to the slave capture url and resumes the runner.
-- **Watcher**      — ` -watch ` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+- **Watcher**      Â— ` -watch ` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
 - **Environments** By default,  there will be available additional libraries in all tests
 	
 	- [IncludeJS](https://github.com/atmajs/IncludeJS)
@@ -35,8 +35,8 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 	- jQuery
 	- SinonJS
 	
-- **Test Suites**  — (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
-- **Configs**      — (optional) configurations for more complex projects
+- **Test Suites**  Â— (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
+- **Configs**      Â— (optional) configurations for more complex projects
 - Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
 	- Launch slave url in any browser - Chrome, IE(9+), Opera, Mozilla. _PhantomJS is only webkit based._
 	- Much better debugging. Use browsers developer tools to set breakpoints in your tests and assertions.

@@ -56,8 +56,8 @@ var RunnerClient = Class({
 					})
 			
 					.on('server:log', function(type, args) {
-						var fn = logger[type] || logger.log;
-						fn.apply(logger, args);
+						var fn = console[type] || console.log;
+						fn.apply(console, args);
 					})
 			
 					.on('slave:start', function(stats) {

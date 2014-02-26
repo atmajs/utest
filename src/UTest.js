@@ -209,7 +209,8 @@
 					
 					this.processed.push(key);
 					
-					console.print((' ' + key + ': ').bold);
+					console.log('');
+					console.print(('   ' + key + ': ').bold);
 					runCase(this.proto, this.suite[key], this._nextCase, this.suite.$teardown, key);
 					
 					return;
