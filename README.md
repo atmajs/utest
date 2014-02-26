@@ -8,6 +8,7 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 - [Simplest example](#simplest-example)
 - [Assertions](#assertions)
 - [UTest Class](#utest-class)
+	- [http](#utest-server)
 - [Config](#config)
 - [CLI Sugar](#cli-sugar)
 - [Simplest CommonJS test](#simplest-commonjs-test)
@@ -36,8 +37,9 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 	- jQuery
 	- SinonJS
 	
-- **Test Suites**   (optional) though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
-- **Configs**       (optional) configurations for more complex projects
+- **Test Suites**   though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
+- **Pages**         Load and Test webpages
+- **Configs**       configurations for more complex projects
 - Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
 	- Launch slave url in any browser - Chrome, IE(9+), Opera, Mozilla. _PhantomJS is only webkit based._
 	- Much better debugging. Use browsers developer tools to set breakpoints in your tests and assertions.
@@ -136,7 +138,7 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
   
 ```
 
-###### UTest Class
+##### UTest Class
 
 ```javascript
 UTest({
@@ -168,6 +170,53 @@ UTest({
 	}
 });
 ```
+
+###### UTest server
+
+- load any web page
+	
+	```javascript
+	UTest
+		.server
+		.request(url [, method, bodyArgs], callback);
+		
+	UTest({
+		'google has input': function(done){
+			UTest
+				.server
+				.request('http://google.com', function(error, document, window){
+					eq_(error, null);
+					
+					$(document)
+						.has_('input[type="text"]');
+					done();
+				})
+		}
+	});
+	```
+	
+- render MaskJS server-side
+
+	```javascript
+	UTest
+		.server
+		.render(template, model, callback);
+		
+	UTest({
+		'render title': function(done){
+			var template = 'h4 > "Hello, ~[name]"',
+				model = { name: 'World' };
+			UTest
+				.server
+				.render(template, model, function(error, document, window){
+					$(document)
+						.has_('html', 'Hello, world');
+						
+					done();
+				})
+		}
+	});
+	```
 
 ###### Config
 
