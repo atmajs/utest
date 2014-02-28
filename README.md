@@ -11,6 +11,7 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 	- [http](#utest-server)
 - [Config](#config)
 - [CLI Sugar](#cli-sugar)
+- [ES6](#es6)
 - [Simplest CommonJS test](#simplest-commonjs-test)
 - [Screenshot](#screenshot)
 
@@ -278,6 +279,34 @@ module.exports = {
 	- `-browser` runs a test in browser
 	- `-node` runs a test in Node.js
 	- `-watch` watches for file changes and reruns the tests
+
+##### ES6
+Write your test using EcmaScript 6. This is possible due to [Google Traceur Compiler](https://github.com/google/traceur-compiler) and the [Atma.Toolkit Plugin](https://github.com/atmajs/atma-loader-traceur).
+
+**How to start?**
+
+- Install the plugin
+	```bash
+	$ atma plugin install atma-loader-traceur
+	```
+- Specify `test` extension to be handled by the tracuer. Edit your `package.json` to have at least:
+	```json
+	{
+		"atma": {
+			"settings": {
+				"traceur-extension": "test"
+			}
+		}
+	}
+	```
+**Sample**
+```es6
+// foo.test
+has_(` foo-multiline-string `, /foo/);
+```
+```bash
+$ atma test foo.test
+```
 
 ###### Simplest CommonJS test
 The first possible solution to test CommonJS Modules is just to `require` them as usual in tests and perform some assertions.
