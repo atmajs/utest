@@ -15,13 +15,13 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 - [Simplest CommonJS test](#simplest-commonjs-test)
 - [Screenshot](#screenshot)
 
-###### Install
+##### Install
 ```$ npm install atma -g```
 
 
 Create Tests. Covers all use cases - from most simple test to complex-application test.
 
-###### Overview
+##### Overview
 
 - **Node.js**-runner  ` $ atma test foo `.
 - **Browser**-runner  
@@ -47,7 +47,7 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 
 Default test extension: `*.test*`
 
-###### Simplest example
+##### Simplest example
 ```
 /myscript
    app.js
@@ -90,7 +90,7 @@ include.inject('subfolder/app.js').done(function(){
 - ```include.inject``` - matters only in nodejs test runner. As ```include.js``` is like require() - scripts are evaluated in there module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit tests one.
 
 
-###### Assertions
+##### Assertions
 
 Embedded Assertion Library - [Documentation](https://github.com/atmajs/assertion).
 
@@ -172,7 +172,7 @@ UTest({
 });
 ```
 
-###### UTest server
+##### UTest server
 
 - load any web page
 	
@@ -219,7 +219,7 @@ UTest({
 	});
 	```
 
-###### Config
+##### Config
 
 ```
 /app-project
@@ -248,7 +248,7 @@ module.exports = {
 };
 ```
 
-###### CLI Sugar
+##### CLI Sugar
 - `atma test`
 
 	Load the configuration from `%CWD%/test/config.js` and run all tests and suites
@@ -308,7 +308,7 @@ has_(` foo-multiline-string `, /foo/);
 $ atma test foo.test
 ```
 
-###### Simplest CommonJS test
+##### Simplest CommonJS test
 The first possible solution to test CommonJS Modules is just to `require` them as usual in tests and perform some assertions.
 But there is simpler approach to load it once for all tests with exporting the module's exports to the globals.
 ```javascript
@@ -337,6 +337,6 @@ module.exports = {
 
 Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its exports object is then set to globals with alias var name. From the example - it was 'foo'.
 
-###### Screenshot
+##### Screenshot
 
 ![utest screenshot](https://github.com/atmajs/utest/raw/master/resources/screen.png)
