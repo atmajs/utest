@@ -17,3 +17,5 @@ UTest.getSocket = function(callback){
 				;
 		});
 };
+
+UTest.getConfig = Runner.getCurrentConfigs;

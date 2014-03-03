@@ -32,7 +32,7 @@ var UTestConfiguration = (function(){
 		UTest
 			.getSocket(function(socket, config){
 				
-				args[2] = config;
+				args[2] = UTest.getConfig();
 				socket
 					.emit
 					.apply(socket, args)
@@ -66,7 +66,7 @@ var UTestConfiguration = (function(){
 			
 			await
 				.fail(function(error){
-					logger.error('<utest:configurate> ', error);
+					console.error('<utest:configurate> ', error);
 				})
 				.always(done);
 		}

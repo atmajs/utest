@@ -21,7 +21,6 @@
 				window.app = new App;
 				
 				mask.Compo.bootstrap(document.body, app);
-				console.log('>> bootstrapped');
 			});
 
 		

@@ -57,8 +57,8 @@ var RunnerDom = (function() {
 				
 				return resources;
 			},
-			getCurrentConfigs: function(){
-				return _configs;
+			getCurrentConfig: function(){
+				return _configs[_configIndex];
 			}
 		},
 		

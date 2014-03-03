@@ -19,27 +19,38 @@ var Actions = (function(){
 				;
 		},
 		
+		include: function(sources, done){
+			
+			include
+				.instance()
+				.js(sources)
+				.done(function(){
+					done();
+				});
+		},
+		
 		eval: function(source, done){
 			
-			var name = 'done',
-				handled,
+			var name,
 				result
 				;
 			
 			source = source.replace(/^function\s*\(\s*([\w\d_$]+)\s*\)\s*\{/, function(full, cbname){
 				name = cbname;
-				handled = true;
 				
 				return '';
 			});
 			
-			if (!handled) {
-				logger.error(
-					'Callback parameter`s name could not be extracted. Source %s...',
-					source.substring(0,20)
-				);
+			if (name == null) {
+				
+				try {
+					eval('(' + source + '())');
+				}catch(error) {
+					logger.error('<$config:eval>', error);
+				}
 				
 				done();
+				return;
 			}
 			
 			source = source.replace(/\}\s*$/, '');
@@ -70,12 +81,9 @@ var Actions = (function(){
 				return;
 			}
 			
-			if (config) {
+			if (config && config.base)
+				include.cfg('path', config.base);
 				
-				if (config && config.base) 
-					include.cfg('path', config.base);
-				
-			}
 			
 			fn.apply(null, Array.prototype.slice.call(arguments, 2));
 		},
