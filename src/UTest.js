@@ -80,8 +80,10 @@
 			
 			if (asyncData)
 				clearTimeout(asyncData.id);
+
+			error.stack = assert.prepairStack(error.stack);
 			
-			console.error(error.stack || error);
+			console.error(error.stack);
 			
 			this.errors++;
 			

@@ -20,7 +20,7 @@ include
 				
 				this.nodes = jmask(resp.load.render)
 					.find('body')
-					.append(template)
+					.prepend(template)
 					.end();
 				
 				this.model = model;

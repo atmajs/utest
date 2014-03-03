@@ -188,9 +188,11 @@ var Runner = (function() {
 						.replace(/\?.+/, ''),
 						
 					uri = new net.Uri(base).combine(path),
-					source = new io.File(uri).read().split(/\r\n|\r|\n/g),
-					line = source[data.line - 1],
-					code = line && line.trim();
+					source = new io.File(uri).read(),
+					lines = source.split(/\r\n|\r|\n/g),
+					line = lines[data.line - 1],
+					code = line && line.trim()
+					;
 				
 				if ('actual' in data || 'expected' in data) {
 					var msg = '%s bold<red<↔>> %s';
