@@ -6,17 +6,26 @@ include
 		include.exports = atma.server.HttpPage({
 			
 			master: '',
+			template: '',
+			scope: null,
 			
 			onRenderStart: function(model, ctx){
-				var template;
-									
-				if (ctx.req.query) 
-					template = ctx.req.query.template;
+				var template,
+					ctr;
 				
-				if (ctx.req.method === 'POST') {
-					template = ctx.req.body.template;
-					model = ctx.req.body.model;
-				}
+				var repo = ctx.req.method === 'POST'
+					? ctx.req.body
+					: ctx.req.query
+					;
+					
+				template = repo.template;
+				model = repo.model;
+				ctr = repo.controller;
+				
+				if (ctr && ctr.scope) 
+					this.scope = ctr.scope;
+				
+				
 				
 				this.nodes = jmask(resp.load.render)
 					.find('body')

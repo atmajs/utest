@@ -21,7 +21,7 @@ var UTestPage;
 				
 				var base = '/utest/';
 				if (/https?:/.test(url)) {
-					url.lastIndexOf('/')
+					url.lastIndexOf('/');
 					base = /https?:\/\/[^\/]+/.exec(url)[0];
 				}
 				
