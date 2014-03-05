@@ -1,12 +1,15 @@
 :document {
 	
-	body {
-		
+	head {
 		script src='/.reference/atma/include/lib/include.js';
 		script src='/.reference/atma/class/lib/class.js';
 		script src='/.reference/atma/ruqq/lib/dom/jquery.js';
 		script src='/.reference/atma/mask/lib/mask.js';
 		script src='/.reference/atma/mask.node/lib/mask.bootstrap.js';
+		
+	}
+	body {
+		
 		
 		
 		script > :html > '''
