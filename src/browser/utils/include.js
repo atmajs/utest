@@ -46,9 +46,11 @@ var include_clearCache = function() {
 	for (var key in resources) {
 		resources[key] = {};
 	}
-
+	
+	if (window.location.search.indexOf('nocache') === -1) 
+		include.cfg('version', +(new Date));
+	
 	include = include
-		.cfg('version', +(new Date))
 		.instance()
 		;
 };
