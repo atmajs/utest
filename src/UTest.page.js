@@ -12,12 +12,26 @@ var UTestPage;
 				_iframe = null;
 			}
 			
-			request(url, method, data, function(error, html){
+			request(url, method, data, function(error, response){
 				
 				if (error) {
 					callback(error);
 					return;
 				}
+				if (response == null) {
+					callback('Server not responded');
+					return;
+				}
+				
+				var html;
+				if (typeof response === 'string') 
+					html = response;
+				
+				if (html == null) {
+					callback(null, response);
+					return;
+				}
+				
 				
 				var base = '/utest/';
 				if (/https?:/.test(url)) {
