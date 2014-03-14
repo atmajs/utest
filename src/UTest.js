@@ -65,7 +65,7 @@
 		var asyncData;
 		try {
 			
-			var args = ctx.arguments || [];
+			var args = Array.prototype.slice.call(ctx.arguments || []);
 			if (typeof fn === 'function') {
 				
 				if (case_isAsync(fn)) {
