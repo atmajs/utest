@@ -42,7 +42,7 @@
 		var isTimeouted = false,
 			fn = function(){
 				clearTimeout(timeout);
-				!isTimeouted && callback();
+				!isTimeouted && callback.apply(null, arguments);
 			};
 		
 		var timeout = setTimeout(function(){
@@ -64,15 +64,19 @@
 		
 		var asyncData;
 		try {
-				
+			
+			var args = ctx.arguments || [];
 			if (typeof fn === 'function') {
+				
 				if (case_isAsync(fn)) {
 					asyncData = async(teardownDelegate(ctx, teardown, done), key);
-					fn.call(ctx, asyncData.fn);
+					args.unshift(asyncData.fn);
+					
+					fn.apply(ctx, args);
 					return;
 				}
 				
-				fn.call(ctx);
+				fn.apply(ctx, args);
 			}
 			teardownDelegate(ctx, teardown, done)();	
 		
@@ -94,10 +98,12 @@
 	}
 	
 	function case_isAsync(fn) {
-		return /^\s*function\s*([\w]+)?\s*\([\s]*[\w]+/.test(fn.toString());
+		return /^\s*function\s*([\w]+)?\s*\([\w\s,]*(done|next)/.test(fn.toString());
 	}
 	
 	var UTestProto = {
+		// stores data exposed by the async Case
+		arguments: null,
 		$run: function(key, done){
 			runCase(this.proto, this.suite[key], done || function(){}, null, key);
 		}
@@ -107,7 +113,12 @@
 		var proto = {},
 			key;
 		for (key in UTestProto) {
-			proto[key] = UTestProto[key].bind(instance);
+			
+			if (typeof UTestProto[key] === 'function') {
+				proto[key] = UTestProto[key].bind(instance);
+				continue;
+			}
+			proto[key] = UTestProto[key];
 		}
 		
 		for (key in suite) {
@@ -117,6 +128,7 @@
 	};
 	
 	var UTest = Class({
+		
 		Extends: UTestServer,
 		Construct: function(suite){
 			
@@ -188,6 +200,10 @@
 				runCase(this.proto, this.suite.$before, this._nextCase);	
 			},
 			_nextCase: function(){
+				
+				if (arguments.length > 0) 
+					this.proto.arguments = Array.prototype.slice.call(arguments);
+				
 				for (var key in this.suite) {
 					if (~this.processed.indexOf(key)) {
 						continue;

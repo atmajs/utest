@@ -22,7 +22,7 @@ var Actions = (function(){
 		include: function(sources, done){
 			
 			include
-				.instance()
+				.instance(io.env.currentDir.toDir())
 				.js(sources)
 				.done(function(){
 					done();
