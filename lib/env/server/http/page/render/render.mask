@@ -1,21 +1,22 @@
 :document {
 	
 	head {
-		
+		script src="/.reference/atma_toolkit/node_modules/atma-utest/lib/env/vendor/mask.bootstrap.js";
 	}
 	body {
 		
+		
 		script > :html > '''
-
-	
+			
+			include
+				.js(~[: $c.include ]);
+			
+			
 			include
 				.allDone(function(){
-					var App = Compo({
-							compos: {}
-						});
-	
+					var App = Compo({ compos: {} });
+
 					window.app = new App;
-	
 					mask.Compo.bootstrap(document.body, app);
 				});
 

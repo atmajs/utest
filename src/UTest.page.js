@@ -51,10 +51,6 @@ var UTestPage;
 					_win = _iframe.contentWindow
 					;
 					
-				$(_iframe).load(function(){
-					callback(null, _doc, _win);
-				});
-				
 				/* expose Atma and jQuery */
 				_win.Class = Class;
 				_win.include = include;
@@ -62,6 +58,15 @@ var UTestPage;
 				_win.Compo = mask.Compo;
 				_win.jmask = mask.jmask;
 				_win.jQuery = _win.$ = $;
+				
+				$(_iframe).load(function(){
+					include.allDone(function(){
+						
+						setTimeout(function(){
+							callback(null, _doc, _win);
+						});
+					});
+				})
 				
 				_doc.open();
 				_doc.write(html);

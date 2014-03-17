@@ -37,6 +37,12 @@ module.exports = {
 		files: 'builds/**',
 		output: 'lib/'
 	},
+	'import.mask.bootstrap': {
+		action: 'copy',
+		files: {
+			'../mask.node/lib/mask.bootstrap.js': 'lib/env/vendor/mask.bootstrap.js'
+		}
+	},
 	'copy': {
 		files: {
 			'src/env/**': 'lib/env/**'
