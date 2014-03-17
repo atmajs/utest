@@ -10,7 +10,7 @@
 			stack = stackData.stack.split('\n').splice(1),
 			rgx_http = /http:\/\/([^\/]+)\//,
 			rgx_local = RegExp.fromString(base.replace('file:///','')),
-			rgx_file = /([^\(]+\:\d+\:\d+)\)?$/;
+			rgx_file = /([^\(@]+\:\d+\:\d+)\)?$/;
 		
 		
 		stack = ruqq.arr.map(stack, function(x){
@@ -32,10 +32,7 @@
 		}
 		
 		
-		
-		
 		data.stack = stack.join('\n');
-		
 		return data;
 	};
 	
