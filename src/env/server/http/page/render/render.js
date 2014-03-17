@@ -38,8 +38,6 @@ include
 						.join(',');
 				}
 				
-				logger.log('>>>'.yellow.bold, this.include, include);
-				
 				this.nodes = jmask(resp.load.render)
 					.find('body')
 					.prepend(template)
