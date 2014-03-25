@@ -32,7 +32,7 @@ var UTestConfiguration = (function(){
 		UTest
 			.getSocket(function(socket, config){
 				
-				args[2] = UTest.getConfig();
+				args[2] = (UTest.getConfig && UTest.getConfig()) || config;
 				socket
 					.emit
 					.apply(socket, args)

@@ -35,7 +35,7 @@ include
 					response404
 				]);
 				
-				resume();
+				process.nextTick(resume);
 			});
 			
 		function response404(req, res) {
