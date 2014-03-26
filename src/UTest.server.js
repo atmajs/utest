@@ -60,10 +60,20 @@ var UTestServer;
 					return dfr
 				},
 				
-				request: function(url /* [, method, params, callback] */){
-					var method,
-						params,
-						callback;
+				request: function(mix /* [, method, data, callback] */){
+					var url = mix,
+						method,
+						data,
+						headers,
+						callback
+						;
+					if (typeof mix !== 'string') {
+						url = mix.url;
+						method = mix.method;
+						data = mix.data;
+						headers = mix.headers;
+					}
+					
 					var args = _Array_slice.call(arguments, 1),
 						dfr = new Class.Deferred()
 						;
@@ -71,10 +81,13 @@ var UTestServer;
 					if (typeof args[args.length - 1] === 'function') 
 						callback = args.pop();
 					
-					method = args.shift();
-					params = args.shift();
+					if (args.length > 0) 
+						method = args.shift();
+					
+					if (args.length > 0) 
+						data = args.shift();
 						
-					UTestPage.request(url, method, params, done);
+					UTestPage.request(url, method, headers, data, done);
 					
 					function done(error, doc, win){
 						if (callback) 

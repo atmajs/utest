@@ -5,14 +5,14 @@ var UTestPage;
 	var _iframe;
 	
 	UTestPage = {
-		request: function(url, method, data, callback){
+		request: function(url, method, headers, data, callback){
 			
 			if (_iframe) {
 				_iframe.parentNode.removeChild(_iframe);
 				_iframe = null;
 			}
 			
-			request(url, method, data, function(error, response){
+			request(url, method, headers, data, function(error, response, headers){
 				
 				if (error) {
 					callback(error);
@@ -28,7 +28,7 @@ var UTestPage;
 					html = response;
 				
 				if (html == null) {
-					callback(null, response);
+					callback(null, response, headers);
 					return;
 				}
 				
@@ -63,7 +63,7 @@ var UTestPage;
 					include.allDone(function(){
 						
 						setTimeout(function(){
-							callback(null, _doc, _win);
+							callback(null, _doc, _win, headers);
 						});
 					});
 				})
@@ -77,9 +77,9 @@ var UTestPage;
 	};
 	
 	
-	function request(url, method, data, callback) {
+	function request(url, method, headers, data, callback) {
 		
-		var headers = {};
+		headers = headers || {};
 		if (/https?:/.test(url)) {
 			// cross-origin
 			headers['x-remote'] = url;
@@ -95,11 +95,15 @@ var UTestPage;
 				type: (method || 'get').toUpperCase(),
 				headers: headers
 			})
-			.done(function(response){
-				callback(null, response);
+			.done(function(response, status, xhr){
+				callback(null, response, xhr.getAllResponseHeaders());
 			})
 			.fail(function(xhr, textStatus){
-				callback(xhr.statusCode());
+				callback({
+					responseText: xhr.responseText,
+					statusCode: xhr.statusCode(),
+					headers: xhr.getAllResponseHeaders()
+				});
 			})
 	}
 	
