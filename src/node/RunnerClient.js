@@ -40,7 +40,7 @@ var RunnerClient = Class({
 			
 			.done(function(socket){
 				
-				logger.log('>> connected'.green.bold);
+				logger.log('<server> connected'.green.bold);
 				
 				that.socket = socket;
 				
@@ -52,7 +52,9 @@ var RunnerClient = Class({
 			
 					.on('server:error', function(message) {
 						that.socket.socket.disconnectSync();
-						done(message);
+						
+						logger.error(message);
+						done(1);
 					})
 			
 					.on('server:log', function(type, args) {

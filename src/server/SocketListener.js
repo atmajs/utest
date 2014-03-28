@@ -106,6 +106,8 @@ var SocketListener = (function(){
 	
 	
 	function client_doTest(clients, socket, config, done){
+		// clean resources cache
+		include.getResources().js = {};
 		
 		var utest = new ServerUTest(clients, new Logger(socket));
 
@@ -115,7 +117,6 @@ var SocketListener = (function(){
 			.on('slave:error', Pipe(socket, 'slave:error'))
 			.on('server:utest:end', Pipe(socket, 'server:utest:end'))
 			.on('browser:utest:script', Pipe(socket, 'slave:utest:script'))
-
 			.on('browser:assert:failure', Pipe(socket, 'slave:assert:failure'))
 			.on('browser:assert:success', Pipe(socket, 'slave:assert:success'))
 			

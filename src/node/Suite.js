@@ -45,8 +45,8 @@ var RunnerSuite = Class({
 					.log('')
 					.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
 				
-				process.exit(failed);
-				
+				this.callback(failed);
+				return;
 			}
 			
 			closeSocketsOnExit(this);

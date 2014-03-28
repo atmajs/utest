@@ -57,11 +57,11 @@
 			
 			cfg_runConfigurationScript($before, function(){
 				
-				_suite.run(function(){
-					logger.log('>> completed'.cyan.bold, arguments);
+				_suite.run(function(exitCode){
 					
 					cfg_runConfigurationScript($after, function(){
-						done.apply(this, arguments);	
+						
+						process.exit(exitCode);
 					});
 				});	
 			})
