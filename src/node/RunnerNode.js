@@ -51,7 +51,8 @@ var RunnerNode = (function() {
 			return;
 		}
 		
-		var resource = include.instance();
+		var resource = include
+			.instance(io.env.currentDir.toDir());
 		
 		base = new net.Uri(base);
 		ruqq.arr.each(env, function(x){
