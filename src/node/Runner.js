@@ -185,7 +185,8 @@ var Runner = (function() {
 				var path = data
 						.file
 						.replace(/(\/)?utest\//i, '$1')
-						.replace(/\?.+/, ''),
+						.replace(/\?.+/, '')
+						.replace(/^\//, ''),
 						
 					uri = new net.Uri(base).combine(path),
 					source = new io.File(uri).read(),
