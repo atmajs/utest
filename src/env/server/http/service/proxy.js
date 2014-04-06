@@ -81,6 +81,13 @@ function pipe(req, res, options_, remoteUrl, redirects) {
 		}); 
 	});
 	
+	request.on('error', function(error) {
+		res.writeHead(500, {
+			'Content-Type': 'text/plain'
+		});
+		res.end(error.toString());
+	});
+	
 	// @TODO pipe post body to redirects
 	req.pipe(request, {
 		end: true
