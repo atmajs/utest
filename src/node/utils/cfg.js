@@ -192,8 +192,18 @@ var cfg_prepairSettings,
 				domScripts: []
 			};
 			
+			if (x.tests == null) {
+				logger.error('Suite %s has no `tests`', key);
+				continue;
+			}
 			
-			cfg_addScript(x.tests, config.base, config.nodeScripts, config.domScripts, config.exec);
+			cfg_addScript(
+				x.tests,
+				config.base,
+				config.nodeScripts,
+				config.domScripts,
+				config.exec
+			);
 			
 			
 			array.push(config);
@@ -313,10 +323,16 @@ var cfg_prepairSettings,
 		if (forceAsPath !== true && ~path.indexOf('*')) {
 			// asPath here is actually to prevent recursion in case if
 			// file, which is resolved by globbing, contains '*'
-			new io
-				.Directory(base)
-				.readFiles(path)
-				.files
+			
+			var files = io
+				.glob
+				.readFiles(net.Uri.combine(base, path));
+			
+			if (files.length === 0) {
+				logger.warn('<No files found. Base %s. Search %s', base, path);
+			}
+			
+			files
 				.forEach(function(file){
 					path = file.uri.toRelativeString(base);
 					

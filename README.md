@@ -340,3 +340,33 @@ Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its
 ##### Screenshot
 
 ![utest screenshot](https://github.com/atmajs/utest/raw/master/resources/screen.png)
+
+
+##### Build, Test, Contribute
+
+- **Prepair**
+	- Install Atma.Toolkit
+		```bash
+		$ npm install atma -g
+		```
+	- Clone atma libraries first into any folder:
+		```bash
+		$ atma atma-clone --all
+		```
+	- Reference the atma libraries
+		```bash
+		$ cd utest/
+		$ atma reference atma
+		```
+- **Build**
+	```bash
+	$ atma
+	```
+- **Test**
+	```bash
+	$ atma test test/**
+	```
+	
+	
+----
+(c) 2014 MIT - The Atma.js Project

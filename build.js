@@ -40,7 +40,7 @@ module.exports = {
 	'import.mask.bootstrap': {
 		action: 'copy',
 		files: {
-			'../mask.node/lib/mask.bootstrap.js': 'lib/env/vendor/mask.bootstrap.js'
+			'../mask-node/lib/mask.bootstrap.js': 'lib/env/vendor/mask.bootstrap.js'
 		}
 	},
 	'copy': {

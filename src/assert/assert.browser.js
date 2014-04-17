@@ -1,6 +1,6 @@
 (function(global){
 	
-	// import /node_modules/assertion/lib/assert.embed.js
+	// import /.reference/atma/assertion/lib/assert.embed.js
 	// import wrapper.js
 	
 }(this));

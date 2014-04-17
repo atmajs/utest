@@ -6,7 +6,7 @@
 // import ../.reference/atma/ruqq/lib/arr.js
 
 
-// import ../.reference/atma/node/logger/src/color/color.js
+// import ../.reference/atma/atma-logger/src/color/color.js
 (function(){
 	// import ../src/vars.js
 	// import ../src/assert/assert.browser.js
