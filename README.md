@@ -286,10 +286,12 @@ Write your test using EcmaScript 6. This is possible due to [Google Traceur Comp
 **How to start?**
 
 - Install the plugin
+	
 	```bash
 	$ atma plugin install atma-loader-traceur
 	```
 - Specify `test` extension to be handled by the tracuer. Edit your `package.json` to have at least:
+	
 	```json
 	{
 		"atma": {
@@ -346,23 +348,28 @@ Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its
 
 - **Prepair**
 	- Install Atma.Toolkit
+		
 		```bash
 		$ npm install atma -g
 		```
 	- Clone atma libraries first into any folder:
+		
 		```bash
 		$ atma atma-clone --all
 		```
 	- Reference the atma libraries
+		
 		```bash
 		$ cd utest/
 		$ atma reference atma
 		```
 - **Build**
+	
 	```bash
 	$ atma
 	```
 - **Test**
+	
 	```bash
 	$ atma test test/**
 	```
