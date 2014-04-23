@@ -287,6 +287,10 @@ var cfg_prepairSettings,
 			}
 			
 			var file = new io.File(uri);
+			if (file.uri == null) {
+				// some virtual files does not expose uri property
+				return;
+			}
 			
 			if (file.exists()) {
 				io.watcher.watch(file.uri.toLocalFile(), function(){
