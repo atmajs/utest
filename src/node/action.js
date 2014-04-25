@@ -43,8 +43,10 @@
 			
 			_configs = cfg_split(setts);
 			
-			if (_configs.length === 0) 
+			if (_configs.length === 0) {
+				logger.log('<config>', config);
 				return done('No scripts to test');
+			}
 			
 			
 			var $before = config.$config && config.$config.$before,

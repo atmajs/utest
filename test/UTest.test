@@ -5,30 +5,46 @@
 	
 	UTest({
 		
-		'first': function(){
+		'first': assert.await(function(){
 			flow.push(1);
-		},
+		}),
 		'async': function(done){
 			
 			setTimeout(function(){
 				flow.push(2);
 				done();
-			},1000);
+			},100);
 		},
 		'third': function(){
 			flow.push(3);
 		},
 		
+		'pass through variables': function(done){
+			flow.push(4);
+			setTimeout(function(){
+				done('foo', 10);
+			}, 100)
+		},
+		
+		'expect variables': function(done, fooVar, numVar){
+			
+			flow.push(5);
+			eq_(fooVar, 'foo');
+			eq_(numVar, 10);
+			
+			done();
+		},
 		
 		'$before': function(){
 			flow.push(0);
 		},
-		'$after': assert.callback(function(){
+		'$after': assert.await(function(){
 
-			deepEq(flow, [0, 1, 2, 3]);
-			eq(teardowns, 3);
+			deepEq_(flow, [0, 1, 2, 3, 4, 5]);
+			eq_(teardowns, 5);
 
 		}),
+		
 		'$teardown': function(){
 			teardowns++;
 		}

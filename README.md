@@ -240,6 +240,9 @@ module.exports = {
             // (path is relative to projects directory)
 			env: String | Array<String>,
             
+			// working directory, @default: cwd
+			base: String,
+			
             // path to tests, glob pattern is also supported
             // e.g. test/**-node.test
 			tests: String | Array<String>
@@ -261,7 +264,7 @@ module.exports = {
 	// test/config.js
 	module.exports = {
 		suites: {
-			baz: {
+			'baz-runner': {
 				exec: 'dom',
 				env: 'lib/baz.js'
 				tests: 'test/baz/**.test
@@ -271,9 +274,17 @@ module.exports = {
 	```
 	`atma test baz/quux` - run single file test and the `lib/baz.js` will be preloaded.
 
+- `atma test baz-runner`
+
+	Run single suite
+
 - `atma test baz/**.test`
 
 	Run files by glob matching
+
+- `atma test -config my-test-config.js
+
+	Override configuration path
 	
 - CLI flags
 	- `-browser` runs a test in browser

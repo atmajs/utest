@@ -131,7 +131,7 @@ var cfg_prepairSettings,
 		var path = baseConfig.config;
 			
 		if (path == null) {
-			path = /test.?[\\\/]?$/.test(baseConfig.base)
+			path = /\/test.?[\\\/]?$/.test(baseConfig.base)
 				? 'config.js'
 				: 'test/config.js';
 				
@@ -139,9 +139,8 @@ var cfg_prepairSettings,
 		}
 		
 		var file = new io.File(path);
-		
 		if (file.exists() === false) 
-			return {};
+			return { error: '404 ' + path };
 		
 		
 		return require(file.uri.toLocalFile());

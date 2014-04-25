@@ -30,10 +30,11 @@
 	}
 	
 	function teardownDelegate(ctx, teardown, done) {
-		if (teardown == null) {
+		if (teardown == null) 
 			return done;
-		}
+		
 		return function(){
+			ctx.arguments = arguments;
 			runCase(ctx, teardown, done);
 		};
 	}
@@ -48,7 +49,7 @@
 		var timeout = wait();
 		
 		function onTimeout() {
-			if (transport_isBusy(window) && --jam > 0) {
+			if (transport_isBusy(global) && --jam > 0) {
 				timeout = future.timeout = wait();
 				console.log('<transport jam> bold<%d> yellow<%s>'.color, jam, name);
 				return;
@@ -78,7 +79,7 @@
 		var asyncData;
 		try {
 			
-			var args = Array.prototype.slice.call(ctx.arguments || []);
+			var args = _Array_slice.call(ctx.arguments || []);
 			if (typeof fn === 'function') {
 				
 				if (case_isAsync(fn)) {
@@ -91,8 +92,7 @@
 				
 				fn.apply(ctx, args);
 			}
-			teardownDelegate(ctx, teardown, done)();	
-		
+			teardownDelegate(ctx, teardown, done)();
 		} catch(error){
 			
 			if (asyncData)
@@ -215,7 +215,7 @@
 			_nextCase: function(){
 				
 				if (arguments.length > 0) 
-					this.proto.arguments = Array.prototype.slice.call(arguments);
+					this.proto.arguments = _Array_slice.call(arguments);
 				
 				for (var key in this.suite) {
 					if (~this.processed.indexOf(key)) {

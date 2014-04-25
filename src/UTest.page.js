@@ -35,8 +35,9 @@ var UTestPage;
 				
 				var base = '/utest/';
 				if (/https?:/.test(url)) {
-					url.lastIndexOf('/');
 					base = /https?:\/\/[^\/]+/.exec(url)[0];
+				} else {
+					base += url;
 				}
 				
 				if (/<\s*head[^>]*>/i.test(html)) {
@@ -56,6 +57,7 @@ var UTestPage;
 					html = html.replace(/(head[^>]*>)/i, '$1 <base href="' + base + '" />');
 				}
 				
+				
 				_iframe = document.createElement('iframe');
 				
 				document
@@ -68,7 +70,7 @@ var UTestPage;
 					
 				/* expose Atma and jQuery */
 				_win.Class = Class;
-				_win.include = include;
+				_win.include = include.instance(url);
 				_win.mask = mask;
 				_win.Compo = mask.Compo;
 				_win.jmask = mask.jmask;
@@ -79,7 +81,7 @@ var UTestPage;
 				var listener = xhr_createListener(_win);
 				
 				$(_iframe).load(function(){
-					include.allDone(function(){
+					_win.include.allDone(function(){
 						listener.done(function(){
 							_win.__utest_isLoading = false;
 							
@@ -91,36 +93,33 @@ var UTestPage;
 				})
 				
 				_doc.open();
-				_setHistoryPath(_win, url);
-				
+				location_pushHistory(url, _win);
 				_doc.write(html);
 				_doc.close();
-				
+			
 			})
 		}
 	};
 	
-	function _setHistoryPath(win, path){
-		if (win.history == null || win.history.pushState == null) 
-			return;
-		
-		
-		
-		var a;
-		a = document.createElement('a');
-		a.href = path;
-		
-		path = ''
-			+ win.parent.location.protocol
-			+ '//'
-			+ win.parent.location.host
-			+ a.pathname
-			+ a.search
-			+ a.hash
-			;
-		
-		win.history.pushState(null, null, path);
-	}
+	//function _setHistoryPath(win, path){
+	//	if (win.history == null || win.history.pushState == null) 
+	//		return;
+	//	
+	//	var a;
+	//	a = document.createElement('a');
+	//	a.href = path;
+	//	
+	//	path = ''
+	//		+ win.parent.location.protocol
+	//		+ '//'
+	//		+ win.parent.location.host
+	//		+ a.pathname
+	//		+ a.search
+	//		+ a.hash
+	//		;
+	//	
+	//	win.history.pushState(null, null, path);
+	//}
 	
 	function request(url, method, headers, data, callback) {
 		
@@ -146,7 +145,7 @@ var UTestPage;
 			.fail(function(xhr, textStatus){
 				callback({
 					responseText: xhr.responseText,
-					statusCode: xhr.statusCode(),
+					statusCode: xhr.status,
 					headers: xhr.getAllResponseHeaders()
 				});
 			})

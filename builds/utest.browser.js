@@ -8,12 +8,14 @@
 
 // import ../.reference/atma/atma-logger/src/color/color.js
 (function(){
+	var global = window;
 	var __env = 'dom';
 	
 	// import ../src/vars.js
 	// import ../src/assert/assert.browser.js
 	// import ../src/utils/xhr.js
 	// import ../src/utils/array.js
+	// import ../src/utils/location.js
 	// import ../src/utils/transport.jam.js
 	
 	// import ../src/UTest.js

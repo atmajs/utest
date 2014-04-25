@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.8.50",
+    "version": "0.8.52",
     "devDependencies": {
         "atma": ">0.9.27",
         "atma-utest": ">0.0.0"
@@ -21,7 +21,7 @@
         ]
     },
     "scripts": {
-        "test": "node_modules/.bin/atma test UTest"
+        "test": "node_modules/.bin/atma test"
     },
     "repository": {
         "type": "git",
