@@ -39,7 +39,22 @@ var UTestPage;
 					base = /https?:\/\/[^\/]+/.exec(url)[0];
 				}
 				
-				html = html.replace(/(head[^>]*>)/, '$1 <base href="' + base + '" />');
+				if (/<\s*head[^>]*>/i.test(html)) {
+					// no head
+					var index = html.indexOf('>');
+					if (index !== -1) {
+						
+						html = html.substring(0, index + 1)
+							+ '<head><base href="'
+							+ base
+							+ '" /></head>'
+							+ html.substring(index + 1)
+							;
+					}
+				}
+				else {
+					html = html.replace(/(head[^>]*>)/i, '$1 <base href="' + base + '" />');
+				}
 				
 				_iframe = document.createElement('iframe');
 				
@@ -59,16 +74,23 @@ var UTestPage;
 				_win.jmask = mask.jmask;
 				_win.jQuery = _win.$ = $;
 				
+				
+				var listener = xhr_createListener(_win);
+				
 				$(_iframe).load(function(){
 					include.allDone(function(){
-						
-						setTimeout(function(){
-							callback(null, _doc, _win, headers);
+						listener.done(function(){
+							
+							setTimeout(function(){
+								callback(null, _doc, _win, headers);
+							});
 						});
 					});
 				})
 				
 				_doc.open();
+				_setHistoryPath(_win, url);
+				
 				_doc.write(html);
 				_doc.close();
 				
@@ -76,6 +98,27 @@ var UTestPage;
 		}
 	};
 	
+	function _setHistoryPath(win, path){
+		if (win.history == null || win.history.pushState == null) 
+			return;
+		
+		
+		
+		var a;
+		a = document.createElement('a');
+		a.href = path;
+		
+		path = ''
+			+ win.parent.location.protocol
+			+ '//'
+			+ win.parent.location.host
+			+ a.pathname
+			+ a.search
+			+ a.hash
+			;
+		
+		win.history.pushState(null, null, path);
+	}
 	
 	function request(url, method, headers, data, callback) {
 		

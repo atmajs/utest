@@ -10,6 +10,7 @@
 (function(){
 	// import ../src/vars.js
 	// import ../src/assert/assert.browser.js
+	// import ../src/utils/xhr.js
 	// import ../src/utils/array.js
 	
 	// import ../src/UTest.js
