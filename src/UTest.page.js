@@ -73,6 +73,7 @@ var UTestPage;
 				_win.Compo = mask.Compo;
 				_win.jmask = mask.jmask;
 				_win.jQuery = _win.$ = $;
+				_win.__utest_isLoading = true;
 				
 				
 				var listener = xhr_createListener(_win);
@@ -80,6 +81,7 @@ var UTestPage;
 				$(_iframe).load(function(){
 					include.allDone(function(){
 						listener.done(function(){
+							_win.__utest_isLoading = false;
 							
 							//setTimeout(function(){
 								callback(null, _doc, _win, headers);

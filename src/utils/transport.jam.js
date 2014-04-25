@@ -39,14 +39,11 @@ var transport_isBusy;
 	}
 	
 	function frame_isReady(frame){
-		if (window.readyState == null) {
-			console.warn('<transport jam> `readyState` property failed');
-			frame_isReady = function() {
-				return true;
-			};
-		}
-		
 		try {
+			// `readyState` fallback
+			if ('__utest_isLoading' in frame)
+				return frame.__utest_isLoading;
+			
 			return (frame.document || frame.contentDocument).readyState === 'complete';
 		} catch(error){
 			// cross-origin ?
