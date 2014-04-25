@@ -40,23 +40,36 @@
 	
 	function async(callback, name) {
 		var isTimeouted = false,
+			jam = 5,
 			fn = function(){
 				clearTimeout(timeout);
 				!isTimeouted && callback.apply(null, arguments);
 			};
+		var timeout = wait();
 		
-		var timeout = setTimeout(function(){
-			console.error('Async Suite Timeout - ', name);
+		function onTimeout() {
+			if (transport_isBusy(window) && --jam > 0) {
+				timeout = future.timeout = wait();
+				console.log('<transport jam> bold<%d> yellow<%s>'.color, jam, name);
+				return;
+			}
 			
+			console.error('Async Suite Timeout - ', name);
 			isTimeouted = true;
 			assert.timeouts.push(name);
 			callback();
-		}, _options.timeout);
+		}
 		
-		return {
+		function wait() {
+			return setTimeout(onTimeout, _options.timeout);
+		}
+		
+		var future = {
 			fn: fn,
 			id: timeout
 		};
+		
+		return future;
 	}
 	
 	

@@ -1,16 +1,34 @@
-var xhr_createListener;
+var xhr_createListener,
+	xhr_isBusy;
 
 (function(){
 	
 	xhr_createListener = function(win){
 		
-		if (win.XMLHttpRequestListener__) 
-			return win.XMLHttpRequestListener__;
+		if (KEY in win) 
+			return win[KEY];
 		
-		return win.XMLHttpRequestListener__ = wrapXhr(win);
+		return win[KEY] = wrapXhr(win);
+	};
+	
+	xhr_isBusy = function(win){
+		if (win == null) 
+			win = window;
+		
+		if (KEY in win === false) 
+			return false;
+		
+		if (win[KEY].isBusy()) 
+			return true;
+		
+		if (win.parent !== win) 
+			return xhr_isBusy(win);
+		
+		return false;
 	};
 	
 	// private
+	var KEY = 'XMLHttpRequestListener__';
 	
 	function wrapXhr(win){
 		if (win.parent !== win) 
@@ -47,10 +65,10 @@ var xhr_createListener;
 				return;
 			}
 			
-			if (win.parent.XMLHttpRequestListener__) {
+			if (win.parent[KEY]) {
 				win
 					.parent
-					.XMLHttpRequestListener__
+					[KEY]
 					.done(dfr.resolveDelegate())
 					;
 			}
@@ -67,7 +85,7 @@ var xhr_createListener;
 				return;
 			}
 			
-			var pxhr_listener = win.parent.XMLHttpRequestListener__;
+			var pxhr_listener = win.parent[KEY];
 			if (pxhr_listener == null || pxhr_listener.isBusy() === false) {
 				callback();
 				return;

@@ -1,9 +1,11 @@
 
 (function(){
+	var __env = 'node';
 	
 	// import ../src/vars.js
 	
 	// import ../src/utils/array.js
+	// import ../src/utils/transport.jam.js
 	
 	// import ../src/UTest.js
 	// import ../src/assert/assert.node.js
