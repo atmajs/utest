@@ -349,7 +349,7 @@ var cfg_prepairSettings,
 			executor = path_isForBrowser(path) ? 'dom' : 'node';
 		
 		
-		if ('dom' === executor)
+		if ('dom' === executor || 'browser' === executor)
 			domScripts.push(path);
 			
 		if ('node' === executor)

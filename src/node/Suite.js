@@ -108,7 +108,7 @@ var RunnerSuite = Class({
 			this.watch = config.watch;
 		}
 
-		if (config.exec === 'browser') {
+		if ('browser' === config.exec || 'dom' === config.exec) {
 			cfg_add(this, 'cfgBrowser', config);
 			return;
 		}
