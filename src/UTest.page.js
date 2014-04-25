@@ -81,9 +81,9 @@ var UTestPage;
 					include.allDone(function(){
 						listener.done(function(){
 							
-							setTimeout(function(){
+							//setTimeout(function(){
 								callback(null, _doc, _win, headers);
-							});
+							//});
 						});
 					});
 				})
