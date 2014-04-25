@@ -21,7 +21,7 @@ var transport_isBusy;
 		};
 		
 		//= private
-		// Initialize
+		//= Initialize
 		xhr_createListener(window);
 	}
 	
@@ -35,16 +35,22 @@ var transport_isBusy;
 			if (frame_isReady(win.frames[i]) === false) 
 				return false;
 		}
-		
-		function frame_isReady(frame){
-			try {
-				return frame.document.readyState === 'complete';
-			} catch(error){
-				// cross-origin ?
-				return false;
-			}
+		return true;
+	}
+	
+	function frame_isReady(frame){
+		if (window.readyState == null) {
+			console.warn('<transport jam> `readyState` property failed');
+			frame_isReady = function() {
+				return true;
+			};
 		}
 		
-		return true;
+		try {
+			return (frame.document || frame.contentDocument).readyState === 'complete';
+		} catch(error){
+			// cross-origin ?
+			return false;
+		}
 	}
 }());
