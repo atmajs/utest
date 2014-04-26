@@ -85,15 +85,18 @@ var UTestPage;
 						listener.done(function(){
 							_win.__utest_isLoading = false;
 							
-							//setTimeout(function(){
-								callback(null, _doc, _win, headers);
-							//});
+							
+							callback(null, _doc, _win, headers);
 						});
 					});
 				})
 				
+				location_pushSearch(url);
 				_doc.open();
-				location_pushHistory(url, _win);
+				
+				// Mozilla throws NS_ERROR_FAILURE. workaround with querystring only
+				//- location_pushHistory(url, _win);
+				
 				_doc.write(html);
 				_doc.close();
 			
@@ -101,25 +104,6 @@ var UTestPage;
 		}
 	};
 	
-	//function _setHistoryPath(win, path){
-	//	if (win.history == null || win.history.pushState == null) 
-	//		return;
-	//	
-	//	var a;
-	//	a = document.createElement('a');
-	//	a.href = path;
-	//	
-	//	path = ''
-	//		+ win.parent.location.protocol
-	//		+ '//'
-	//		+ win.parent.location.host
-	//		+ a.pathname
-	//		+ a.search
-	//		+ a.hash
-	//		;
-	//	
-	//	win.history.pushState(null, null, path);
-	//}
 	
 	function request(url, method, headers, data, callback) {
 		

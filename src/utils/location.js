@@ -1,6 +1,22 @@
-var location_pushHistory;
+var location_pushHistory,
+	location_pushSearch;
 
 (function(){
+	location_pushSearch = function(path, win){
+		win = win || window;
+		
+		if (win.history == null || win.history.pushState == null) 
+			return;
+		
+		var q = path.indexOf('?');
+		if (q === -1) 
+			return;
+		
+		try {
+			win.history.pushState({}, '', path.substring(q));
+		} catch(error){}
+	};
+	
 	location_pushHistory = function(path, win){
 		win = win || window;
 		
