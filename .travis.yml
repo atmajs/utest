@@ -1,6 +1,7 @@
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+  - node_modules/.bin/atma server &
   - sleep 5
   - firefox http://localhost:1111/utest/ &
   - sleep 5
