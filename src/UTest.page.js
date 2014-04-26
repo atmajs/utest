@@ -76,7 +76,7 @@ var UTestPage;
 				_win.jmask = mask.jmask;
 				_win.jQuery = _win.$ = $;
 				_win.__utest_isLoading = true;
-				
+				_win.domain = window.domain;
 				
 				var listener = xhr_createListener(_win);
 				

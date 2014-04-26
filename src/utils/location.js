@@ -20,6 +20,8 @@ var location_pushHistory;
 			+ a.hash
 			;
 		
-		win.history.pushState(null, null, path);
+		try {
+			win.history.pushState(null, null, path);
+		} catch(error){}
 	}
 }());
