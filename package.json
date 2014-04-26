@@ -5,10 +5,9 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.8.55",
+    "version": "0.8.57",
     "devDependencies": {
-        "atma": ">0.9.27",
-        "atma-utest": ">0.0.0"
+        "atma": "latest"
     },
     "dependencies": {
         "socket.io-client": "~0.9.11",
