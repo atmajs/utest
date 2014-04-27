@@ -113,13 +113,19 @@ var UTestPage;
 			headers['x-remote'] = url;
 			url = '/utest/server/proxy';
 		}
+		var contentType,
+			body = data;
+		if (body && typeof body !== 'string') {
+			body = JSON.stringify(body);
+			contentType = 'application/json; charset=utf-8';
+		}
 		
 		$
 			.ajax({
 				url: url,
 				cache: false,
-				contentType: data && 'application/json; charset=utf-8',
-				data: data && JSON.stringify(data),
+				contentType: contentType,
+				data: body,
 				type: (method || 'get').toUpperCase(),
 				headers: headers
 			})

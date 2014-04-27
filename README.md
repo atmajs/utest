@@ -25,9 +25,8 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 
 - **Node.js**-runner  ` $ atma test foo `.
 - **Browser**-runner  
-	- with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. And you are ready to run your scripts in dom environment ` $ atma test foo -browser `
-	- UPD: (up from v.8.14) if the server is not running, uTest starts the server, launches the system default browser, navigates to the slave capture url and resumes the runner.
-- **Watcher**       ` -watch ` flag allows atma test instance not to be closed after testing, but waiting for any changes in files, that were used in unit tests and all its includejs dependencies.
+	- with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. _Otherwise it will be done under the hood._  Now run ` $ atma test foo -browser `.
+- **Watcher**       ` -watch ` flag allows atma test instance not to be closed after testing, but wait for any changes in files, that were used in unit tests and all its includejs dependencies.
 - **Environments** By default,  there will be available additional libraries in all tests
 	
 	- [IncludeJS](https://github.com/atmajs/IncludeJS)
@@ -39,9 +38,10 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 	- SinonJS
 	
 - **Test Suites**   though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
-- **Pages**         Load and Test webpages
+- **Pages**         Load and Test webpages or other HTTP endpoints, like RESTful services.
 - **Configs**       configurations for more complex projects
-- Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
+
+> Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
 	- Launch slave url in any browser - Chrome, IE(9+), Opera, Mozilla. _PhantomJS is only webkit based._
 	- Much better debugging. Use browsers developer tools to set breakpoints in your tests and assertions.
 
@@ -65,13 +65,13 @@ eq(Application.version, 1); // alias for assert.equal()
 > More Examples you can find in most [Atma.js Libraries](https://github.com/atmajs)
 
 - Node.js: 
-	```coffeescript
+	```bash
 		cd myscript
 		atma test app
 		# OR atma test app -watch
 	```
 - Browser:
-	```coffeescript
+	```bash
 		cd myscript
 		atma test app -browser
 		# OR atma test app -browser -watch
@@ -82,12 +82,14 @@ This is the simpliest test case.
 
 _app.test_
 ```javascript
-include.inject('subfolder/app.js').done(function(){
-	eq(Application.version,1);
-})
+include
+	.inject('subfolder/app.js')
+	.done(function(){
+		eq(Application.version,1);
+	})
 ```
 
-- ```include.inject``` - matters only in nodejs test runner. As ```include.js``` is like require() - scripts are evaluated in there module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit tests one.
+- ```include.inject``` - matters only in nodejs test runner. As ```include.js```, like require, evaluates scripts in the module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit tests one.
 
 
 ##### Assertions
@@ -127,6 +129,7 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
   // isNot_
   
   assert.await(Function, name)
+  assert.avoid(Function, name)
   
   $.fn.has_
   $.fn.hasNot_
@@ -151,9 +154,15 @@ UTest({
 	
 	'async test': function(done){
 		$.get('/rest/request').then(function(response){
-			assert.equal(response, 'foo');
-			done();
+			eq_(response, 'foo');
+			
+			// e.g. pass variables to next function
+			done(response);
 		})
+	},
+	'receive args': function(done, fooValue){
+		eq_(fooValue, 'foo');
+		done();
 	},
 	
 	'$before': function(){
@@ -174,12 +183,35 @@ UTest({
 
 ##### UTest server
 
-- load any web page
+- HTTP (webpage / service) loading
 	
 	```javascript
 	UTest
 		.server
-		.request(url [, method, bodyArgs], callback);
+		.request(url [, method, bodyArgs], callback /* <Callback> */);
+		
+	UTest
+		.server
+		/* -params {
+		 * 		url: String,
+		 *		headers:?Object,
+		 *		data: ?Object|String
+		 *		method: ?String }
+		 */
+		.request(params) //-> Promise
+		.done(callback /* <Callback> */)
+		.fail(onError);
+		
+	// <Callback> - depends on response:
+	// 1. text/html: create a document and wait for the document to be loaded:
+	callback === Function<document, window, headers>
+	
+	// 2. json response
+	callback === Function<json, headers>
+	
+	// 3. other
+	callback === Function<responseText, headers>
+	
 		
 	UTest({
 		'google has input': function(done){
@@ -196,7 +228,7 @@ UTest({
 	});
 	```
 	
-- render MaskJS server-side
+- server-side MaskJS rendering
 
 	```javascript
 	UTest
