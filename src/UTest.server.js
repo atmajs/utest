@@ -37,7 +37,7 @@ var UTestServer;
 					
 					
 					
-					UTestPage.request('/utest/server/render', 'post', {
+					UTestPage.request('/utest/server/render', 'post', null, {
 						template: template,
 						model: model,
 						controller: ctr,

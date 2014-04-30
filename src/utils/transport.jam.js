@@ -42,7 +42,7 @@ var transport_isBusy;
 		try {
 			// `readyState` fallback
 			if ('__utest_isLoading' in frame)
-				return frame.__utest_isLoading;
+				return frame.__utest_isLoading === false;
 			
 			return (frame.document || frame.contentDocument).readyState === 'complete';
 		} catch(error){
