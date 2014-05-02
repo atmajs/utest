@@ -1,5 +1,7 @@
 (function() {
-	
+	/**
+	 *	Atma.Toolkit Action entry
+	 */
 	var _suite,
 		_configs
 		;

@@ -25,13 +25,25 @@ var slave_start;
 				
 				
 				var url = 'http://%1:%2/utest/'.format(HOST, PORT);
-				
-				require('openurl').open(url, callback);
+				open(url, callback);
 			}, 0);
 		});
 		
 	};
 	
+	function open(url, callback) {
+		
+		var spawn = require('child_process').spawn,
+			commands = {
+				darwin: 'open',
+				win32: 'explorer.exe',
+				linux: 'xdg-open'
+			};
+		
+		spawn(commands[process.platform], [ url ]);
+		callback();
+		
+	}
 	
 	function ensurePortIsBusy(callback, tries) {
 		

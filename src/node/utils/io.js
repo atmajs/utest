@@ -50,7 +50,7 @@ var io_connect,
 				socket.socket.disconnectSync();
 				socket.socket.removeAllListeners();
 				
-				dfr.reject(error);
+				dfr && dfr.reject(error);
 			})
 			
 		
