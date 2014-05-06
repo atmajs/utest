@@ -59,14 +59,14 @@ var RunnerNode = (function() {
 			var	parts = x.split('::'),
 				src = parts[0],
 				alias = parts[1],
-				file = new io.File(base.combine(src[0] === '/' ? src.substring(1) : src))
+				uri = base.combine(src[0] === '/' ? src.substring(1) : src)
 				;
-			if (file.exists() === false) {
+			if (io.File.exists(uri) === false) {
 				logger.warn('Resource from Env - 404 -', x);
 				return;
 			}
 			
-			var path = file.uri.toString();
+			var path = uri.toString();
 			if (alias) 
 				path += '::' + alias;
 			
