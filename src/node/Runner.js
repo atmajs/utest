@@ -1,7 +1,7 @@
 var status_blank = 1,
 	status_connecting = 2,
 	status_connected = 3,
-	status_prepair = 4;
+	status_prepair = 4,
 	status_testing = 5,
 	status_ready = 6,
 	util = require('util');

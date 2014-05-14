@@ -10,6 +10,7 @@
 (function(){
 	var global = window;
 	var __env = 'dom';
+	var __global = window;
 	
 	// import ../src/vars.js
 	// import ../src/assert/assert.browser.js

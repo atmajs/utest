@@ -1,5 +1,6 @@
 var io_connect,
-	io_reset;
+	io_clean
+	;
 	
 (function(){
 	

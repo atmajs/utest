@@ -35,4 +35,4 @@
 		return data;
 	};
 	
-}(this));
+}(__global));

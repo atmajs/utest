@@ -102,8 +102,6 @@
 			
 			console.error(error.stack);
 			
-			this.errors++;
-			
 			assert.errors++;
 			done();
 			
@@ -313,6 +311,6 @@
 	global.UTest = UTest;
 	
 	
-}(this));
+}(__global));
 
 

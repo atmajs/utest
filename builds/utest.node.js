@@ -1,6 +1,8 @@
+"use strict";
 
 (function(){
 	var __env = 'node';
+	var __global = global;
 	
 	// import ../src/vars.js
 	
