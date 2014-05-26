@@ -22,6 +22,11 @@ var Runner = (function() {
 			return files;
 		}
 		
+		if (config.fork) {
+			// no sub files
+			return [];
+		}
+		
 		var scripts = config.scripts,
 			base = config.base;
 		

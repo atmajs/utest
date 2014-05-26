@@ -13,6 +13,10 @@ var RunnerSuite = Class({
 		logger(90).log('RunnerSuite:', configs, settings);
 	},
 	
+	forks: null,
+	cfgNode: null,
+	cfgBrowser: null,
+	
 	closeSockets: function(){
 		ruqq.arr.each(this.runners, function(x){
 			x.socket && x.socket.socket && x.socket.socket.disconnectSync();
@@ -61,7 +65,7 @@ var RunnerSuite = Class({
 				this.onComplete();
 				return;
 			}
-			runner.run(this.callback);
+			runner.run(this.process);
 		},
 		
 		runTests: function(){
@@ -79,6 +83,13 @@ var RunnerSuite = Class({
 		
 		if (this.cfgNode)
 			this.runners.push(new RunnerNode(this.cfgNode));
+			
+		if (this.forks) {
+			var runners = this.forks.map(function(cfg) {
+				return new RunnerFork(cfg);
+			});
+			this.runners = this.runners.concat(runners);
+		}
 			
 		this.runners.forEach(function(runner){
 			runner.on('complete', this.process);
@@ -100,16 +111,22 @@ var RunnerSuite = Class({
 	},
 	handleSingle: function(config) {
 		
-		if (this.base == null && config.base) {
-			this.base = config;
-		}
+		if (this.base == null && config.base) 
+			this.base = config.base;
 		
-		if (this.watch == null && config.watch) {
+		if (this.watch == null && config.watch) 
 			this.watch = config.watch;
-		}
-
+		
 		if ('browser' === config.exec || 'dom' === config.exec) {
 			cfg_add(this, 'cfgBrowser', config);
+			return;
+		}
+		
+		if (typeof config.fork === 'string') {
+			if (this.forks == null) 
+				this.forks = [];
+			
+			this.forks.push(config);
 			return;
 		}
 

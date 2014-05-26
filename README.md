@@ -8,8 +8,9 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 - [Simplest example](#simplest-example)
 - [Assertions](#assertions)
 - [UTest Class](#utest-class)
-	- [http](#utest-server)
+    - [http](#utest-server)
 - [Config](#config)
+- [Forks](#forks)
 - [CLI Sugar](#cli-sugar)
 - [ES6](#es6)
 - [Simplest CommonJS test](#simplest-commonjs-test)
@@ -25,25 +26,25 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 
 - **Node.js**-runner  ` $ atma test foo `.
 - **Browser**-runner  
-	- with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. _Otherwise it will be done under the hood._  Now run ` $ atma test foo -browser `.
+    - with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. _Otherwise it will be done under the hood._  Now run ` $ atma test foo -browser `.
 - **Watcher**       ` -watch ` flag allows atma test instance not to be closed after testing, but wait for any changes in files, that were used in unit tests and all its includejs dependencies.
 - **Environments** By default,  there will be available additional libraries in all tests
-	
-	- [IncludeJS](https://github.com/atmajs/IncludeJS)
-	- [MaskJS](https://github.com/atmajs/MaskJS)
-	- [ClassJS](https://github.com/atmajs/ClassJS)
-	- [IO](https://github.com/atmajs/atma-io)
-	- [Logger](https://github.com/atmajs/atma-logger)
-	- jQuery
-	- SinonJS
-	
+    
+    - [IncludeJS](https://github.com/atmajs/IncludeJS)
+    - [MaskJS](https://github.com/atmajs/MaskJS)
+    - [ClassJS](https://github.com/atmajs/ClassJS)
+    - [IO](https://github.com/atmajs/atma-io)
+    - [Logger](https://github.com/atmajs/atma-logger)
+    - jQuery
+    - SinonJS
+    
 - **Test Suites**   though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
 - **Pages**         Load and Test webpages or other HTTP endpoints, like RESTful services.
 - **Configs**       configurations for more complex projects
 
 > Why not to use headless browser testrunner, like PhantomJS? `Server-Slave` pattern has much more advantages:
-	- Launch slave url in any browser - Chrome, IE(9+), Opera, Mozilla. _PhantomJS is only webkit based._
-	- Much better debugging. Use browsers developer tools to set breakpoints in your tests and assertions.
+    - Launch slave url in any browser - Chrome, IE(9+), Opera, Mozilla. _PhantomJS is only webkit based._
+    - Much better debugging. Use browsers developer tools to set breakpoints in your tests and assertions.
 
 Default test extension: `*.test*`
 
@@ -65,17 +66,17 @@ eq(Application.version, 1); // alias for assert.equal()
 > More Examples you can find in most [Atma.js Libraries](https://github.com/atmajs)
 
 - Node.js: 
-	```bash
-		cd myscript
-		atma test app
-		# OR atma test app -watch
-	```
+    ```bash
+        cd myscript
+        atma test app
+        # OR atma test app -watch
+    ```
 - Browser:
-	```bash
-		cd myscript
-		atma test app -browser
-		# OR atma test app -browser -watch
-	```
+    ```bash
+        cd myscript
+        atma test app -browser
+        # OR atma test app -browser -watch
+    ```
 
 This is the simpliest test case. 
 > As those 2 files ` app.js/app.test ` are in the same directory, `app.js` will be preloaded when 'app.test' is started
@@ -83,10 +84,10 @@ This is the simpliest test case.
 _app.test_
 ```javascript
 include
-	.inject('subfolder/app.js')
-	.done(function(){
-		eq(Application.version,1);
-	})
+    .inject('subfolder/app.js')
+    .done(function(){
+        eq(Application.version,1);
+    })
 ```
 
 - ```include.inject``` - matters only in nodejs test runner. As ```include.js```, like require, evaluates scripts in the module scope, so Application object will be not available in our test, but ```inject``` forces script to be evaluated in the same context/scope as the unit tests one.
@@ -146,110 +147,110 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
 
 ```javascript
 UTest({
-	'check object': function(){
-		var A = function(){this.letter = 'A'};
-		
-		assert.deepEqual({letter: 'A'}, new A);
-	},
-	
-	'async test': function(done){
-		$.get('/rest/request').then(function(response){
-			eq_(response, 'foo');
-			
-			// e.g. pass variables to next function
-			done(response);
-		})
-	},
-	'receive args': function(done, fooValue){
-		eq_(fooValue, 'foo');
-		done();
-	},
-	
-	'$before': function(){
-		// function is called before tests cases are run
-		// (supports async call - use done as first argument)
-	},
-	'$teardown': function(){
-		// function is called after each test case
-		// (supports async call)
-	},
-	
-	'$after': function(){
-		// function is called after all test cases from
-		// this particular Utest instance are completed
-	}
+    'check object': function(){
+        var A = function(){this.letter = 'A'};
+        
+        assert.deepEqual({letter: 'A'}, new A);
+    },
+    
+    'async test': function(done){
+        $.get('/rest/request').then(function(response){
+            eq_(response, 'foo');
+            
+            // e.g. pass variables to next function
+            done(response);
+        })
+    },
+    'receive args': function(done, fooValue){
+        eq_(fooValue, 'foo');
+        done();
+    },
+    
+    '$before': function(){
+        // function is called before tests cases are run
+        // (supports async call - use done as first argument)
+    },
+    '$teardown': function(){
+        // function is called after each test case
+        // (supports async call)
+    },
+    
+    '$after': function(){
+        // function is called after all test cases from
+        // this particular Utest instance are completed
+    }
 });
 ```
 
 ##### UTest server
 
 - HTTP (webpage / service) loading
-	
-	```javascript
-	UTest
-		.server
-		.request(url [, method, bodyArgs], callback /* <Callback> */);
-		
-	UTest
-		.server
-		/* -params {
-		 * 		url: String,
-		 *		headers:?Object,
-		 *		data: ?Object|String
-		 *		method: ?String }
-		 */
-		.request(params) //-> Promise
-		.done(callback /* <Callback> */)
-		.fail(onError);
-		
-	// <Callback> - depends on response:
-	// 1. text/html: create a document and wait for the document to be loaded:
-	callback === Function<document, window, headers>
-	
-	// 2. json response
-	callback === Function<json, headers>
-	
-	// 3. other
-	callback === Function<responseText, headers>
-	
-		
-	UTest({
-		'google has input': function(done){
-			UTest
-				.server
-				.request('http://google.com', function(error, document, window){
-					eq_(error, null);
-					
-					$(document)
-						.has_('input[type="text"]');
-					done();
-				})
-		}
-	});
-	```
-	
+    
+    ```javascript
+    UTest
+        .server
+        .request(url [, method, bodyArgs], callback /* <Callback> */);
+        
+    UTest
+        .server
+        /* -params {
+         *         url: String,
+         *        headers:?Object,
+         *        data: ?Object|String
+         *        method: ?String }
+         */
+        .request(params) //-> Promise
+        .done(callback /* <Callback> */)
+        .fail(onError);
+        
+    // <Callback> - depends on response:
+    // 1. text/html: create a document and wait for the document to be loaded:
+    callback === Function<document, window, headers>
+    
+    // 2. json response
+    callback === Function<json, headers>
+    
+    // 3. other
+    callback === Function<responseText, headers>
+    
+        
+    UTest({
+        'google has input': function(done){
+            UTest
+                .server
+                .request('http://google.com', function(error, document, window){
+                    eq_(error, null);
+                    
+                    $(document)
+                        .has_('input[type="text"]');
+                    done();
+                })
+        }
+    });
+    ```
+    
 - server-side MaskJS rendering
 
-	```javascript
-	UTest
-		.server
-		.render(template, model, callback);
-		
-	UTest({
-		'render title': function(done){
-			var template = 'h4 > "Hello, ~[name]"',
-				model = { name: 'World' };
-			UTest
-				.server
-				.render(template, model, function(error, document, window){
-					$(document)
-						.has_('html', 'Hello, world');
-						
-					done();
-				})
-		}
-	});
-	```
+    ```javascript
+    UTest
+        .server
+        .render(template, model, callback);
+        
+    UTest({
+        'render title': function(done){
+            var template = 'h4 > "Hello, ~[name]"',
+                model = { name: 'World' };
+            UTest
+                .server
+                .render(template, model, function(error, document, window){
+                    $(document)
+                        .has_('html', 'Hello, world');
+                        
+                    done();
+                })
+        }
+    });
+    ```
 
 ##### Config
 
@@ -264,64 +265,103 @@ UTest({
 
 ```javascript
 module.exports = {
-	suites: {
-		'suite name': {
-			exec: <String> 'node' | 'dom',
+    suites: {
+        'suite name': {
+            exec: <String> 'node' | 'dom',
 
-			// preloading scripts
+            // preloading scripts
             // (path is relative to projects directory)
-			env: String | Array<String>,
+            env: String | Array<String>,
             
-			// working directory, @default: cwd
-			base: String,
-			
+            // working directory, @default: cwd
+            base: String,
+            
             // path to tests, glob pattern is also supported
             // e.g. test/**-node.test
-			tests: String | Array<String>
-		}
-	}
+            tests: String | Array<String>
+        }
+    }
+};
+```
+```bash
+$ cd app-project
+$ atma test
+```
+
+##### Forks
+Split big applications into projects. Develop and test them seperatly. Then include the tests into application test suites
+```
+/app
+    /Helpers
+        /src
+            ...
+        /test
+            ...
+            config.js
+    /Api
+        /src
+            ...
+        /test
+            ...
+            config.js
+    /test
+        config.js
+```
+```javascript
+// app/test/config.js
+module.exports = {
+    suites: {
+        'My Helpers Test Suite': {
+            fork: 'Helpers/test/config.js',
+            base: 'Helpers/'
+        },
+        'My API Test Suite: {
+            fork: 'Api/test/config.js',
+            base: 'Api/'
+        }
+    }
 };
 ```
 
 ##### CLI Sugar
 - `atma test`
 
-	Load the configuration from `%CWD%/test/config.js` and run all tests and suites
+    Load the configuration from `%CWD%/test/config.js` and run all tests and suites
 
 - `atma test foo`
 
-	Run the test `%CWD%/test/foo.test`. If exists, the configuration will also be loaded and the `ENV` property for this path will be extracted to preload the required resources.
-	
-	```javascript
-	// test/config.js
-	module.exports = {
-		suites: {
-			'baz-runner': {
-				exec: 'dom',
-				env: 'lib/baz.js'
-				tests: 'test/baz/**.test
-			}
-		}
-	}
-	```
-	`atma test baz/quux` - run single file test and the `lib/baz.js` will be preloaded.
+    Run the test `%CWD%/test/foo.test`. If exists, the configuration will also be loaded and the `ENV` property for this path will be extracted to preload the required resources.
+    
+    ```javascript
+    // test/config.js
+    module.exports = {
+        suites: {
+            'baz-runner': {
+                exec: 'dom',
+                env: 'lib/baz.js'
+                tests: 'test/baz/**.test
+            }
+        }
+    }
+    ```
+    `atma test baz/quux` - run single file test and the `lib/baz.js` will be preloaded.
 
 - `atma test baz-runner`
 
-	Run single suite
+    Run single suite
 
 - `atma test baz/**.test`
 
-	Run files by glob matching
+    Run files by glob matching
 
 - `atma test -config my-test-config.js
 
-	Override configuration path
-	
+    Override configuration path
+    
 - CLI flags
-	- `-browser` runs a test in browser
-	- `-node` runs a test in Node.js
-	- `-watch` watches for file changes and reruns the tests
+    - `-browser` runs a test in browser
+    - `-node` runs a test in Node.js
+    - `-watch` watches for file changes and reruns the tests
 
 ##### ES6
 Write your test using EcmaScript 6. This is possible due to [Google Traceur Compiler](https://github.com/google/traceur-compiler) and the [Atma.Toolkit Plugin](https://github.com/atmajs/atma-loader-traceur).
@@ -329,21 +369,21 @@ Write your test using EcmaScript 6. This is possible due to [Google Traceur Comp
 **How to start?**
 
 - Install the plugin
-	
-	```bash
-	$ atma plugin install atma-loader-traceur
-	```
+    
+    ```bash
+    $ atma plugin install atma-loader-traceur
+    ```
 - Specify `test` extension to be handled by the tracuer. Edit your `package.json` to have at least:
-	
-	```json
-	{
-		"atma": {
-			"settings": {
-				"traceur-extension": "test"
-			}
-		}
-	}
-	```
+    
+    ```json
+    {
+        "atma": {
+            "settings": {
+                "traceur-extension": "test"
+            }
+        }
+    }
+    ```
 **Sample**
 ```es6
 // foo.test
@@ -359,9 +399,9 @@ But there is simpler approach to load it once for all tests with exporting the m
 ```javascript
 // src/some.js
 module.exports = {
-	addOne: function(n){
-		return n + 1;
-    }	
+    addOne: function(n){
+        return n + 1;
+    }    
 };
 ```
 ```javascript
@@ -372,8 +412,8 @@ eq(foo.addOne(1), 2);
 ```javascript
 // test/config.js
 module.exports = {
-	env: ['src/some.js::foo'],
-	tests: 'test/*.test'
+    env: ['src/some.js::foo'],
+    tests: 'test/*.test'
 };
 ```
 
@@ -390,33 +430,33 @@ Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its
 ##### Build, Test, Contribute
 
 - **Prepair**
-	- Install Atma.Toolkit
-		
-		```bash
-		$ npm install atma -g
-		```
-	- Clone atma libraries first into any folder:
-		
-		```bash
-		$ atma atma-clone --all
-		```
-	- Reference the atma libraries
-		
-		```bash
-		$ cd utest/
-		$ atma reference atma
-		```
+    - Install Atma.Toolkit
+        
+        ```bash
+        $ npm install atma -g
+        ```
+    - Clone atma libraries first into any folder:
+        
+        ```bash
+        $ atma atma-clone --all
+        ```
+    - Reference the atma libraries
+        
+        ```bash
+        $ cd utest/
+        $ atma reference atma
+        ```
 - **Build**
-	
-	```bash
-	$ atma
-	```
+    
+    ```bash
+    $ atma
+    ```
 - **Test**
-	
-	```bash
-	$ atma test test/**
-	```
-	
-	
+    
+    ```bash
+    $ atma test test/**
+    ```
+    
+    
 ----
 (c) 2014 MIT - The Atma.js Project

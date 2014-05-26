@@ -183,6 +183,11 @@ var cfg_prepairSettings,
 		for (key in suites) {
 			x = suites[key];
 			
+			if (x.fork) {
+				array.push(x);
+				continue;
+			}
+			
 			config = {
 				base: x.base || base,
 				exec: x.exec,
@@ -238,6 +243,9 @@ var cfg_prepairSettings,
 	
 	
 	cfg_split = function(config) {
+		if (config.fork) 
+			return [ config ];
+		
 		// split config per executor
 		var configs = [];
 		if (!arr_isEmpty(config.domScripts) && !config.node) {
