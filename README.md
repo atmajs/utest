@@ -315,7 +315,7 @@ module.exports = {
             fork: 'Helpers/test/config.js',
             base: 'Helpers/'
         },
-        'My API Test Suite: {
+        'My API Test Suite': {
             fork: 'Api/test/config.js',
             base: 'Api/'
         }
@@ -339,7 +339,7 @@ module.exports = {
             'baz-runner': {
                 exec: 'dom',
                 env: 'lib/baz.js'
-                tests: 'test/baz/**.test
+                tests: 'test/baz/**.test'
             }
         }
     }
@@ -354,14 +354,14 @@ module.exports = {
 
     Run files by glob matching
 
-- `atma test -config my-test-config.js
+- `atma test --config my-test-config.js`
 
     Override configuration path
     
 - CLI flags
-    - `-browser` runs a test in browser
-    - `-node` runs a test in Node.js
-    - `-watch` watches for file changes and reruns the tests
+    - `-browser` runs test in browser
+    - `-node` runs test in Node.js
+    - `-watch` watche for file changes and rerun the tests
 
 ##### ES6
 Write your test using EcmaScript 6. This is possible due to [Google Traceur Compiler](https://github.com/google/traceur-compiler) and the [Atma.Toolkit Plugin](https://github.com/atmajs/atma-loader-traceur).
