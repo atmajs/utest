@@ -90,27 +90,40 @@ var cfg_prepairSettings,
 	
 	
 	cfg_runConfigurationScript = function($script, done){
-		if ($script == null) 
-			return done();
+		if ($script == null) {
+			done();
+			return;
+		}
 		
-		if (typeof $script === 'function') 
-			return $script(done);
+		if (typeof $script === 'function'){
+			$script(done);
+			if ($script.length === 0) 
+				done();
+			return;
+		}
 		
 		if (typeof $script === 'string') {
 			
 			include
+				.instance(process.cwd() + '/')
 				.js($script + '::Script')
 				.done(function(resp){
-					
-					if (!(resp && resp.Script && resp.Script.process)) {
+					var Script = resp.Script;
+					if (Script == null || Script.process == null) {
 						logger
 							.error('<configuration script>', $script)
 							.error(' is not loaded or `process` function not implemented')
 							;
 						
 						done();
+						return;
 					}
-					resp.Script.process(done);
+					if (Script.process.length === 0) {
+						Script.process();
+						done();
+						return;
+					}
+					Script.process(done);
 				});
 				
 			return;
