@@ -11,6 +11,7 @@
 	var RESERVED = ['$before', '$after', '$teardown', '$config', '$run'];
 	
 	// import utils/object.js
+	// import utils/syntax.js
 	
 	// import UTest.config.js
 	// import UTest.page.js
@@ -75,6 +76,13 @@
 	
 	
 	function runCase(ctx, fn, done, teardown, key) {
+		
+		if (fn != null && typeof fn === 'object') {
+			
+			var sub = new UTest(key, fn, ctx);
+			sub.run(teardownDelegate(ctx, teardown, done));
+			return;
+		}
 		
 		var asyncData;
 		try {
@@ -141,12 +149,22 @@
 	var UTest = Class({
 		
 		Extends: UTestServer,
-		Construct: function(suite){
-			
+		Construct: function(mix, suite, parent){
 			if (this instanceof UTest === false) {
-				return new UTest(suite);
+				return new UTest(mix, suite);
 			}
 			
+			var name = mix;
+			if (typeof mix !== 'string' && suite == null) {
+				suite = mix;
+				name = 'UTest'
+			}
+			
+			if (typeof suite === 'function') 
+				suite = syntax_Mocha(suite);
+			
+			
+			this.name = name;
 			this.suite = suite;
 			this.processed = [];
 			this.proto = UTestProtoDelegate(this, suite);
@@ -163,7 +181,8 @@
 					delete suite[key];
 				});
 			
-			_tests.push(this);
+			if (parent == null) 
+				_tests.push(this);
 			return this;
 		},
 		
@@ -231,17 +250,19 @@
 						continue;
 						
 					}
-					
-					if (typeof this.suite[key] !== 'function') {
-						continue;
-					}
-					
 					this.processed.push(key);
 					
-					console.log('');
-					console.print(('   ' + key + ': ').bold);
-					runCase(this.proto, this.suite[key], this._nextCase, this.suite.$teardown, key);
+					var case_ = this.suite[key];
+					if (case_ == null) 
+						continue;
 					
+					var message = ('   ' + key + ': ').bold;
+					if (typeof case_ === 'object') 
+						message = message.bg_cyan;
+					
+					console.log('');
+					console.print(message);
+					runCase(this.proto, case_, this._nextCase, this.suite.$teardown, key);
 					return;
 				}
 				

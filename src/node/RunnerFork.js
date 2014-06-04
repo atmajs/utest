@@ -3,7 +3,7 @@ var RunnerFork = Class({
 	run: function(done) {
 		
 		var cfgPath = this.config.fork,
-			base = this.config.base,
+			base = this.config.cwd,
 			Fork = require('child_process').fork
 			;
 		
@@ -16,10 +16,10 @@ var RunnerFork = Class({
 		var child = Fork(process.mainModule.filename, [
 			'test',
 			'--config',
-			cfgPath,
-			'--base',
-			base
-		]);
+			cfgPath
+		], {
+			cwd: net.Uri.combine(process.cwd(), base)
+		});
 		
 		child.on('exit', function(code){
 			logger.log('Fork done'[ code != 0 ? 'bg_red' : 'bg_green']);

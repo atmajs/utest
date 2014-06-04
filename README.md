@@ -312,12 +312,12 @@ Split big applications into projects. Develop and test them seperatly. Then incl
 module.exports = {
     suites: {
         'My Helpers Test Suite': {
-            fork: 'Helpers/test/config.js',
-            base: 'Helpers/'
+            cwd: 'Helpers/',
+            fork: 'test/config.js'
         },
         'My API Test Suite': {
-            fork: 'Api/test/config.js',
-            base: 'Api/'
+            cwd: 'Api/',
+            fork: 'test/config.js'
         }
     }
 };

@@ -187,33 +187,33 @@ var Runner = (function() {
 			
 			if (data.file && data.line != null) {
 				
+				if ('actual' in data || 'expected' in data) {
+					var msg = '%s bold<red<↔>> %s';
+					logger.log(msg.color, data.actual, data.expected);
+				}
+				
+				if (data.message) 
+					logger.log(' :: '.red.bold + data.message.yellow);
+				
 				var path = data
 						.file
 						.replace(/(\/)?utest\//i, '$1')
 						.replace(/\?.+/, '')
 						.replace(/^\//, ''),
 						
-					uri = new net.Uri(base).combine(path),
-					source = new io.File(uri).read(),
-					lines = source.split(/\r\n|\r|\n/g),
-					line = lines[data.line - 1],
-					code = line && line.trim()
-					;
+					uri = new net.Uri(base).combine(path);
 				
-				if ('actual' in data || 'expected' in data) {
-					var msg = '%s bold<red<↔>> %s';
-									
-					logger.log(msg.color, data.actual, data.expected);
+				if (io.File.exists(uri)) {
+					var source = io.File.read(uri),
+						lines = source.split(/\r\n|\r|\n/g),
+						line = lines[data.line - 1],
+						code = line && line.trim()
+						;
+					logger
+						.log('  bold<%1>'.color.format(path))
+						.log('  bold<cyan< → >> bold<%1 |> bold<red< %2 >>'.color.format(data.line + 1, code))
+						.log('');
 				}
-				
-				if (data.message) 
-					logger.log(' :: '.red.bold + data.message.yellow);
-					
-				logger
-					.log('  bold<%1>'.color.format(path))
-					.log('  bold<cyan< → >> bold<%1 |> bold<red< %2 >>'.color.format(data.line + 1, code))
-					.log('');
-				
 				
 				return;
 			}

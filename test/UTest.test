@@ -1,52 +1,49 @@
+var flow = [],
+	teardowns = 0;
 
-(function(){
-	var flow = [],
-		teardowns = 0;
+UTest({
 	
-	UTest({
+	'first': assert.await(function(){
+		flow.push(1);
+	}),
+	'async': function(done){
 		
-		'first': assert.await(function(){
-			flow.push(1);
-		}),
-		'async': function(done){
-			
-			setTimeout(function(){
-				flow.push(2);
-				done();
-			},100);
-		},
-		'third': function(){
-			flow.push(3);
-		},
-		
-		'pass through variables': function(done){
-			flow.push(4);
-			setTimeout(function(){
-				done('foo', 10);
-			}, 100)
-		},
-		
-		'expect variables': function(done, fooVar, numVar){
-			
-			flow.push(5);
-			eq_(fooVar, 'foo');
-			eq_(numVar, 10);
-			
+		setTimeout(function(){
+			flow.push(2);
 			done();
-		},
+		},100);
+	},
+	'third': function(){
+		flow.push(3);
+	},
+	
+	'pass through variables': function(done){
+		flow.push(4);
+		setTimeout(function(){
+			done('foo', 10);
+		}, 100)
+	},
+	
+	'expect variables': function(done, fooVar, numVar){
 		
-		'$before': function(){
-			flow.push(0);
-		},
-		'$after': assert.await(function(){
-
-			deepEq_(flow, [0, 1, 2, 3, 4, 5]);
-			eq_(teardowns, 5);
-
-		}),
+		flow.push(5);
+		eq_(fooVar, 'foo');
+		eq_(numVar, 10);
 		
-		'$teardown': function(){
-			teardowns++;
-		}
-	});
-}())
+		done();
+	},
+	
+	'$before': function(){
+		flow.push(0);
+	},
+	'$after': assert.await(function(){
+
+		deepEq_(flow, [0, 1, 2, 3, 4, 5]);
+		eq_(teardowns, 5);
+
+	}),
+	
+	'$teardown': function(){
+		teardowns++;
+	}
+});
