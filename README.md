@@ -8,7 +8,10 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 - [Simplest example](#simplest-example)
 - [Assertions](#assertions)
 - [UTest Class](#utest-class)
+    - [skip, force, range](#skip-force-range)
     - [http](#utest-server)
+    - Interfaces
+        - [Mocha](#mocha-syntax)
 - [Config](#config)
 - [Forks](#forks)
 - [CLI Sugar](#cli-sugar)
@@ -143,20 +146,17 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
   
 ```
 
-##### UTest Class
+#### UTest Class
 
 ```javascript
 UTest({
-    'check object': function(){
-        var A = function(){this.letter = 'A'};
-        
-        assert.deepEqual({letter: 'A'}, new A);
+    'foo test': function(){
+        eq_(1, 1);
     },
     
     'async test': function(done){
         $.get('/rest/request').then(function(response){
             eq_(response, 'foo');
-            
             // e.g. pass variables to next function
             done(response);
         })
@@ -166,19 +166,38 @@ UTest({
         done();
     },
     
-    '$before': function(){
-        // function is called before tests cases are run
-        // (supports async call - use done as first argument)
-    },
-    '$teardown': function(){
-        // function is called after each test case
-        // (supports async call)
+    'nested or groupped tests': {
+        'foo': function()
+        'baz': function()
     },
     
-    '$after': function(){
-        // function is called after all test cases from
-        // this particular Utest instance are completed
-    }
+    // function is called before tests cases are run
+    '$before': function(?done),
+    // function is called after each test case
+    '$teardown': function(?done),
+    // function is called after all test cases from
+    '$after': function(?done)
+});
+```
+##### Skip, Force, Range
+There is a simple syntax to limit or skip some tests.
+UTest({
+    // BANG: run tests/groups with `!` only
+    '!run this and other banged tests': function(),
+    '!some group': {
+        'foo': function()
+        'baz': function()
+    },
+    
+    // COMMENT: skip test/group
+    '//skip this and other skipped tests': function(),
+    
+    // RANGES: `[` - start, `]` - end
+    // if start is not specified, then start from the beginning
+    // if end   is not specified, then run to the end
+    
+    '[from this': function(),
+    ']to this': function()
 });
 ```
 
@@ -252,7 +271,22 @@ UTest({
     });
     ```
 
-##### Config
+##### Mocha Syntax
+```javascript
+UTest('Baz suite', function(){
+    // describe mocha tests here
+    it('should do smth', function(){
+        // ..
+    });
+    describe('sub', function(){
+        it('other test', function(){
+            // ..
+        })
+    })
+})
+```
+
+#### Config
 
 ```
 /app-project
