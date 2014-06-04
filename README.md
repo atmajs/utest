@@ -181,6 +181,7 @@ UTest({
 ```
 ##### Skip, Force, Range
 There is a simple syntax to limit or skip some tests.
+```javascript
 UTest({
     // BANG: run tests/groups with `!` only
     '!run this and other banged tests': function(),
