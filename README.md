@@ -399,7 +399,7 @@ module.exports = {
     - `-watch` watche for file changes and rerun the tests
 
 ##### ES6
-Write your test using EcmaScript 6. This is possible due to [Google Traceur Compiler](https://github.com/google/traceur-compiler) and the [Atma.Toolkit Plugin](https://github.com/atmajs/atma-loader-traceur).
+Write tests using EcmaScript 6 for NodeJS and **browser** runners. This is possible due to [Google Traceur Compiler](https://github.com/google/traceur-compiler) and the [Atma.Toolkit Plugin](https://github.com/atmajs/atma-loader-traceur).
 
 **How to start?**
 
