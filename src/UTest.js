@@ -3,8 +3,11 @@
 	var _tests = [],
 		_index = -1,
 		_listeners = {},
+		
+		// default options
 		_options = {
-			timeout: 1500
+			timeout: 1500,
+			errorableCallbacks: false,
 		},
 		_testsDone;
 	
@@ -40,7 +43,7 @@
 		};
 	}
 	
-	function async(callback, name) {
+	function async(callback, name, msTimeout) {
 		var isTimeouted = false,
 			jam = 5,
 			fn = function(){
@@ -63,7 +66,7 @@
 		}
 		
 		function wait() {
-			return setTimeout(onTimeout, _options.timeout);
+			return setTimeout(onTimeout, msTimeout || _options.timeout);
 		}
 		
 		var future = {
@@ -91,7 +94,11 @@
 			if (typeof fn === 'function') {
 				
 				if (case_isAsync(fn)) {
-					asyncData = async(teardownDelegate(ctx, teardown, done), key);
+					asyncData = async(
+						teardownDelegate(ctx, teardown, done)
+						, key
+						, ctx.$conig && ctx.$config.timeout
+					);
 					args.unshift(asyncData.fn);
 					
 					fn.apply(ctx, args);
@@ -148,11 +155,10 @@
 	
 	var UTest = Class({
 		
-		Extends: UTestServer,
+		Extends: [ UTestServer, UTestConfiguration ],
 		Construct: function(mix, suite, parent){
-			if (this instanceof UTest === false) {
-				return new UTest(mix, suite);
-			}
+			if (this instanceof UTest === false) 
+				return new UTest(mix, suite, parent);
 			
 			var name = mix;
 			if (typeof mix !== 'string' && suite == null) {
@@ -184,10 +190,6 @@
 			if (parent == null) 
 				_tests.push(this);
 			return this;
-		},
-		
-		configurate: function(done){
-			UTestConfiguration.configurate(this.suite.$config, done);
 		},
 		
 		run: function(callback){
@@ -275,8 +277,14 @@
 			},
 			_nextCase: function(){
 				
-				if (arguments.length > 0) 
-					this.proto.arguments = _Array_slice.call(arguments);
+				if (arguments.length > 0) {
+					var index = 0;
+					if (this.$cfg('errorableCallbacks') === true) {
+						assert.equal(arguments[0], null);
+						index = 1;
+					}
+					this.proto.arguments = _Array_slice.call(arguments, index);
+				}
 				
 				for (var key in this.suite) {
 					if (~this.processed.indexOf(key)) {

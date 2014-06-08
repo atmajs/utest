@@ -1,6 +1,34 @@
+var UTestConfiguration;
 
-var UTestConfiguration = (function(){
-	
+(function(){
+	UTestConfiguration = {
+		$cfg: function(key){
+			var cfg = this.suite.$config;
+			if (cfg == null || cfg[key] == null) 
+				return _options[key];
+			
+			return cfg[key];
+		},
+		configurate: function(done){
+			var cfg = this.suite.$config;
+			if (cfg == null) {
+				done();
+				return;
+			}
+			
+			var await = new Class.Await;
+			for(var key in cfg){
+				
+				configurate(key, cfg[key], await.delegate());
+			}
+			
+			await
+				.fail(function(error){
+					console.error('<utest:configurate> ', error);
+				})
+				.always(done);
+		}
+	};
 	
 	var Configurations = {
 		http: {
@@ -42,34 +70,9 @@ var UTestConfiguration = (function(){
 	
 	function configurate(key, args, done) {
 		var fn = obj_getProperty(Configurations, key);
-		if (fn == null) {
-			return done('<utest:config> Undefined configuration' + key);
-		}
+		if (typeof fn !== 'function') 
+			return done();
 		
 		fn(args, done)
 	}
-	
-	return {
-		
-		configurate: function(cfg, done){
-			
-			if (cfg == null) 
-				return done();
-			
-			var await = new Class.Await;
-			
-			
-			for(var key in cfg){
-				
-				configurate(key, cfg[key], await.delegate());
-			}
-			
-			await
-				.fail(function(error){
-					console.error('<utest:configurate> ', error);
-				})
-				.always(done);
-		}
-	};
-		
 }());
