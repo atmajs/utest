@@ -45,12 +45,21 @@
 	
 	function async(callback, name, msTimeout) {
 		var isTimeouted = false,
+			isProcessed = false,
+			// http requests are busy, take some more time
 			jam = 5,
 			fn = function(){
 				clearTimeout(timeout);
-				!isTimeouted && callback.apply(null, arguments);
+				if (isTimeouted || isProcessed) 
+					return;
+				isProcessed = true;
+				callback.apply(null, arguments);
 			};
-		var timeout = wait();
+		var timeout = wait(),
+			future = {
+				fn: fn,
+				id: timeout
+			};
 		
 		function onTimeout() {
 			if (transport_isBusy(global) && --jam > 0) {
@@ -64,15 +73,9 @@
 			assert.timeouts.push(name);
 			callback();
 		}
-		
 		function wait() {
 			return setTimeout(onTimeout, msTimeout || _options.timeout);
 		}
-		
-		var future = {
-			fn: fn,
-			id: timeout
-		};
 		
 		return future;
 	}
@@ -90,24 +93,31 @@
 		var asyncData;
 		try {
 			
-			var args = _Array_slice.call(ctx.arguments || []);
-			if (typeof fn === 'function') {
-				
-				if (case_isAsync(fn)) {
-					asyncData = async(
-						teardownDelegate(ctx, teardown, done)
-						, key
-						, ctx.$conig && ctx.$config.timeout
-					);
-					args.unshift(asyncData.fn);
-					
-					fn.apply(ctx, args);
-					return;
-				}
-				
-				fn.apply(ctx, args);
+			var args = _Array_slice.call(ctx.arguments || []),
+				onComplete = teardownDelegate(ctx, teardown, done),
+				asyncData,
+				result;
+			
+			if (is_Function(fn) === false) {
+				onComplete();
+				return;
 			}
-			teardownDelegate(ctx, teardown, done)();
+			
+			if (case_isAsync(fn)) {
+				asyncData = async(
+					onComlete
+					, key
+					, ctx.$conig && ctx.$config.timeout
+				);
+				args.unshift(asyncData.fn);
+				
+				result = fn.apply(ctx, args);
+				return;
+			}
+			result = fn.apply(ctx, args);
+			
+			
+			onComplete();
 		} catch(error){
 			
 			if (asyncData)
@@ -120,6 +130,32 @@
 			assert.errors++;
 			done();
 			
+		}
+		
+		
+		function try_waitDeferred(dfr) {
+			if (is_Deferred(dfr) === false) 
+				return;
+			
+			if (asyncData == null){
+				asyncData = async(
+					onComlete
+					, key
+					, ctx.$conig && ctx.$config.timeout
+				);
+			}
+			result
+				.fail(function(){
+					var msg = logger.formatMessage(
+						'Test case `%s` rejected' , key
+					);
+					eq_(error, null);
+				})
+				.done(function(){
+					if (arguments.length !== 0) 
+						ctx.arguments = arguments;
+				})
+				.always(asyncData.fn);
 		}
 	}
 	
