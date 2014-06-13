@@ -155,10 +155,11 @@
 				);
 			}
 			result
-				.fail(function(){
+				.fail(function(error){
 					var msg = logger.formatMessage(
 						'Test case `%s` rejected' , key
 					);
+					console.log(msg);
 					eq_(error, null);
 				})
 				.done(function(){
