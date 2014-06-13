@@ -20,9 +20,10 @@ var Actions = (function(){
 		},
 		
 		include: function(sources, done){
-			
+			var base = io.env.currentDir.toDir();
 			include
-				.instance(io.env.currentDir.toDir())
+				.instance(base)
+				.setBase(base)
 				.js(sources)
 				.done(function(){
 					done();
@@ -30,7 +31,12 @@ var Actions = (function(){
 		},
 		
 		eval: function(source, done){
-			
+			var base = io.env.currentDir.toDir();
+			include = include
+				.instance(base)
+				.setBase(base)
+				;
+				
 			var name,
 				result
 				;

@@ -4,7 +4,7 @@ var cfg_prepairSettings,
 	cfg_hasScripts,
 	cfg_getScripts,
 	cfg_parseSuites,
-	cfg_getEnv,
+	cfg_suiteInfoFromConfig,
 	cfg_split,
 	
 	watch
@@ -156,7 +156,8 @@ var cfg_prepairSettings,
 			return { error: '404 ' + path };
 		
 		
-		return require(file.uri.toLocalFile());
+		return suite_normalize(require(file.uri.toLocalFile()));
+		
 	}
 	
 	cfg_getScripts = function(baseConfig, config) {
@@ -179,12 +180,11 @@ var cfg_prepairSettings,
 		if (!config)
 			return false;
 		
-		if (arr_isEmpty(config.nodeScripts) === false)
+		if (!arr_isEmpty(config.nodeScripts))
 			return true;
 		
-		if (arr_isEmpty(config.domScripts) === false)
+		if (!arr_isEmpty(config.domScripts))
 			return true;
-		
 		
 		return false;
 	};
@@ -200,7 +200,6 @@ var cfg_prepairSettings,
 				array.push(x);
 				continue;
 			}
-			
 			config = {
 				base: x.base || base,
 				exec: x.exec,
@@ -228,30 +227,24 @@ var cfg_prepairSettings,
 		return array;
 	};
 	
-	cfg_getEnv = function(setts, config) {
+	cfg_suiteInfoFromConfig = function(setts, config) {
 		
-		if (typeof config.env === 'string')
-			config.env = [ config.env ];
+		setts.env = arr_distinctConcat(
+			setts.env, config.env
+		);
 		
-		if (Array.isArray(config.env)) 
-			setts.env = ruqq.arr.distinct(setts.env.concat(config.env));
-			
-		if (!cfg_hasScripts(setts) || config.suites == null) 
-			return;
-		
-		var path = (setts.nodeScripts && setts.nodeScripts[0]) || (setts.domScripts && setts.domScripts[0]),
-			suite = suite_getForPath(config.suites, path)
-			;
-		
-		if (suite && suite.env) {
-			
-			if (typeof suite.env === 'string') 
-				suite.env = [ suite.env ];
-			
-			if (Array.isArray(suite.env)) 
-				setts.env = ruqq.arr.distinct(setts.env.concat(suite.env));
+		var path = first(setts.nodeScripts) || first(setts.domScripts),
+			suite = suite_getForPath(config.suites, path);
+		if (suite) {
+			setts.env = arr_distinctConcat(
+				setts.env, suite.env
+			);
+			setts.$config = suite.$config;
 		}
-		
+		// private
+		function first(arr){
+			return arr && arr[0];
+		}
 	};
 	
 	
@@ -266,7 +259,8 @@ var cfg_prepairSettings,
 				exec: 'browser',
 				env: config.env,
 				scripts: config.domScripts,
-				base: config.base,
+				base: config.base || config.cwd,
+				$config: config.$config
 			});
 		}
 		
@@ -275,12 +269,12 @@ var cfg_prepairSettings,
 				exec: 'node',
 				env: config.env,
 				scripts: config.nodeScripts,
-				base: config.base,
+				base: config.base || config.cwd,
+				$config: config.$config
 			});
 		}
 		
 		if (config.suites) {
-			
 			ruqq.arr.each(config.suites, function(suite){
 				configs = configs.concat(cfg_split(suite));
 			});
@@ -413,7 +407,35 @@ var cfg_prepairSettings,
 			if (path_matchTests(suite.tests, path)) 
 				return suite;
 		}
+	}
+	function suite_normalize(config){
+		normalize(config);
 		
+		var suites = config.suites;
+		if (suites) {
+			
+			if (arr_isArray(suites)) {
+				logger.warn('Use object{SUITE_NAME:CONFIG}. Normalizing the array...');
+				var obj = {};
+				ruqq.arr.each(suites, function(suite, index){
+					obj[index] = suite;
+				});
+				suites = obj;
+			}
+			
+			for(var key in suites){
+				normalize(suites[key], key);
+			}
+		}
+		// private
+		function normalize(x, name){
+			if (typeof x.env === 'string') 
+				x.env = [ x.env ];
+				
+			if (name != null) 
+				x.name = x.name || name;
+		}
+		return config;
 	}
 	
 }());

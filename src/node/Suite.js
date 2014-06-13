@@ -1,6 +1,5 @@
 var RunnerSuite = Class({
 	Construct: function(configs, settings) {
-		
 		/**
 		 *	this.watch
 		 *	this.base

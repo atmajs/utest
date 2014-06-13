@@ -11,10 +11,17 @@
 		},
 		_testsDone;
 	
-	var RESERVED = ['$before', '$after', '$teardown', '$config', '$run'];
+	var RESERVED = [
+		'$teardown',
+		'$config',
+		'$before',
+		'$after',
+		'$run'
+	];
 	
 	// import utils/object.js
 	// import utils/syntax.js
+	// import utils/is.js
 	
 	// import UTest.config.js
 	// import UTest.page.js
@@ -46,7 +53,7 @@
 	function async(callback, name, msTimeout) {
 		var isTimeouted = false,
 			isProcessed = false,
-			// http requests are busy, take some more time
+			// in case http requests are busy, take some more time
 			jam = 5,
 			fn = function(){
 				clearTimeout(timeout);
@@ -105,17 +112,20 @@
 			
 			if (case_isAsync(fn)) {
 				asyncData = async(
-					onComlete
+					onComplete
 					, key
 					, ctx.$conig && ctx.$config.timeout
 				);
 				args.unshift(asyncData.fn);
 				
 				result = fn.apply(ctx, args);
+				
+				tryWait_Deferred(result);
 				return;
 			}
 			result = fn.apply(ctx, args);
-			
+			if (tryWait_Deferred(result))
+				return;
 			
 			onComplete();
 		} catch(error){
@@ -133,13 +143,13 @@
 		}
 		
 		
-		function try_waitDeferred(dfr) {
+		function tryWait_Deferred(dfr) {
 			if (is_Deferred(dfr) === false) 
-				return;
+				return false;
 			
 			if (asyncData == null){
 				asyncData = async(
-					onComlete
+					onComplete
 					, key
 					, ctx.$conig && ctx.$config.timeout
 				);
@@ -156,6 +166,7 @@
 						ctx.arguments = arguments;
 				})
 				.always(asyncData.fn);
+			return true;
 		}
 	}
 	

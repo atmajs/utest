@@ -9,10 +9,27 @@ var UTestConfiguration;
 			
 			return cfg[key];
 		},
-		configurate: function(done){
-			var cfg = this.suite.$config;
+		configurate: function(/*?cfg, done */){
+			var cfg,
+				done,
+				x,
+				xtype,
+				i = arguments.length;
+			while( --i > -1){
+				x = arguments[i];
+				xtype = typeof x;
+				xtype === 'function'
+					&& (done = x);
+				
+				xtype === 'object'
+					&& x != null
+					&& (cfg = x);
+			}
+			if (cfg == null) 
+				cfg = this.suite.$config;
+			
 			if (cfg == null) {
-				done();
+				done && done();
 				return;
 			}
 			

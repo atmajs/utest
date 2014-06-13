@@ -1,32 +1,6 @@
-var RunnerDom = (function() {
-	
-	var _configs,
-		_configIndex,
-		_socket,
-		_stats,
-		_onComplete,
-		_runners;
-	
-	
-	function cfg_runNext() {
-		if (++_configIndex > _configs.length - 1) {
-			_onComplete(_stats);
-			return;
-		}
-		
-		var config = _configs[_configIndex];
-		
-		_socket.emit('browser:utest:beforestart', {
-			config: config
-		}, function(){
-			
-			_runners
-				.push(new RunnerDom(config).run(cfg_runNext));
-		});
-		
-	}
-	
-	return Class({
+var RunnerDom;
+(function() {
+	RunnerDom = Class({
 		Static: {
 			run: function(configs, socket, callback){
 				
@@ -62,7 +36,6 @@ var RunnerDom = (function() {
 			}
 		},
 		
-		// Class
 		Construct: function(config){
 			this.config = config;
 			this.scripts = config.scripts;
@@ -169,5 +142,27 @@ var RunnerDom = (function() {
 			}
 		}
 	});
-
+	
+	var _configs,
+		_configIndex,
+		_socket,
+		_stats,
+		_onComplete,
+		_runners;
+	
+	
+	function cfg_runNext() {
+		if (++_configIndex > _configs.length - 1) {
+			_onComplete(_stats);
+			return;
+		}
+		
+		var config = _configs[_configIndex];
+		_socket.emit('browser:utest:beforestart', {
+			config: config
+		}, function(){
+			
+			_runners.push(new RunnerDom(config).run(cfg_runNext));
+		});
+	}
 }());
