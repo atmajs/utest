@@ -1,4 +1,96 @@
-var RunnerNode = (function() {
+var RunnerNode;
+(function() {
+	RunnerNode = Class({
+		Base: Runner,
+		Construct: function() {
+			assert.onsuccess = this.onSuccess.bind(this);
+			assert.onfailure = this.onFailure.bind(this);
+			
+			Class.bind(this, 'singleComplete', 'runTests', 'process');
+			
+			_runner = this;
+		},
+		run: function() {
+			if (status_ready !== this.status && status_blank !== this.status) {
+				logger.warn('Node is busy ... ', this.status);
+				return;
+			}
+			this.status = status_prepair;
+			this.runTests();
+		},
+		Self: {
+			runTests: function() {
+			
+				this.index = -1;
+				this.status = status_testing;
+				this.stats = [];
+				this.clearResources();
+				
+				_suites = this.suites;
+				_suiteIndex = -1;
+				
+				suite_next(this.process);
+			},
+			process: function() {
+				// go to next suite, otherwise process file from current one
+				if (++this.index > this.files.length - 1) {
+					this.index = -1;
+					suite_next(this.process);
+					return;
+				}
+				
+				assert.reset();
+				TestSuite.clear();
+	
+				var that = this,
+					url = this.files[this.index].uri.toString();
+	
+				
+				this.notifyTest(url);
+	
+				var incl = include
+					.cfg('path', _suite.base)
+					.instance(url)
+					.js(url)
+					.done(function(resp) {
+					
+						process.nextTick(function() {
+							TestSuite.run(that.singleComplete);
+						});
+					});
+	
+				this.resources.push(incl);
+			},
+			singleComplete: function() {
+				this.stats.push({
+					url: this.files[this.index].uri.toString(),
+					total: assert.total,
+					failed: assert.failed,
+					timeouts: assert.timeouts,
+					errors: assert.errors,
+					callbacks: assert.callbacks,
+				});
+	
+				this.process();
+			},
+		},
+		clearResources: function() {
+			this.resources && ruqq.arr.each(this.resources, resource_clear);
+			this.envResource && resource_clear(this.envResource);
+			
+			this.resources = [];
+			this.envResource = null;
+		},
+		getResources: function() {
+			var arr = [];
+			
+			this.envResource &&
+				resource_aggrIncludes(this.envResource, arr);
+		
+			ruqq.arr.aggr(this.resources, arr, resource_aggrIncludes);
+			return arr;
+		}
+	});
 
 	function resource_clear(resource) {
 		
@@ -33,6 +125,7 @@ var RunnerNode = (function() {
 	}
 	
 	function suite_loadEnv(runner, suite, callback) {
+		
 		var base = suite.base,
 			env = suite.env;
 		
@@ -113,7 +206,6 @@ var RunnerNode = (function() {
 		_suite = _suites[++_suiteIndex];
 		
 		if (_suite == null){
-			
 			_runner.onComplete(_runner.stats);
 			return;
 		}
@@ -121,101 +213,21 @@ var RunnerNode = (function() {
 		_runner.files = _suite.files;
 		_runner.config = _suite;
 		
-		suite_loadEnv(_runner, _suite, callback);
+		fn_waterfall(
+			function(done) {
+				cfg_runConfigurationScript(
+					'$after', _suites[_suiteIndex - 1], done
+				);
+			},
+			function(done) {
+				suite_loadEnv(_runner, _suite, done);
+			},
+			function(done){
+				cfg_runConfigurationScript(
+					'$before', _suite, done
+				);
+			},
+			callback
+		);
 	}
-
-	return Class({
-		Base: Runner,
-		Construct: function() {
-			assert.onsuccess = this.onSuccess.bind(this);
-			assert.onfailure = this.onFailure.bind(this);
-			
-			Class.bind(this, 'singleComplete', 'runTests', 'process');
-			
-			_runner = this;
-		},
-		run: function() {
-			if (status_ready !== this.status && status_blank !== this.status) {
-				logger.warn('Node is busy ... ', this.status);
-				return;
-			}
-			this.status = status_prepair;
-			this.runTests();
-		},
-		
-		
-		runTests: function() {
-			
-			this.index = -1;
-			this.status = status_testing;
-			this.stats = [];
-			this.clearResources();
-			
-			_suites = this.suites;
-			_suiteIndex = -1;
-			
-			suite_next(this.process);
-		},
-
-		singleComplete: function() {
-			this.stats.push({
-				url: this.files[this.index].uri.toString(),
-				total: assert.total,
-				failed: assert.failed,
-				timeouts: assert.timeouts,
-				errors: assert.errors,
-				callbacks: assert.callbacks,
-			});
-
-			this.process();
-		},
-		process: function() {
-			if (++this.index > this.files.length - 1) {
-				this.index = -1;
-				suite_next(this.process);
-				return;
-			}
-			
-			assert.reset();
-			TestSuite.clear();
-
-			var that = this,
-				url = this.files[this.index].uri.toString();
-
-			
-			this.notifyTest(url);
-
-			var incl = include
-				.cfg('path', _suite.base)
-				.instance(url)
-				.js(url)
-				.done(function(resp) {
-				
-				process.nextTick(function() {
-					TestSuite.run(that.singleComplete);
-				});
-			});
-
-			this.resources.push(incl);
-		},
-
-		clearResources: function() {
-			this.resources && ruqq.arr.each(this.resources, resource_clear);
-			this.envResource && resource_clear(this.envResource);
-			
-			this.resources = [];
-			this.envResource = null;
-		},
-
-		getResources: function() {
-			var arr = [];
-			
-			this.envResource &&
-				resource_aggrIncludes(this.envResource, arr);
-		
-			ruqq.arr.aggr(this.resources, arr, resource_aggrIncludes);
-			return arr;
-		}
-	});
-
 }());

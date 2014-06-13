@@ -72,7 +72,6 @@
 			
 			config = cfg_loadConfig(setts);
 			
-			
 			if (cfg_hasScripts(setts)) {
 				// running via cli or atma-action, take `env`/`$config` from config
 				cfg_suiteInfoFromConfig(setts, config);
@@ -104,18 +103,21 @@
 				return done('No scripts to test');
 			}
 			
-			global.include = include.instance(setts.base);
-			
-			
-			var $before = config.$config && config.$config.$before,
-				$after = config.$config && config.$config.$after
+			global.include = include
+				.instance(setts.base)
+				.setBase(setts.base)
 				;
 			
 			_suite = new RunnerSuite(_configs, setts);
 			
-			cfg_runConfigurationScript($before, function(){
+			
+			// run configuration only if has suites, otherwise configuration will be run by the root suite
+			var cfg = config.suites && config,
+				runCfg = cfg_runConfigurationScript;
+				
+			runCfg('$before', cfg, function(){
 				_suite.run(function(exitCode){
-					cfg_runConfigurationScript($after, function(){
+					runCfg('$after', cfg, function(){
 						process.exit(exitCode);
 					});
 				});	

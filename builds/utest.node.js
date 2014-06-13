@@ -7,6 +7,8 @@
 	// import ../src/vars.js
 	
 	// import ../src/utils/array.js
+	// import ../src/utils/fn.js
+	// import ../src/utils/cfg.js
 	// import ../src/utils/transport.jam.js
 	
 	// import ../src/UTest.js

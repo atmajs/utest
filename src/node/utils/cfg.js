@@ -1,6 +1,6 @@
 var cfg_prepairSettings,
 	cfg_loadConfig,
-	cfg_runConfigurationScript,
+	//cfg_runConfigurationScript,
 	cfg_hasScripts,
 	cfg_getScripts,
 	cfg_parseSuites,
@@ -89,49 +89,49 @@ var cfg_prepairSettings,
 	}; // cfg_prepair
 	
 	
-	cfg_runConfigurationScript = function($script, done){
-		if ($script == null) {
-			done();
-			return;
-		}
-		
-		if (typeof $script === 'function'){
-			$script(done);
-			if ($script.length === 0) 
-				done();
-			return;
-		}
-		
-		if (typeof $script === 'string') {
-			
-			include
-				.instance(process.cwd() + '/')
-				.js($script + '::Script')
-				.done(function(resp){
-					var Script = resp.Script;
-					if (Script == null || Script.process == null) {
-						logger
-							.error('<configuration script>', $script)
-							.error(' is not loaded or `process` function not implemented')
-							;
-						
-						done();
-						return;
-					}
-					if (Script.process.length === 0) {
-						Script.process();
-						done();
-						return;
-					}
-					Script.process(done);
-				});
-				
-			return;
-		}
-		
-		logger.error('Invalid configuration script', $config);
-		done();
-	}
+	//cfg_runConfigurationScript = function($script, done){
+	//	if ($script == null) {
+	//		done();
+	//		return;
+	//	}
+	//	
+	//	if (typeof $script === 'function'){
+	//		$script(done);
+	//		if ($script.length === 0) 
+	//			done();
+	//		return;
+	//	}
+	//	
+	//	if (typeof $script === 'string') {
+	//		
+	//		include
+	//			.instance(process.cwd() + '/')
+	//			.js($script + '::Script')
+	//			.done(function(resp){
+	//				var Script = resp.Script;
+	//				if (Script == null || Script.process == null) {
+	//					logger
+	//						.error('<configuration script>', $script)
+	//						.error(' is not loaded or `process` function not implemented')
+	//						;
+	//					
+	//					done();
+	//					return;
+	//				}
+	//				if (Script.process.length === 0) {
+	//					Script.process();
+	//					done();
+	//					return;
+	//				}
+	//				Script.process(done);
+	//			});
+	//			
+	//		return;
+	//	}
+	//	
+	//	logger.error('Invalid configuration script', $config);
+	//	done();
+	//}
 	
 	
 	/**
@@ -163,7 +163,7 @@ var cfg_prepairSettings,
 	cfg_getScripts = function(baseConfig, config) {
 		
 		if (config.tests) {
-			
+			// root object, should not have suites
 			var tests = config.tests,
 				base = baseConfig.base,
 				nodeScripts = baseConfig.nodeScripts,
@@ -171,8 +171,10 @@ var cfg_prepairSettings,
 				executor = baseConfig.exec;
 				
 			cfg_addScript(tests, base, nodeScripts, domScripts, executor);
+			
+			if (config.$config) 
+				baseConfig.$config = config.$config;
 		}
-		
 		baseConfig.suites = cfg_parseSuites(config.suites, baseConfig.base);
 	};
 	
@@ -232,6 +234,10 @@ var cfg_prepairSettings,
 		setts.env = arr_distinctConcat(
 			setts.env, config.env
 		);
+		if (config.suites == null) {
+			setts.$config = config.$config;
+			return;
+		}
 		
 		var path = first(setts.nodeScripts) || first(setts.domScripts),
 			suite = suite_getForPath(config.suites, path);

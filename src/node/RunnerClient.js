@@ -1,5 +1,8 @@
 var RunnerClient = Class({
 	Base: Runner,
+	Construct: function(){
+		//@TODO stringify configuration functions for the client in `this.suites`
+	},
 	run: function(done) {
 		
 		
