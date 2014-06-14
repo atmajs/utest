@@ -188,11 +188,23 @@ var Runner = (function() {
 			if (data.file && data.line != null) {
 				
 				if ('actual' in data || 'expected' in data) {
-					var msg = '%s bold<red<↔>> %s';
-					logger.log(msg.color, data.actual, data.expected);
+					var actual = data.actual,
+						expect = data.expected;
+						
+					if (typeof expect === 'string'
+							&& typeof actual === 'string'
+							&& expect.length > 20
+							&& actual.length > 10
+							) {
+						
+						log_stringDiff(expect, actual);
+					} else {
+						var msg = '%s bold<red<↔>> %s';
+						logger.log(msg.color, data.actual, data.expected);
+					}
 				}
 				
-				if (data.message) 
+				if (data.message && data.generatedMessage !== true) 
 					logger.log(' :: '.red.bold + data.message.yellow);
 				
 				var path = data
