@@ -1,0 +1,3 @@
+[submodule "assertion"]
+	path = assertion
+	url = https://github.com/atmajs/assertion.git
