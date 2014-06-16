@@ -9,5 +9,7 @@ before_script:
  
 script:
   - "npm test"
- 
+git:
+  submodules: false
+  
 language: node_js
