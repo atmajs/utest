@@ -212,7 +212,6 @@ var RunnerNode;
 		
 		_runner.files = _suite.files;
 		_runner.config = _suite;
-		
 		fn_waterfall(
 			function(done) {
 				cfg_runConfigurationScript(

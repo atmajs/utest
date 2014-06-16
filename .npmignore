@@ -1,5 +1,14 @@
 builds/
+ref-assertion/
+ref-atma-libs/
+ref-logger/
+resources/
 src/
 test/
 vendor/
 build.js
+
+.gitmodules
+.npmignore
+.travis.yml
+*.komodoproject

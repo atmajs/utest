@@ -71,7 +71,6 @@
 			cfg_prepairSettings(setts, arg);
 			
 			config = cfg_loadConfig(setts);
-			
 			if (cfg_hasScripts(setts)) {
 				// running via cli or atma-action, take `env`/`$config` from config
 				cfg_suiteInfoFromConfig(setts, config);
@@ -97,7 +96,6 @@
 			}
 			
 			_configs = cfg_split(setts);
-			
 			if (_configs.length === 0) {
 				logger.log('<config>', config);
 				return done('No scripts to test');

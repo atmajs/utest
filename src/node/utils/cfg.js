@@ -172,9 +172,11 @@ var cfg_prepairSettings,
 				
 			cfg_addScript(tests, base, nodeScripts, domScripts, executor);
 			
-			if (config.$config) 
-				baseConfig.$config = config.$config;
+			
+			baseConfig.env = config.env;
+			baseConfig.$config = config.$config;
 		}
+		
 		baseConfig.suites = cfg_parseSuites(config.suites, baseConfig.base);
 	};
 	
