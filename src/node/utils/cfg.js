@@ -207,7 +207,8 @@ var cfg_prepairSettings,
 				exec: x.exec,
 				env: x.env,
 				nodeScripts: [],
-				domScripts: []
+				domScripts: [],
+				$config: x.$config
 			};
 			
 			if (x.tests == null) {
