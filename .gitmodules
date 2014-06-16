@@ -1,3 +1,18 @@
 [submodule "assertion"]
 	path = assertion
 	url = https://github.com/atmajs/assertion.git
+[submodule "classjs"]
+	path = classjs
+	url = https://github.com/atmajs/classjs.git
+[submodule "include"]
+	path = include
+	url = https://github.com/atmajs/includejs.git
+[submodule "mask"]
+	path = mask
+	url = https://github.com/atmajs/maskjs.git
+[submodule "atma-libs"]
+	path = atma-libs
+	url = https://github.com/atmajs/atma.libs.git
+[submodule "ref-logger"]
+	path = ref-logger
+	url = git://github.com/atmajs/atma-logger

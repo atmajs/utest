@@ -1,6 +1,6 @@
 (function(global){
 	
-	// import /.reference/atma/assertion/lib/assert.embed.js
+	// import /ref-assertion/lib/assert.embed.js
 	// import wrapper.js
 	
 	
