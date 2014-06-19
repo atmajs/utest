@@ -134,12 +134,10 @@
 				clearTimeout(asyncData.id);
 
 			error.stack = assert.prepairStack(error.stack);
-			
-			console.error(error.stack);
+			console.error(error);
 			
 			assert.errors++;
 			done();
-			
 		}
 		
 		
@@ -157,12 +155,13 @@
 			result
 				.fail(function(error){
 					var msg = logger.formatMessage(
-						'Test case `%s` rejected' , key
+						'Test case red<bold<`%s`>> rejected'.color , key
 					);
-					console.log(msg);
+					logger.log(msg);
 					eq_(error, null);
 				})
 				.done(function(){
+					eq_(result._rejected, null);
 					if (arguments.length !== 0) 
 						ctx.arguments = arguments;
 				})

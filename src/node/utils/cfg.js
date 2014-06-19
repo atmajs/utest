@@ -317,9 +317,9 @@ var cfg_prepairSettings,
 			
 			if (file.exists()) {
 				io.watcher.watch(file.uri.toLocalFile(), function(){
-					logger.log(' - file changed - '.green, file.uri.file.bold);
-					io.File.clearCache(file.uri.toLocalFile());
-					callback();
+					var path = file.uri.toLocalFile();
+					io.File.clearCache(path);
+					callback(path);
 				});
 			}
 			else {

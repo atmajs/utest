@@ -53,8 +53,22 @@ var RunnerSuite = Class({
 			}
 			
 			closeSocketsOnExit(this);
-			watch(this.base, this.getResources(), this.runTests);
-			logger.log(' - watcher active'.yellow);
+			
+			var self = this;
+			watch(this.base, this.getResources(), function(path){
+				
+				log_clearStd();
+				
+				var date = new Date;
+				logger.log((date.getHours()
+					+ ':'
+					+ date.getMinutes()
+					+ ':'
+					+ date.getSeconds()).bg_cyan
+					+ ' modified ' + path.bold);
+				self.runTests();
+			});
+			logger.log(' - watcher active.'.yellow);
 		},
 		
 		process: function(){
@@ -70,6 +84,7 @@ var RunnerSuite = Class({
 		runTests: function(){
 			this.index = -1;
 			this.process();
+			
 		},
 	},
 	run: function(done){
@@ -93,6 +108,9 @@ var RunnerSuite = Class({
 		this.runners.forEach(function(runner){
 			runner.on('complete', this.process);
 		}, this);
+		
+		if (this.watch) 
+			log_clearStd();
 		
 		this.runTests();
 	},
@@ -153,17 +171,17 @@ function closeSocketsOnExit(suite) {
 		var rl = readLine.createInterface({
 			input: process.stdin,
 			output: process.stdout
-		});
-
+		});		
 		rl.on('SIGINT', function() {
 			process.emit('SIGINT');
 		});
-
+		rl.write('\n');
+		global.rl = rl;
 	}
-
+	
 	process.on('SIGINT', function() {
 		suite.closeSockets();
-		process.exit();
+		process.exit(0);
 	});
 
 }

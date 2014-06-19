@@ -62,9 +62,13 @@
 		},
 		process: function(setts, done) {
 			
+			// configurate
 			io.File.disableCache();
 			logger.cfg('logCaller', false);
+			process.env.ENV = 'test';
+			process.env.NODE_ENV = 'test';
 
+			
 			var arg = setts.script || app.config.$cli.args[1],
 				config;
 		

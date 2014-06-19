@@ -1,4 +1,5 @@
-var log_stringDiff;
+var log_clearStd,
+	log_stringDiff;
 (function(){
 	
 	var util = require('util'),
@@ -8,6 +9,11 @@ var log_stringDiff;
 		var message = Array.prototype.slice.call(arguments).join(' ');
 		
 		util.print(message);
+	};
+	
+	log_clearStd = function(){
+		process.stdout.write('\u001b[2J');//'\033[2J');
+		process.stdout.write('\u001bc');//'\033c');
 	};
 	
 	log_stringDiff = function(a, b){
