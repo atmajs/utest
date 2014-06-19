@@ -319,6 +319,10 @@ var cfg_prepairSettings,
 				io.watcher.watch(file.uri.toLocalFile(), function(){
 					var path = file.uri.toLocalFile();
 					io.File.clearCache(path);
+					
+					var sys = require('path').normalize(path);
+					delete require.cache[sys];
+						
 					callback(path);
 				});
 			}
