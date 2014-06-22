@@ -114,7 +114,7 @@
 				asyncData = async(
 					onComplete
 					, key
-					, ctx.$conig && ctx.$config.timeout
+					, ctx.$config && ctx.$config.timeout
 				);
 				args.unshift(asyncData.fn);
 				
@@ -152,7 +152,7 @@
 				asyncData = async(
 					onComplete
 					, key
-					, ctx.$conig && ctx.$config.timeout
+					, ctx.$config && ctx.$config.timeout
 				);
 			}
 			result
