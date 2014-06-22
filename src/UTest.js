@@ -134,7 +134,10 @@
 				clearTimeout(asyncData.id);
 
 			error.stack = assert.prepairStack(error.stack);
-			console.error(error);
+			
+			var msg = error.stack || error;
+			console.error(msg);
+			
 			
 			assert.errors++;
 			done();
