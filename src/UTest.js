@@ -8,6 +8,12 @@
 		_options = {
 			timeout: 1500,
 			errorableCallbacks: false,
+			
+			// master server configurations, in browser runners
+			'http.config': null,
+			'http.eval': null,
+			'http.include': null,
+			'http.service': null
 		},
 		_testsDone;
 	
@@ -219,7 +225,16 @@
 			if (typeof suite === 'function') 
 				suite = syntax_Mocha(suite);
 			
-			
+			if (parent != null) {
+				suite.$config = obj_defaults(
+					suite.$config,
+					parent.$config,
+					[
+						'timeout',
+						'errorableCallbacks'
+					]
+				);
+			}
 			this.name = name;
 			this.suite = suite;
 			this.processed = [];
@@ -259,22 +274,73 @@
 		},
 		
 		handleBangs: function(){
-			var has = ruqq.arr.any(Object.keys(this.suite), function(x){
-				return x[0] === '!';
-			});
 			
-			if (!has)
-				return;
+			var has = rewriteDeep(this.suite);
+			if (has) 
+				clearObject(this.suite);
 			
-			for (var key in this.suite) {
-				// reserved
-				if (RESERVED.indexOf(key) !== -1) {
-					continue;
-				}
-				
-				if (key[0] !== '!') {
-					delete this.suite[key];
-				}
+			//var has = ruqq.arr.any(Object.keys(this.suite), function(x){
+			//	return x[0] === '!';
+			//});
+			//
+			//if (!has)
+			//	return;
+			//
+			//for (var key in this.suite) {
+			//	// reserved
+			//	if (RESERVED.indexOf(key) !== -1) {
+			//		continue;
+			//	}
+			//	
+			//	if (key[0] !== '!') {
+			//		delete this.suite[key];
+			//	}
+			//}
+			
+			function rewriteDeep(obj){
+				var has = false;
+				Object
+					.keys(obj)
+					.forEach(function(key){
+						var val = obj[key];
+						if (key[0] !== '!' && is_Object(val) && hasBang(val)) {
+							delete obj[key];
+							key = '!' + key;
+							obj[key] = val;
+							rewriteDeep(val);
+						}
+						if (key[0] === '!') 
+							has = true;
+					});
+				return has;
+			}
+			function clearObject(obj){
+				Object
+					.keys(obj)
+					.forEach(function(key){
+						if (RESERVED.indexOf(key) !== -1) 
+							return;
+						
+						if (key[0] !== '!') {
+							delete obj[key];
+							return;
+						}
+						if (is_Object(obj[key])) 
+							clearObject(obj[key]);
+					});
+			}
+			function hasBang(obj){
+				return ruqq.arr.any(Object.keys(obj), function(key){
+					
+					if (key[0] === '!')
+						return true;
+					
+					var val = obj[key];
+					if (is_Object(val)) 
+						return hasBang(val);
+					
+					return false;
+				});
 			}
 		},
 		handleRanges: function(){
@@ -336,15 +402,25 @@
 					this.proto.arguments = _Array_slice.call(arguments, index);
 				}
 				
+				var breakOnError = this.$cfg('breakOnError');
+				if (breakOnError) {
+					breakOnError = assert.failed !== 0
+						|| assert.errors !== 0
+						|| assert.timeouts.length !== 0
+						;
+				}
+				
+				
 				for (var key in this.suite) {
-					if (~this.processed.indexOf(key)) {
+					if (breakOnError) 
+						break;
+					
+					if (~this.processed.indexOf(key)) 
 						continue;
-					}
 					
 					// reserved
-					if (RESERVED.indexOf(key) !== -1) {
+					if (RESERVED.indexOf(key) !== -1) 
 						continue;
-					}
 					
 					if (key.substring(0,2) === '//') {
 						console.warn(key.substring(2), '(skipped)'.bold);

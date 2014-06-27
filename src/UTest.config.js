@@ -35,6 +35,10 @@ var UTestConfiguration;
 			
 			var await = new Class.Await;
 			for(var key in cfg){
+				if (_options.hasOwnProperty(key) === false) {
+					logger.warn('Unknown key `%s`, support:', key, Object.keys(_options));
+					continue;
+				}
 				
 				configurate(key, cfg[key], await.delegate());
 			}
