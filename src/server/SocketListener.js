@@ -72,10 +72,12 @@ var SocketListener = (function(){
 	function client_tryTest(io, socket, config, done, port, retryIndex){
 		__config = config;
 		
-		var clients = io.of('/utest-browser').clients(),
-			message;
-		
-		if (clients.length === 0) {
+		var nsp = io.of('/utest-browser'),
+			connections = nsp.connected,
+			message
+			;
+			
+		if (Object.keys(connections).length === 0) {
 			
 			if (++retryIndex <= wait_COUNT) {
 				
@@ -101,6 +103,10 @@ var SocketListener = (function(){
 			return;
 		}
 		
+		var clients = [];
+		for(var key in connections){
+			clients.push(connections[key]);
+		}
 		client_doTest(clients, socket, config, done);
 	}
 	

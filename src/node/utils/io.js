@@ -18,7 +18,7 @@ var io_connect,
 		
 		var socket = dfr._resolved[0];
 		
-		socket.socket.disconnectSync();
+		socket.disconnect();
 		dfr = null;
 	};
 	
@@ -37,6 +37,10 @@ var io_connect,
 			url = 'http://localhost:%1/node'.format(port),
 			
 			socket = client.connect(url, {
+				reconnection: true,
+				reconnectionDelay: 1000,
+				reconnectionDelayMax: 2000,
+						
 				'connect timeout': 2000,
 				'force new connection': true
 			});
@@ -48,8 +52,8 @@ var io_connect,
 	
 			.on('error', function(error) {
 				
-				socket.socket.disconnectSync();
-				socket.socket.removeAllListeners();
+				socket.disconnect();
+				socket.removeAllListeners();
 				
 				dfr && dfr.reject(error);
 			})

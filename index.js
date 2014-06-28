@@ -18,7 +18,17 @@ include.exports = {
 				},
 				websockets: {
 					'/node' : getPath('/utest.server.js'),
-					'/utest-browser' : function(){}
+					'/utest-browser' : function(socket){
+						socket.emit('server:utest:handshake', function(info){
+							var agent = info.userAgent.browser,
+								msg = agent.name + ' ' + agent.version;
+								
+							logger.log(
+								'uTest Browser connected:'
+								, msg.green.bold
+							);
+						})
+					}
 				}
 			}
 		});
