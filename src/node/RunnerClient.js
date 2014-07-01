@@ -49,22 +49,23 @@ var RunnerClient = Class({
 				
 				
 				socket
+					.on('error', function(error){
+						logger.error('Socket error', error);
+						io_clean();
+					})
 					.on('server:utest:end', function(){
 						that.onComplete.apply(that, arguments);
 					})
-			
 					.on('server:error', function(message) {
 						that.socket.socket.disconnectSync();
 						
 						logger.error(message);
 						done(1);
 					})
-			
 					.on('server:log', function(type, args) {
 						var fn = console[type] || console.log;
 						fn.apply(console, args);
 					})
-			
 					.on('slave:start', function(stats) {
 						var message = '#{browser.name} #{browser.version}'.bold;
 						logger
@@ -74,22 +75,18 @@ var RunnerClient = Class({
 					.on('slave:end', function(stats) {
 						logger.log('Slave completed'[stats.failed ? 'red' : 'green']);
 					})
-			
 					.on('slave:error', function(error) {
 						logger.error(error);
 					})
-					
 					.on('slave:utest:script', function(info){
 						that.notifyTest(info.script);
 					})
-			
 					.on('slave:assert:failure', function(args) {
 						var data = args[0];
 						
 						that.onFailure(data);
 						
 					})
-			
 					.on('slave:assert:success', that.onSuccess.bind(that))
 					;
 				

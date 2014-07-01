@@ -8,6 +8,7 @@
 		_options = {
 			timeout: 1500,
 			errorableCallbacks: false,
+			breakOnError: false,
 			
 			// master server configurations, in browser runners
 			'http.config': null,
