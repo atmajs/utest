@@ -1,7 +1,8 @@
 var resume = include.pause(),
 	server = atma.server,
 	appConfig = app.config,
-	connect = require('connect')
+	bodyParser = require('body-parser'),
+	Url = require('url')
 	;
 
 server.Application({
@@ -14,9 +15,12 @@ server.Application({
 	server.StaticContent.Cache.state(false);
 	
 	app.responders([
-		connect.query(),
-		connect.json(),
-		
+		function(req, res, next){
+			var url = Url.parse(req.url, true);
+			req.query = url.query;
+			next();
+		},
+		bodyParser.json(),
 		app.responder(),
 		atma.server.StaticContent.respond
 	]);
