@@ -1,7 +1,16 @@
 var RunnerClient = Class({
 	Base: Runner,
 	Construct: function(){
-		//@TODO stringify configuration functions for the client in `this.suites`
+		this.suites.forEach(function(suite){
+			
+			var key, val, cfg = suite.$config;
+			for(key in cfg){
+				val = cfg[key];
+				if (typeof val === 'function') {
+					cfg[key] = val.toString();
+				}
+			}
+		});
 	},
 	run: function(done) {
 		
@@ -57,7 +66,7 @@ var RunnerClient = Class({
 						that.onComplete.apply(that, arguments);
 					})
 					.on('server:error', function(message) {
-						that.socket.socket.disconnectSync();
+						that.socket.disconnect();
 						
 						logger.error(message);
 						done(1);

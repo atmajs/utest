@@ -39,6 +39,15 @@ var RunnerDom;
 		Construct: function(config){
 			this.config = config;
 			this.scripts = config.scripts;
+			
+			var key, val, cfg = config.$config;
+			for(key in cfg){
+				val = cfg[key];
+				if (/^function\s*\(/.test(val)) {
+					cfg[key] = eval('(' + val + ')');
+				}
+			}
+			
 		},
 		run: function(callback) {
 			this.onComplete = callback;
@@ -58,40 +67,8 @@ var RunnerDom;
 				return this;
 			}
 			
-			this.loadEnv(this.process);
+			suite_prepair(this, this.process);
 			return this;
-		},
-		
-		loadEnv: function(callback){
-			if (arr_isArray(this.config.env) === false) {
-				callback();
-				return;
-			}
-			
-			if (typeof include === 'undefined') {
-				script_insertMany(this.config.env, callback);
-				return;
-			}
-			
-			var resource = include.instance('/utest/');
-			
-			ruqq.arr.each(this.config.env, function(x){
-				resource.js(x);
-			});
-			
-			resource.done(function(resp){
-				setTimeout(function(){
-					for (var lib in resp) {
-						var exports = resp[lib];
-						
-						if (exports != null) {
-							window[lib] = exports;
-						}
-					}
-					
-					callback(resp);
-				});
-			});
 		},
 		
 		Self: {
@@ -163,6 +140,61 @@ var RunnerDom;
 		}, function(){
 			
 			_runners.push(new RunnerDom(config).run(cfg_runNext));
+		});
+	}
+	
+	function suite_prepair(runner, callback) {
+		var suite = runner.config;
+		
+		fn_waterfall(
+			function(done) {
+				cfg_runConfigurationScript(
+					'$after', _configs[_configIndex - 1], done
+				);
+			},
+			function(done) {
+				suite_loadEnv(runner, suite, done);
+			},
+			function(done){
+				cfg_runConfigurationScript(
+					'$before', suite, done
+				);
+			},
+			callback
+		);
+	}
+	function suite_loadEnv(runner, suite, done) {
+		if (arr_isArray(suite.env) === false) {
+			done();
+			return;
+		}
+		
+		if (typeof include === 'undefined') {
+			script_insertMany(suite.env, done);
+			return;
+		}
+		
+		var resource = include
+			.instance('/utest/')
+			.setBase('/utest/')
+			;
+		
+		ruqq.arr.each(suite.env, function(x){
+			resource.js(x);
+		});
+		
+		resource.done(function(resp){
+			setTimeout(function(){
+				for (var lib in resp) {
+					var exports = resp[lib];
+					
+					if (exports != null) {
+						window[lib] = exports;
+					}
+				}
+				
+				done(resp);
+			});
 		});
 	}
 }());

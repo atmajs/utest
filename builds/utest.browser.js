@@ -19,6 +19,9 @@ logger.cfg({
 	// import /src/assert/assert.browser.js
 	// import /src/utils/xhr.js
 	// import /src/utils/array.js
+	// import /src/utils/cfg.js
+	// import /src/utils/fn.js
+	
 	// import /src/utils/location.js
 	// import /src/utils/transport.jam.js
 	

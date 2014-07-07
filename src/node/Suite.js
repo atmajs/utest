@@ -18,7 +18,7 @@ var RunnerSuite = Class({
 	
 	closeSockets: function(){
 		ruqq.arr.each(this.runners, function(x){
-			x.socket && x.socket.socket && x.socket.socket.disconnectSync();
+			x.socket && x.socket && x.socket.disconnect();
 		});
 	},
 	
