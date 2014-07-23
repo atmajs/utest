@@ -59,7 +59,10 @@
 			}
 
 			if (typeof mix === 'object') {
-
+				var type = Object.prototype.toString.call(mix);
+				if (type.indexOf('[object HTML') === 0) 
+					return '[dom ' + mix.tagName + ']';
+				
 				if (~cache.indexOf(mix)) {
 					return '[object Circular]';
 				}

@@ -176,7 +176,6 @@ var RunnerDom;
 		
 		var resource = include
 			.instance('/utest/')
-			.setBase('/utest/')
 			;
 		
 		ruqq.arr.each(suite.env, function(x){
