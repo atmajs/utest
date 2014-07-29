@@ -105,14 +105,13 @@
 				return done('No scripts to test');
 			}
 			
-			global.include = include
+			
+			include = global.include = include
 				.instance(setts.base)
 				.setBase(setts.base)
 				;
-			
+				
 			_suite = new RunnerSuite(_configs, setts);
-			
-			
 			// run configuration only if has suites, otherwise configuration will be run by the root suite
 			var cfg = config.suites && config,
 				runCfg = cfg_runConfigurationScript;

@@ -143,7 +143,6 @@ var RunnerNode;
 			callback();
 			return;
 		}
-		
 		var resource = include
 				.instance(base)
 				.setBase(base)
@@ -169,12 +168,14 @@ var RunnerNode;
 		});
 		
 		resource.done(function(resp){
-			
 			setTimeout(function(){
+				
 				var key, lib;
 				for(key in resp) {
-					lib = resp[key];
+					if (key === 'load') 
+						continue;
 					
+					lib = resp[key];
 					if (lib == null) {
 						
 						if (global[key] == null) {
@@ -186,10 +187,8 @@ var RunnerNode;
 						}
 						continue;
 					}
-					
 					global[key] = lib;
 				}
-				
 				callback(resp);
 			});
 		});
