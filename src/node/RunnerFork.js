@@ -1,16 +1,18 @@
 var RunnerFork = Class({
 	Base: Runner,
+	failed: 0,
 	run: function(done) {
 		
-		var cfgPath = this.config.fork,
+		var self = this,
+			cfgPath = this.config.fork,
 			base = this.config.cwd,
 			Fork = require('child_process').fork
 			;
 		
 		logger
-			.log('\t\t\t\t>'.bg_yellow.bold)
-			.log('Fork'.bg_yellow.black, cfgPath.bold)
-			.log('\t\t\t\t>'.bg_yellow.bold)
+			.log('\t\t\t\t>'.bg_yellow)
+			.log('Fork'.bg_yellow.black, (net.Uri.combine(base, cfgPath)).bold)
+			.log('\t\t\t\t>'.bg_yellow)
 			.log('');
 		
 		var child = Fork(process.mainModule.filename, [
@@ -22,6 +24,7 @@ var RunnerFork = Class({
 		});
 		
 		child.on('exit', function(code){
+			self.failed = code;
 			logger.log('Fork done'[ code != 0 ? 'bg_red' : 'bg_green']);
 			done(code !== 0 ? code : null);
 		});

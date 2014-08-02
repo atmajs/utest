@@ -24,7 +24,7 @@ var RunnerSuite = Class({
 	
 	getFailed: function(){
 		return ruqq.arr.aggr(this.runners, 0, function(x, aggr) {
-			return aggr + x.failed;
+			return aggr + (x.failed || 0);
 		});
 	},
 	

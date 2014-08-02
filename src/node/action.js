@@ -126,7 +126,14 @@
 		}
 	};
 	
-	
+	process.on('uncaughtException', function(error){
+		logger.error(error.stack || error);
+		
+		if (_suite.watch) 
+			return;
+		
+		process.exit(1);
+	});
 	
 	// import utils/slave.js
 	// import utils/net.js
