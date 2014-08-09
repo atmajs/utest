@@ -31,7 +31,7 @@ var io_connect,
 		
 		
 		if (client == null) 
-			client = getClient();
+			client = require('socket.io-client');
 		
 		var port = config.port || 5777,
 			url = 'http://localhost:%1/node'.format(port),
@@ -50,7 +50,7 @@ var io_connect,
 				dfr.resolve(socket)
 			})
 	
-			.on('error', function(error) {
+			.on('connect_error', function(error) {
 				
 				socket.disconnect();
 				socket.removeAllListeners();

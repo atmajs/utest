@@ -21,12 +21,10 @@ var RunnerClient = Class({
 			config = this.config,
 			port = config.port || 5777
 			;
-			
 		
 		io_connect(this.config)
 		
 			.fail(function(error){
-				
 				io_clean();
 				
 				if (that.startServer === true) {
