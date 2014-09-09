@@ -62,18 +62,4 @@ var io_connect,
 		return dfr;
 	};
 	
-	
-	function getClient(){
-		//@ HACKY - io client workaround
-		
-		var _io = global.io;
-		delete global.io;
-		
-		var client = require('socket.io-client');
-		
-		global.io = _io;
-		
-		return client;
-	}
-	
 }());

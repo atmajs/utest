@@ -1,4 +1,5 @@
-var slave_start;
+var slave_start,
+	slave_openBrowser;
 
 (function(){
 	
@@ -24,15 +25,15 @@ var slave_start;
 					return callback(error);
 				
 				
-				var url = 'http://%1:%2/utest/'.format(HOST, PORT);
-				open(url, callback);
+				
+				slave_openBrowser(callback);
 			}, 0);
 		});
 		
 	};
 	
-	function open(url, callback) {
-		
+	slave_openBrowser = function(callback) {
+		var url = 'http://%1:%2/utest/'.format(HOST, PORT);
 		var spawn = require('child_process').spawn,
 			commands = {
 				darwin: 'open',

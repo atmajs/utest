@@ -108,14 +108,18 @@ var RunnerClient = Class({
 	},
 
 	runTests: function() {
-		logger.log(' -  running tests  -  ', Date.format(new Date(), 'HH:mm:ss'));
+		logger.log(
+			'bold<-->--bold<-->--bold<-->--bold<--> yellow<client>'.color
+			, Date.format(new Date(), 'HH:mm:ss').bold
+			, '\n'
+		);
 		
 		switch (this.status) {
 			case status_blank:
 			case status_connected:
 			case status_ready:
 				this.status = status_testing;
-				this.socket.emit('client:utest', this.suites);
+				this.socket.emit('client:utest', this.suites, app.config.$cli);
 				return;
 		}
 		logger.warn('Server is not ready', this.status);
