@@ -187,12 +187,13 @@ var cfg_prepairSettings,
 	};
 	
 	cfg_suiteInfoFromConfig = function(setts, config) {
-		
 		setts.env = arr_distinctConcat(
 			setts.env, config.env
 		);
 		if (config.suites == null) {
 			setts.$config = config.$config;
+			setts.exec = config.exec;
+			recalculateExecScripts(setts);
 			return;
 		}
 		
@@ -203,10 +204,29 @@ var cfg_prepairSettings,
 				setts.env, suite.env
 			);
 			setts.$config = suite.$config;
+			setts.exec = suite.exec;
+			recalculateExecScripts(setts);
 		}
 		// private
 		function first(arr){
 			return arr && arr[0];
+		}
+		function recalculateExecScripts(config){
+			var exec = config.exec,
+				from, to;
+			if (exec === 'dom' && config.nodeScripts.length) {
+				from = 'nodeScripts';
+				to = 'domScripts';
+			}
+			if (exec === 'node' && config.domScripts.length) {
+				from = 'domScripts';
+				to = 'nodeScripts';
+			}
+			if (from == null) 
+				return;
+			
+			config[to] = config[to].concat(config[from]);
+			config[from].length = 0;
 		}
 	};
 	
