@@ -114,12 +114,16 @@ var RunnerClient = Class({
 			, '\n'
 		);
 		
+		var cli = app.config.$cli;
+		if (this.startServer) 
+			cli.params.workerAutostart = false;
+		
 		switch (this.status) {
 			case status_blank:
 			case status_connected:
 			case status_ready:
 				this.status = status_testing;
-				this.socket.emit('client:utest', this.suites, app.config.$cli);
+				this.socket.emit('client:utest', this.suites, cli);
 				return;
 		}
 		logger.warn('Server is not ready', this.status);

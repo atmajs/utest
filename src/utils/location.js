@@ -5,11 +5,12 @@ var location_pushHistory,
 	location_pushSearch = function(path, win){
 		win = win || window;
 		
-		if (win.history == null || win.history.pushState == null) 
-			return;
-		
 		var q = path.indexOf('?');
-		if (q === -1) 
+		if (q === -1) {
+			trySetHash(path, win);
+			return;
+		}
+		if (win.history == null || win.history.pushState == null) 
 			return;
 		
 		try {
@@ -20,8 +21,10 @@ var location_pushHistory,
 	location_pushHistory = function(path, win){
 		win = win || window;
 		
-		if (win.history == null || win.history.pushState == null) 
+		if (win.history == null || win.history.pushState == null) {
+			trySetHash(path, win);
 			return;
+		}
 		
 		var a;
 		a = document.createElement('a');
@@ -39,5 +42,13 @@ var location_pushHistory,
 		try {
 			win.history.pushState(null, null, path);
 		} catch(error){}
+	}
+
+	function trySetHash(url, win){
+		var index = url.indexOf('#');
+		if (index === -1)
+			return;
+		win.location.hash = url.substring(index + 1);
+
 	}
 }());
