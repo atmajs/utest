@@ -1,4 +1,5 @@
 // import /vendor/jquery.js
+// import /vendor/jquery.simulate.js
 // import /ref-atma-libs/browser/globals.js
 
 // import /ref-logger/lib/browser.min.js
