@@ -1,8 +1,8 @@
 // import /vendor/jquery.js
 // import /vendor/jquery.simulate.js
 // import /ref-atma-libs/browser/globals.js
-
 // import /ref-logger/lib/browser.min.js
+
 logger.cfg({
 	formatMessage: false,
 	transport: {
@@ -31,6 +31,7 @@ logger.cfg({
 	// import /src/browser/detect.js
 	// import /src/browser/action.js
 
+	// import /src/patch/jquery.js
 }());
 
 // import /vendor/sinon.js
