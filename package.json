@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.9.2",
+    "version": "0.9.3",
     "devDependencies": {
         "atma": "latest"
     },

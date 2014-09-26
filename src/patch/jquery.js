@@ -7,7 +7,7 @@
 	function Wrapper (frag) {
 		var args = Array.prototype.slice.call(arguments);
 		if (frag != null && typeof frag === 'object' && frag.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-			args[0] = frag.children;
+			args[0] = frag.childNodes;
 		}
 		
 		return _jQuery.apply(global, args);
