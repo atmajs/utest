@@ -18,12 +18,17 @@ include
 					? ctx.req.body
 					: ctx.req.query
 					;
-					
+				
+				
+
 				template = repo.template;
 				model = repo.model;
 				ctr = repo.controller;
 				include = repo.include;
-				
+
+				this.scripts = repo.scripts;
+				this.hasMaskBootstrap = containsMaskBootstrap(include) || containsMaskBootstrap(this.scripts);
+
 				if (ctr && ctr.scope) 
 					this.scope = ctr.scope;
 				
@@ -47,4 +52,17 @@ include
 			}
 		});
 
+		function containsMaskBootstrap(arr) {
+			if (arr == null)
+				return;
+			var imax = arr.length,
+				i = -1,
+				x;
+			while(++i < imax){
+				x = arr[i]
+				if (x && x.indexOf('mask.bootstrap') !== -1)
+					return true;
+			}
+			return false;
+		}
 	})

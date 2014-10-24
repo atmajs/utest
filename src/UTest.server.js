@@ -10,6 +10,7 @@ var UTestServer;
 					
 					var model,
 						include,
+						scripts,
 						ctr,
 						callback;
 					
@@ -25,13 +26,10 @@ var UTestServer;
 					ctr = args.shift();
 					
 					// @obsolete workaround
-					if (model.include) {
+					if (model.include || model.model) {
 						include = model.include;
 						ctr = model.controller;
-						
-						model = model.model;
-					} else if (model.model) {
-						ctr = model.controller;
+						scripts = model.scripts;
 						model = model.model;
 					}
 					
@@ -41,7 +39,8 @@ var UTestServer;
 						template: template,
 						model: model,
 						controller: ctr,
-						include: include
+						include: include,
+						scripts: scripts
 					}, done);
 					
 					function done(error, doc, win) {

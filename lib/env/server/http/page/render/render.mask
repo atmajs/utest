@@ -1,7 +1,11 @@
 :document {
 	
 	head {
-		script src="/.reference/atma_toolkit/node_modules/atma-utest/lib/env/vendor/mask.bootstrap.js";
+		if ($c.hasMaskBootstrap !== true) >
+			script src="/.reference/atma_toolkit/node_modules/atma-utest/lib/env/vendor/mask.bootstrap.js";
+
+		each ($c.scripts) >
+			script src='~[.]';
 	}
 	body {
 		

@@ -40,7 +40,13 @@ obj_extend(assert, {
 		
 		// force stack calculation
 		// (otherwise stack is not sent from browsers to the server)
-		error.stack = error.stack;
+		if (Object.defineProperty) {
+			Object.defineProperty(error, 'stack', {
+				value: error.stack,
+				enumerable: true,
+				configurable: true
+			});
+		}
 		
 		
 		assert.failed++;
