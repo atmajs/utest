@@ -41,8 +41,6 @@ var include_clearCache = function() {
 		x.parentNode.removeChild(x);
 	}
 	
-	
-	
 	for (var key in resources) {
 		resources[key] = {};
 	}
@@ -50,13 +48,11 @@ var include_clearCache = function() {
 	if (window.location.search.indexOf('nocache') === -1) 
 		include.cfg('version', +(new Date));
 	
-	include = include
-		.instance()
-		;
+	include = include.instance();
 };
 
 var include_reset = function(){
-	if (typeof include === 'undefined') {
+	if (typeof include === 'undefined' || include.instance == null) {
 		return;
 	}
 	

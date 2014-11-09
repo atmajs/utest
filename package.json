@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.9.6",
+    "version": "0.9.7",
     "devDependencies": {
         "atma": "latest"
     },
@@ -13,12 +13,21 @@
         "socket.io-client": ">1.0.0",
         "assertion": "latest",
         "body-parser": "~1.4.3",
-        "diff": "~1.0.8"
+        "diff": "~1.0.8",
+        "atma-loader-traceur": ">0.0.0"
     },
     "atma": {
         "plugins": [
-            "atma-utest"
-        ]
+            "atma-loader-traceur"
+        ],
+        "settings": {
+            "atma-loader-traceur": {
+                "extensions": [
+                    "test",
+                    "es6"
+                ]
+            }
+        }
     },
     "scripts": {
         "test": "node_modules/.bin/atma test"

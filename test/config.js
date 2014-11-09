@@ -9,6 +9,10 @@ module.exports = {
 		'server': {
 			exec: 'dom',
 			tests: 'test/server/*.test'
+		},
+		'dom': {
+			exec: 'dom',
+			tests: 'test/dom/**.test'
 		}
 	}
 };

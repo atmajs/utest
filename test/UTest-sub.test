@@ -23,10 +23,10 @@ UTest({
 		},
 	},
 	'qux': {
-		'sub-5 - skip': function() {
+		'//sub-5 - skip': function() {
 			flow.push(5);
 		},
-		'!sub-6 - important': function(done){
+		'sub-6 - important': function(done){
 			setTimeout(function(){
 				flow.push(6);
 				done();

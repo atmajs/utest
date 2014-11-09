@@ -12,6 +12,11 @@
 			rgx_local = RegExp.fromString(base.replace('file:///','')),
 			rgx_file = /([^\(@]+\:\d+(\:\d+)?)\)?$/;
 		
+		if (stack.length === 0) {
+			delete data.stack;
+			return data;
+		}
+		
 		stack = ruqq.arr.map(stack, function(x){
 			return x
 					.replace(rgx_http, '')
