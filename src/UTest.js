@@ -139,6 +139,12 @@
 			if (asyncData)
 				clearTimeout(asyncData.id);
 
+			if (error.name === 'AssertionError') {
+				assert.fail(error);
+				done();
+				return;
+			}
+			
 			error.stack = assert.prepairStack(error.stack);
 			
 			var msg = error.stack || error;
@@ -163,6 +169,10 @@
 			}
 			result
 				.fail(function(error){
+					if (error && error.name === 'AssertionError' && assert.onfailure) {
+						assert.fail(error);
+						return;
+					}
 					var msg = logger.formatMessage(
 						'Test case red<bold<`%s`>> rejected'.color , key
 					);
@@ -211,7 +221,7 @@
 	
 	var UTest = Class({
 		
-		Extends: [ UTestServer, UTestConfiguration, UTestCompo ],
+		Extends: [ UTestServer, UTestConfiguration ],
 		Construct: function(mix, suite, parent){
 			if (this instanceof UTest === false) 
 				return new UTest(mix, suite, parent);

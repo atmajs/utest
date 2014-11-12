@@ -174,38 +174,38 @@ var Runner = (function() {
 		// assertion events
 		
 		onFailure: function(data){
-			if (!data.stack) {
-				logger.error('Unknown exception - ', data);
-				return;
+			
+			if (data.stack == null) {
+				data.stack = ''
 			}
 			
 			var base = this.suites[0].base || '';
 			
-			data = assert.resolveData(data, base);
 			
+			data = assert.resolveData(data, base);
 			logger.log('');
 			
-			if (data.file && data.line != null) {
-				
-				if ('actual' in data || 'expected' in data) {
-					var actual = data.actual,
-						expect = data.expected;
-						
-					if (typeof expect === 'string'
-							&& typeof actual === 'string'
-							&& expect.length > 20
-							&& actual.length > 10
-							) {
-						
-						log_stringDiff(expect, actual);
-					} else {
-						var msg = '%s bold<red<↔>> %s';
-						logger.log(msg.color, data.actual, data.expected);
-					}
+			if ('actual' in data || 'expected' in data) {
+				var actual = data.actual,
+					expect = data.expected;
+					
+				if (typeof expect === 'string'
+						&& typeof actual === 'string'
+						&& expect.length > 20
+						&& actual.length > 10
+						) {
+					
+					log_stringDiff(expect, actual);
+				} else {
+					var msg = '%s bold<red<↔>> %s';
+					logger.log(msg.color, data.actual, data.expected);
 				}
-				
-				if (data.message && data.generatedMessage !== true) 
-					logger.log(' :: '.red.bold + data.message.yellow);
+			}
+			
+			if (data.message && data.generatedMessage !== true) 
+				logger.log(' :: '.red.bold + data.message.yellow);
+			
+			if (data.file && data.line != null) {
 				
 				var path = data
 						.file
@@ -229,12 +229,6 @@ var Runner = (function() {
 				
 				return;
 			}
-				
-			
-			logger
-				.error(data.message)
-				.error(data.stack);
-			
 		},
 		
 		onSuccess: function(){
