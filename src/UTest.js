@@ -513,7 +513,9 @@
 			
 			configurate: function($config, done){
 				UTestConfiguration.configurate($config, done);
-			}
+			},
+			
+			domtest: typeof DomTest !== 'undefined' ? DomTest : null
 		}
 	});
 	

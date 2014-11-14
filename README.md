@@ -10,6 +10,7 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 - [UTest Class](#utest-class)
     - [skip, force, range](#skip-force-range)
     - [http](#utest-server)
+	- [DomTest](#domtest)
     - Interfaces
         - [Mocha](#mocha-syntax)
 - [Config](#config)
@@ -142,8 +143,7 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
   $.fn.deepEq_
   $.fn.notDeepEq_
   $.fn.is_
-  $.fn.isNot_
-  
+  $.fn.isNot_  
 ```
 
 #### UTest Class
@@ -271,6 +271,25 @@ UTest({
         }
     });
     ```
+
+##### DomTest
+
+`UTest` embeds [domtest](https://github.com/atmajs/domtest)
+```es6
+UTest({
+	'test foo' () {
+		// typing is asynchrone and the
+		// `domtest` returns Promise, when the tests are complete.
+		
+		return UTest.domtest(document.body, `
+			with ('input.foo') {
+				do type Hello;
+				eq('val', 'Hello');
+			}
+		`);
+	}
+})
+```
 
 ##### Mocha Syntax
 ```javascript

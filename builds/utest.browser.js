@@ -1,5 +1,5 @@
 // import /vendor/jquery.js
-// import /vendor/jquery.simulate.js
+
 // import /ref-atma-libs/browser/globals.js
 // import /ref-logger/lib/browser.min.js
 
@@ -16,8 +16,13 @@ logger.cfg({
 	var __env = 'dom';
 	var __global = window;
 	
+	
 	// import /src/vars.js
+	
 	// import /src/assert/assert.browser.js
+	// import /ref-domtest/lib/domtest.embed.js
+	// import /src/patch/jquery.js
+	
 	// import /src/utils/xhr.js
 	// import /src/utils/array.js
 	// import /src/utils/cfg.js
@@ -30,8 +35,8 @@ logger.cfg({
 	
 	// import /src/browser/detect.js
 	// import /src/browser/action.js
-
-	// import /src/patch/jquery.js
+	
+	
 }());
 
 // import /vendor/sinon.js

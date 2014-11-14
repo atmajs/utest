@@ -7,3 +7,6 @@
 [submodule "ref-logger"]
 	path = ref-logger
 	url = https://github.com/atmajs/atma-logger.git
+[submodule "ref-domtest"]
+	path = ref-domtest
+	url = https://github.com/atmajs/domtest
