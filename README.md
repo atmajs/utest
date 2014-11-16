@@ -1,4 +1,4 @@
-µTEST
+_µ_Test
 ----
 [![Build Status](https://travis-ci.org/atmajs/utest.png?branch=master)](https://travis-ci.org/atmajs/utest)
 
