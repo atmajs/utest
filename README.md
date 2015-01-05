@@ -1,5 +1,5 @@
-_µ_Test
-----
+### µTest
+
 [![Build Status](https://travis-ci.org/atmajs/utest.png?branch=master)](https://travis-ci.org/atmajs/utest)
 
 _TDD and Unit Testing plugin for Atma.Toolkit_
