@@ -46,6 +46,11 @@ obj_extend(assert, {
 				enumerable: true,
 				configurable: true
 			});
+			Object.defineProperty(error, 'message', {
+				value: error.message,
+				enumerable: true,
+				configurable: true
+			});
 		}
 		
 		
