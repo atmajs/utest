@@ -513,4 +513,4 @@ Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its
     
     
 ----
-(c) 2014 MIT - The Atma.js Project
+(c) 2015 MIT - The Atma.js Project
