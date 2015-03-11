@@ -286,26 +286,9 @@
 		handleBangs: function(){
 			
 			var has = rewriteDeep(this.suite);
-			if (has) 
+			if (has) {
 				clearObject(this.suite);
-			
-			//var has = ruqq.arr.any(Object.keys(this.suite), function(x){
-			//	return x[0] === '!';
-			//});
-			//
-			//if (!has)
-			//	return;
-			//
-			//for (var key in this.suite) {
-			//	// reserved
-			//	if (RESERVED.indexOf(key) !== -1) {
-			//		continue;
-			//	}
-			//	
-			//	if (key[0] !== '!') {
-			//		delete this.suite[key];
-			//	}
-			//}
+			}
 			
 			function rewriteDeep(obj){
 				var has = false;
@@ -313,16 +296,34 @@
 					.keys(obj)
 					.forEach(function(key){
 						var val = obj[key];
+						if (key[0] === '!') {
+							has = true;
+							if (is_Object(val)) {
+								forceDeep(val);
+							}
+							return;
+						}
+						
 						if (key[0] !== '!' && is_Object(val) && hasBang(val)) {
 							delete obj[key];
 							key = '!' + key;
 							obj[key] = val;
 							rewriteDeep(val);
-						}
-						if (key[0] === '!') 
 							has = true;
+						}
 					});
 				return has;
+			}
+			function forceDeep(obj) {
+				var key, val;
+				for (key in obj) {
+					val = obj[key];
+					delete obj[key];
+					obj['!' + key] = val;
+					if (is_Object(val)) {
+						forceDeep(val);
+					}
+				}
 			}
 			function clearObject(obj){
 				Object
