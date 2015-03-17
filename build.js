@@ -1,7 +1,5 @@
 /**
- *	IncludeJSBuild
- *
- *	``` $ includejs build.js ```
+ *	``` $ npm build ```
  **/
 
 /**

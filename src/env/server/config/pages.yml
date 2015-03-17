@@ -1,7 +1,3 @@
-
 pages:
 	/:
 		controller: utest
-	
-	/server/render:
-		controller: render

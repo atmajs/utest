@@ -30,7 +30,8 @@
         }
     },
     "scripts": {
-        "test": "node_modules/.bin/atma test"
+        "test" : "atma test",
+        "build": "atma"
     },
     "repository": {
         "type": "git",
