@@ -14,19 +14,18 @@ include
 					include,
 					ctr
 				
-				var repo = ctx.req.method === 'POST'
+				var body = ctx.req.method === 'POST'
 					? ctx.req.body
 					: ctx.req.query
 					;
 				
+				template = body.template;
+				model = body.model || {};
+				ctr = body.controller;
+				include = body.include;
+
+				this.scripts = body.scripts || model.scripts;
 				
-
-				template = repo.template;
-				model = repo.model;
-				ctr = repo.controller;
-				include = repo.include;
-
-				this.scripts = repo.scripts;
 				this.hasMaskBootstrap = containsMaskBootstrap(include) || containsMaskBootstrap(this.scripts);
 
 				if (ctr && ctr.scope) 

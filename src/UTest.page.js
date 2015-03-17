@@ -34,7 +34,10 @@ var UTestPage;
 				
 				
 				var base = '/utest/';
-				if (/https?:/.test(url)) {
+				if (data.base) {
+					base = data.base;
+				}
+				else if (/https?:/.test(url)) {
 					base = /https?:\/\/[^\/]+/.exec(url)[0];
 				} else {
 					base += url;
@@ -67,28 +70,24 @@ var UTestPage;
 				var _doc = _iframe.contentDocument,
 					_win = _iframe.contentWindow
 					;
-					
-				/* expose Atma and jQuery */
-				_win.Class = Class;
-				_win.include = include.instance(url);
-				_win.mask = mask;
-				_win.Compo = mask.Compo;
-				_win.jmask = mask.jmask;
-				_win.jQuery = _win.$ = $;
+				
 				_win.__utest_isLoading = true;
 				_win.domain = window.domain;
 				
 				var listener = xhr_createListener(_win);
 				
 				$(_iframe).load(function(){
-					_win.include.allDone(function(){
+					if (_win.include) {
+						_win.include.allDone(process);
+					} else {
+						process();
+					}
+					function process() {
 						listener.done(function(){
 							_win.__utest_isLoading = false;
-							
-							
 							callback(null, _doc, _win, headers);
 						});
-					});
+					}
 				})
 				
 				location_pushSearch(url);

@@ -40,7 +40,9 @@ var UTestServer;
 						model: model,
 						controller: ctr,
 						include: include,
-						scripts: scripts
+						scripts: scripts,
+						
+						base: '/utest/'
 					}, done);
 					
 					function done(error, doc, win) {

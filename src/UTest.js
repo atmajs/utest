@@ -298,7 +298,7 @@
 						var val = obj[key];
 						if (key[0] === '!') {
 							has = true;
-							if (is_Object(val)) {
+							if (is_Object(val) && hasBang(val) === false) {
 								forceDeep(val);
 							}
 							return;
