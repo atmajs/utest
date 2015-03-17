@@ -34,7 +34,7 @@ var UTestPage;
 				
 				
 				var base = '/utest/';
-				if (data.base) {
+				if (data != null && data.base) {
 					base = data.base;
 				}
 				else if (/https?:/.test(url)) {
