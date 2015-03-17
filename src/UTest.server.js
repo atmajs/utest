@@ -6,42 +6,27 @@ var UTestServer;
 		
 		Static: {
 			server: {
-				render: function(template /* [, ?model|params, ?ctr, callback] */){
+				render: function(template /* [, params, callback] */){
 					
-					var model,
-						include,
-						scripts,
-						ctr,
-						callback;
-					
-					// @Obsolete - use `model`, `controller`, `include` in single params object
 					var args = _Array_slice.call(arguments, 1),
-						dfr = new Class.Deferred()
+						dfr = new Class.Deferred(),
+						callback
 						;
 					
-					if (typeof args[args.length - 1] === 'function') 
+					if (typeof args[args.length - 1] === 'function') {
 						callback = args.pop();
-					
-					model = args.shift();
-					ctr = args.shift();
-					
-					// @obsolete workaround
-					if (model.include || model.model) {
-						include = model.include;
-						ctr = model.controller;
-						scripts = model.scripts;
-						model = model.model;
 					}
 					
-					
+					var params = args.shift() || {},
+						model = params.model,
+						scripts = params.scripts,
+						controller = params.controller;
 					
 					UTestPage.request('/utest/server/render', 'post', null, {
 						template: template,
 						model: model,
-						controller: ctr,
-						include: include,
-						scripts: scripts,
-						
+						controller: controller,
+						scripts: scripts,						
 						base: '/utest/'
 					}, done);
 					
