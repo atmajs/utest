@@ -2,14 +2,14 @@ var UTestConfiguration;
 
 (function(){
 	UTestConfiguration = {
-		$cfg: function(key){
+		$cfg (key) {
 			var cfg = this.suite.$config;
 			if (cfg == null || cfg[key] == null) 
 				return _options[key];
 			
 			return cfg[key];
 		},
-		configurate: function(/*?cfg, done */){
+		configurate (/*?cfg, done */) {
 			var cfg,
 				done,
 				x,
@@ -18,12 +18,12 @@ var UTestConfiguration;
 			while( --i > -1){
 				x = arguments[i];
 				xtype = typeof x;
-				xtype === 'function'
-					&& (done = x);
 				
-				xtype === 'object'
-					&& x != null
-					&& (cfg = x);
+				if ('function' === xtype)
+					done = x;
+				
+				if ('object' === xtype  && x != null)
+					cfg = x;
 			}
 			if (cfg == null) 
 				cfg = this.suite.$config;
@@ -40,13 +40,11 @@ var UTestConfiguration;
 					continue;
 				}
 				
-				configurate(key, cfg[key], await.delegate());
+				perform(key, cfg[key], await.delegate());
 			}
 			
 			await
-				.fail(function(error){
-					console.error('<utest:configurate> ', error);
-				})
+				.fail(error => console.error('<utest:configurate> ', error))
 				.always(done);
 		}
 	};
@@ -63,33 +61,35 @@ var UTestConfiguration;
 				http_config('include', pckg, done);
 			},
 			
-			eval: function(fn, done){
+			eval: function evaluate(fn, done){
 				http_config('eval', fn.toString(), done);
+			},
+			process: function(params, done){
+				http_config('process', params, done);
+			}
+		},
+		util: {
+			process: function(params, done){
+				process_toggle(params, done);
 			}
 		}
-		
 	};
 	
-	function http_config(args){
-		var args = Array.prototype.slice.call(arguments);
-		
-		
+	function http_config(...args){
 		args.splice(1, 0, null); // populate later with current configuration
-		
 		args.unshift('>server:utest:action');
 		
-		UTest
-			.getSocket(function(socket, config){
+		UTest.getSocket((socket, config) => {
 				
-				args[2] = (UTest.getConfig && UTest.getConfig()) || config;
-				socket
-					.emit
-					.apply(socket, args)
-					;	
-			});
+			args[2] = (UTest.getConfig && UTest.getConfig()) || config;
+			socket
+				.emit
+				.apply(socket, args)
+				;	
+		});
 	}
 	
-	function configurate(key, args, done) {
+	function perform(key, args, done) {
 		var fn = obj_getProperty(Configurations, key);
 		if (typeof fn !== 'function') 
 			return done();

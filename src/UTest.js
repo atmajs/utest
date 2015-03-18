@@ -14,7 +14,9 @@
 			'http.config': null,
 			'http.eval': null,
 			'http.include': null,
-			'http.service': null
+			'http.service': null,
+			'http.process': null,
+			'util.process': null,
 		},
 		_testsDone;
 	
@@ -30,7 +32,7 @@
 	// import utils/syntax.js
 	// import utils/is.js
 	
-	// import UTest.config.js
+	// import UTest.config.es6
 	// import UTest.page.js
 	// import UTest.server.js
 	
