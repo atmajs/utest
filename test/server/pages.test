@@ -38,19 +38,5 @@ UTest({
 					.has_('text', 'BazData');
 				done();
 			})
-	},
-	'script + include': function(done){
-		
-		UTest
-			.server
-			.request('test/server/script_include.html')
-			.fail(assert.avoid())
-			.done(function(doc){
-				
-				$(doc)
-					.has_('text', 'FooData|BazData')
-					;
-				done();
-			})
 	}
 })

@@ -319,6 +319,9 @@
 			function forceDeep(obj) {
 				var key, val;
 				for (key in obj) {
+					if (RESERVED.indexOf(key) !== -1) continue;
+					if (key.substring(0, 2) === '//') continue;
+						
 					val = obj[key];
 					delete obj[key];
 					obj['!' + key] = val;

@@ -154,7 +154,12 @@ UTest({
         eq_(1, 1);
     },
     
-    'async test': function(done){
+	'async promise': function(){
+		return $.get('/index).then(function(response){
+			eq_(response, 'foo');
+		});
+	},
+    'async callback': function(done){
         $.get('/rest/request').then(function(response){
             eq_(response, 'foo');
             // e.g. pass variables to next function
@@ -177,6 +182,16 @@ UTest({
     '$teardown': function(?done),
     // function is called after all test cases from
     '$after': function(?done)
+	'$config': {
+		timeout: 1500,
+		errorableCallbacks: false,
+		breakOnError: false,
+		
+		// start external process
+		'util.process': {
+			command: 'node index --foo'
+		}
+	}
 });
 ```
 ##### Skip, Force, Range
@@ -214,7 +229,7 @@ UTest({
     UTest
         .server
         /* -params {
-         *         url: String,
+         *        url: String,
          *        headers:?Object,
          *        data: ?Object|String
          *        method: ?String }

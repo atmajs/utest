@@ -13,9 +13,9 @@ var slave_start,
 			command: {
 				command: 'atma server',
 				detached: true
-			}
+			},
+			parallel: true
 		}, function(error){
-			
 			if (error) 
 				return callback(error);
 			

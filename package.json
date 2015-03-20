@@ -5,16 +5,16 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.9.17",
+    "version": "0.9.18",
     "devDependencies": {
-        "atma": "latest"
+        "atma": "latest",
+        "atma-loader-babel": ">0.0.0"
     },
     "dependencies": {
         "socket.io-client": ">1.0.0",
         "assertion": "latest",
         "body-parser": "~1.4.3",
-        "diff": "~1.0.8",
-        "atma-loader-babel": ">0.0.0"
+        "diff": "~1.0.8"
     },
     "atma": {
         "plugins": [
