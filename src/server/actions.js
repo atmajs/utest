@@ -72,7 +72,11 @@ var Actions = (function(){
 			return result;
 		},
 		process: function(params, done){
-			process_toggle(params, done);
+			
+			process_toggle(params, function(){
+				logger.log('started');
+				done();
+			});
 		}
 	};
 

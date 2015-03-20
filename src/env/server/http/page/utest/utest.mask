@@ -8,6 +8,11 @@
                 color: rgb(230,250,230);
                 font-family: monospace;
             }
+            iframe {
+                background: white;
+                width: 100%;
+                height: 100%;
+            }
             '''
         }
     
