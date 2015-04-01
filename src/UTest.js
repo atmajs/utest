@@ -6,7 +6,7 @@
 		
 		// default options
 		_options = {
-			timeout: 1500,
+			timeout: 3000,
 			errorableCallbacks: false,
 			breakOnError: false,
 			

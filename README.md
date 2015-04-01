@@ -183,8 +183,13 @@ UTest({
     // function is called after all test cases from
     '$after': function(?done)
 	'$config': {
-		timeout: 1500,
+		timeout: 3000,
+		
+		// `done(error)`: when true, then the first argument is checked for an error
+		// otherwise, it is the parameter for the next test function
 		errorableCallbacks: false,
+		
+		// when true, stops current test function and do not run all the next
 		breakOnError: false,
 		
 		// start external process
