@@ -155,7 +155,7 @@ UTest({
     },
     
 	'async promise': function(){
-		return $.get('/index).then(function(response){
+		return $.get('/index').then(function(response){
 			eq_(response, 'foo');
 		});
 	},
