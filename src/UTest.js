@@ -150,8 +150,11 @@
 			error.stack = assert.prepairStack(error.stack);
 			
 			var msg = error.stack || error;
-			console.error(msg);
 			
+			console.error(error.toString());
+			if (error.stack) {
+				console.error(error.stack);
+			}
 			
 			assert.errors++;
 			done();
