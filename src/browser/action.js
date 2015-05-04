@@ -28,7 +28,7 @@
 		state_busy = 2,
 		state = state_ready,
 		configuration = new Class.Await,
-		socket = io.connect('/utest-browser')
+		socket = io.connect(location.protocol + '//' + location.host + '/utest-browser')
 			.on('connect', function(){
 				console.log('browser:connected to utest-browser socket');
 				notify('connect');
