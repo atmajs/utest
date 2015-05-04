@@ -38,7 +38,7 @@ var UTestPage;
 					base = data.base;
 				}
 				else if (/https?:/.test(url)) {
-					base = /https?:\/\/[^\/]+/.exec(url)[0];
+					base = url;
 				} else {
 					base += url;
 				}
