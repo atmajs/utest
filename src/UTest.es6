@@ -349,7 +349,7 @@
 					});
 			}
 			function hasBang(obj){
-				return ruqq.arr.any(Object.keys(obj), function(key){
+				return Object.keys(obj).some(key => {
 					
 					if (key[0] === '!')
 						return true;

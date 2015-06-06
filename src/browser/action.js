@@ -30,8 +30,10 @@
 		configuration = new Class.Await,
 		socket = io.connect(location.protocol + '//' + location.host + '/utest-browser')
 			.on('connect', function(){
-				console.log('browser:connected to utest-browser socket');
-				notify('connect');
+				notify('connected');
+			})
+			.on('disconnect', function(){
+				notify('disconnected');
 			})
 			.on('server:utest:handshake', function(done) {
 				console.log('browser:handshake');

@@ -1,9 +1,15 @@
-function notify(state) {
+var notify;
+(function(){
+	var _compo;
 	
-	switch (state) {
-		case 'connect':
-			$('<div>').text('connected to server').appendTo('body');
-			break;
-	}
 	
-}
+	
+	
+	notify = function (state) {
+		if (_compo == null) {
+			_compo = $('.utest-server-status').compo();
+		}
+		_compo.scope.status = state;
+	};
+	
+}());

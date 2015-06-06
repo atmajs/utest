@@ -31,7 +31,7 @@ logger.cfg({
 	// import /src/utils/location.js
 	// import /src/utils/transport.jam.js
 	
-	// import /src/UTest.js
+	// import /src/UTest.es6
 	
 	// import /src/browser/detect.js
 	// import /src/browser/action.js

@@ -12,7 +12,7 @@
 	// import /src/utils/transport.jam.js
 	// import /src/utils/process.es6
 	
-	// import /src/UTest.js
+	// import /src/UTest.es6
 	// import /src/assert/assert.node.js
 	// import /src/node/action.js
 
