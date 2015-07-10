@@ -2,13 +2,12 @@ var log_clearStd,
 	log_stringDiff;
 (function(){
 	
-	var util = require('util'),
-		diff = null;
+	var diff = null;
 	
 	console.print = function(){
 		var message = Array.prototype.slice.call(arguments).join(' ');
 		
-		util.print(message);
+		process.stdout.print(message);
 	};
 	
 	log_clearStd = function(){

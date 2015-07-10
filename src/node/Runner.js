@@ -232,7 +232,7 @@ var Runner = (function() {
 		},
 		
 		onSuccess: function(){
-			util.print(' |'.green.bold);
+			process.stdout.write(' |'.green.bold);
 		}
 	});
 
