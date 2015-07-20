@@ -7,7 +7,7 @@ var log_clearStd,
 	console.print = function(){
 		var message = Array.prototype.slice.call(arguments).join(' ');
 		
-		process.stdout.print(message);
+		process.stdout.write(message);
 	};
 	
 	log_clearStd = function(){
