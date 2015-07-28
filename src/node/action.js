@@ -5,9 +5,9 @@
 	var _suite,
 		_configs
 		;
-	
+
 	var TestSuite = global.UTest;
-		
+
 	include.exports = {
 		help: {
 			desciption: 'Start uTest runner. To run test(s) in browser refer to #browser-runner section',
@@ -44,7 +44,7 @@
 						'$after': 'Function<?onComplete> | ScriptPath'
 					}
 				},
-				
+
 				'- simple suites array example': [
 					{
 						exec: 'dom',
@@ -61,93 +61,93 @@
 			}
 		},
 		process: function(setts, done) {
-			
+
 			// configurate
 			io.File.disableCache();
 			logger.cfg('logCaller', false);
 			process.env.ENV = 'test';
 			process.env.NODE_ENV = 'test';
 
-			
+
 			var arg = setts.script || app.config.$cli.args[1],
 				config;
-		
+
 			cfg_prepairSettings(setts, arg);
-			
+
 			config = cfg_loadConfig(setts);
 			if (cfg_hasScripts(setts)) {
 				// running via cli or atma-action, take `env`/`$config` from config
 				cfg_suiteInfoFromConfig(setts, config);
 			}
 			else {
-				
+
 				// Parse all from suites, as no scripts via cli or atma-action
 				cfg_getScripts(setts, config);
-				
-				if (arg && !(config.suites && config.suites[arg])) 
+
+				if (arg && !(config.suites && config.suites[arg]))
 					return done('Argument is not resolved as a script, nor as a suite name: ' + arg);
-				
-				
+
+
 				if (arg) {
 					var suites = config.suites;
 					for (var key in suites) {
 						if (key !== arg)
 							delete suites[key];
 					}
-					
+
 					setts.suites = cfg_parseSuites(suites, setts.base);
 				}
 			}
-			
+
 			_configs = cfg_split(setts);
 			if (_configs.length === 0) {
 				logger.log('<config>', config);
 				return done('No scripts to test');
 			}
-			
-			
+
+
 			include = global.include = include
 				.instance(setts.base)
 				.setBase(setts.base)
 				;
-				
+
 			_suite = new RunnerSuite(_configs, setts);
 			// run configuration only if has suites, otherwise configuration will be run by the root suite
 			var cfg = config.suites && config,
 				runCfg = cfg_runConfigurationScript;
-				
+
 			runCfg('$before', cfg, function(){
 				_suite.run(function(exitCode){
 					runCfg('$after', cfg, function(){
 						process.exit(exitCode);
 					});
-				});	
+				});
 			});
 		}
 	};
-	
+
 	process.on('uncaughtException', function(error){
 		logger.error(error.stack || error);
-		
-		if (_suite.watch) 
+
+		if (_suite.watch)
 			return;
-		
+
 		process.exit(1);
 	});
-	
+
 	// import utils/slave.js
 	// import utils/net.js
 	// import utils/io.js
 	// import utils/cfg.js
 	// import utils/logger.js
-	
+
 	// import Runner.js
 	// import RunnerClient.js
-	// import RunnerNode.js
+	// import RunnerNode.es6
 	// import RunnerFork.js
-	
+
 	// import Suite.js
-	
+
 	// import utest.extend.js
-		
+
 }());
