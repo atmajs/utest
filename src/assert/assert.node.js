@@ -22,10 +22,21 @@
 					.replace(rgx_local, '')
 					.replace('at ', '');
 		});
+		var i = -1,
+			imax = stack.length,
+			file;
+		while (++i < imax ){
+			var path = stack[i].trim();
+			if (path.indexOf('assert') > -1)
+				continue;
 
-		var file = rgx_file.exec(stack[0].trim());
+			file = rgx_file.exec(path);
+			if (file != null)
+				break;
+		}
+
 		if (file) {
-			var parts = file[1].split(':');
+			var parts = file[1].split(/:(?![\/\\])/);
 
 			data.file = parts[0];
 			data.line = parts[1] << 0;
