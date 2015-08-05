@@ -142,6 +142,11 @@ var RunnerNode;
 			callback();
 			return;
 		}
+		if (env.length === 0) {
+			callback();
+			return;
+		}
+
 		var resource = include
 				.instance(base)
 				.setBase(base)
