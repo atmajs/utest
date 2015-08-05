@@ -5,42 +5,42 @@ var status_blank = 1,
 	status_testing = 5,
 	status_ready = 6,
 	util = require('util');
-	
+
 
 var Runner = (function() {
 
-	
+
 	function utest_resolveFiles(config) {
 		var files = [];
-		
+
 		if (arr_isArray(config)) {
 			for (var i = 0, x, imax = config.length; i < imax; i++){
 				x = config[i];
-				
+
 				files = files.concat(utest_resolveFiles(x));
 			}
 			return files;
 		}
-		
+
 		if (config.fork) {
 			// no sub files
 			return [];
 		}
-		
+
 		var scripts = config.scripts,
 			base = config.base;
-		
+
 		base = new net.Uri(base);
-		
+
 		for (var i = 0, x, imax = scripts.length; i < imax; i++){
 			x = new net.Uri(scripts[i]);
-			
+
 			if (x.isRelative()) {
 				x = base.combine(x);
 			}
-			
+
 			x = new io.File(x);
-			
+
 			if (x.exists() === false) {
 				console.error('File - 404 - ', x.uri.toLocalFile());
 				continue;
@@ -49,7 +49,7 @@ var Runner = (function() {
 		}
 		return files;
 	}
-	
+
 
 	return Class({
 		Base: Class.EventEmitter,
@@ -57,10 +57,10 @@ var Runner = (function() {
 			this.config = config;
 			this.status = status_blank;
 			this.files = utest_resolveFiles(config);
-			
+
 			this.suites = arr_isArray(config) ? config : [config];
-			
-			ruqq.arr.each(this.suites, function(x){
+
+			this.suites.forEach(function(x){
 				x.files = utest_resolveFiles(x);
 			});
 		},
@@ -71,33 +71,39 @@ var Runner = (function() {
 			this.status = status_ready;
 
 			function count(key) {
-				return ruqq.arr.aggr(stats, 0, function(x, aggr) {
+				var sum = 0;
+
+				stats.forEach(function(x) {
 					if (x.error) {
 						logger.error(x.error);
-						return 0;
+						return;
 					}
-					
-					if (x[key] == null) 
-						return aggr;
-					
+
+					if (x[key] == null)
+						return;
+
 					if (typeof x[key] === 'object' && 'length' in x[key]) {
-						return x[key].length + aggr;
+						sum += x[key].length;
+						return;
 					}
-					
-					return x[key] + aggr;
+
+					sum += x[key];
 				});
+				return sum;
 			}
 			function aggr(key) {
-				return ruqq.arr.aggr(stats, [], function(x, aggr){
-					if (x[key] == null) 
+				var aggr = [];
+				stats.forEach(function(x){
+					if (x[key] == null)
 						return;
-					
+
 					if (typeof x[key] === 'object' && 'length' in x[key]) {
 						aggr.push.apply(aggr, x[key]);
 						return;
 					}
 					aggr.push(x[key]);
-				})
+				});
+				return aggr;
 			}
 
 			var total = count('total'),
@@ -111,29 +117,29 @@ var Runner = (function() {
 				console.error('No assertions');
 				failed++;
 			}
-			
+
 			if (errors > 0) {
 				failed++;
 			}
-			
+
 			if (callbacks !== 0 || timeouts !== 0) {
-				
-				if (callbacks) 
+
+				if (callbacks)
 					logger
 						.error('Expected callbacks were not fired. More info...')
 						.log(aggr('callbacks'))
 						;
-						
-				if (timeouts) 
+
+				if (timeouts)
 					logger
 						.error('Asynchronous suites were not completed. More info...')
 						.log(aggr('timeouts'))
 						;
-				
-				
+
+
 				!failed && failed++;
 			}
-			
+
 
 			logger
 				.log('\n\nDone. '[failed ? 'red' : 'green'].bold)
@@ -153,68 +159,68 @@ var Runner = (function() {
 
 			this.failed = failed;
 			this.stats = stats;
-			
+
 			this.trigger('complete', this);
-			
+
 		},
-		
+
 		getResources: function(){
-			if (this.stats == null) 
+			if (this.stats == null)
 				return [];
-			
-			
+
+
 			var resources = this.stats.resources || (this.stats[0] && this.stats[0].resources);
 
-			if (resources == null && this.getResources) 
+			if (resources == null && this.getResources)
 				resources = this.getResources();
-				
+
 			return resources || [];
 		},
-		
+
 		// assertion events
-		
+
 		onFailure: function(data){
-			
+
 			if (data.stack == null) {
 				data.stack = ''
 			}
-			
+
 			var base = this.suites[0].base || '';
-			
-			
+
+
 			data = assert.resolveData(data, base);
 			logger.log('');
-			
+
 			if ('actual' in data || 'expected' in data) {
 				var actual = data.actual,
 					expect = data.expected;
-					
+
 				if (typeof expect === 'string'
 						&& typeof actual === 'string'
 						&& expect.length > 20
 						&& actual.length > 10
 						) {
-					
+
 					log_stringDiff(expect, actual);
 				} else {
 					var msg = '%s bold<red<↔>> %s';
 					logger.log(msg.color, data.actual, data.expected);
 				}
 			}
-			
-			if (data.message && data.generatedMessage !== true) 
+
+			if (data.message && data.generatedMessage !== true)
 				logger.log(' :: '.red.bold + data.message.yellow);
-			
+
 			if (data.file && data.line != null) {
-				
+
 				var path = data
 						.file
 						.replace(/(\/)?utest\//i, '$1')
 						.replace(/\?.+/, '')
 						.replace(/^\//, ''),
-						
+
 					uri = new net.Uri(base).combine(path);
-				
+
 				if (io.File.exists(uri)) {
 					var source = io.File.read(uri),
 						lines = source.split(/\r\n|\r|\n/g),
@@ -226,15 +232,15 @@ var Runner = (function() {
 						.log('  bold<cyan< → >> bold<%1 |> bold<red< %2 >>'.color.format(data.line + 1, code))
 						.log('');
 				}
-				
+
 				return;
 			}
 		},
-		
+
 		onSuccess: function(){
 			process.stdout.write(' |'.green.bold);
 		}
 	});
 
-	
+
 }());

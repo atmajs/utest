@@ -8,57 +8,57 @@ var RunnerSuite = Class({
 
 		this.base = settings.base;
 		this.watch = settings.watch;
-		
+
 		logger(90).log('RunnerSuite:', configs, settings);
 	},
-	
+
 	forks: null,
 	cfgNode: null,
 	cfgBrowser: null,
-	
+
 	closeSockets: function(){
-		ruqq.arr.each(this.runners, function(x){
+		this.runners.forEach(function(x){
 			x.socket && x.socket && x.socket.disconnect();
 		});
 	},
-	
+
 	getFailed: function(){
-		return ruqq.arr.aggr(this.runners, 0, function(x, aggr) {
+		return this.runners.reduce(function(aggr, x) {
 			return aggr + (x.failed || 0);
-		});
+		}, 0);
 	},
-	
+
 	getResources: function(){
-		return ruqq.arr.aggr(this.runners, [], function(x, aggr) {
+		return this.runners.reduce(function(aggr, x) {
 			return aggr.concat(x.getResources());
-		});
+		}, []);
 	},
-	
+
 	Self: {
-		
+
 		onComplete: function(){
-			
+
 			if (this.watch !== true) {
-				
+
 				this.closeSockets();
-				
+
 				var failed = this.getFailed();
-				
+
 				logger
 					.log('')
 					.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
-				
+
 				this.callback(failed);
 				return;
 			}
-			
+
 			closeSocketsOnExit(this);
-			
+
 			var self = this;
 			watch(this.base, this.getResources(), function(path){
-				
+
 				log_clearStd();
-				
+
 				var date = new Date;
 				logger.log((date.getHours()
 					+ ':'
@@ -70,53 +70,53 @@ var RunnerSuite = Class({
 			});
 			logger.log(' - watcher active.'.yellow);
 		},
-		
+
 		process: function(){
 			var runner = this.runners[++this.index];
-			
+
 			if (runner == null) {
 				this.onComplete();
 				return;
 			}
 			runner.run(this.process);
 		},
-		
+
 		runTests: function(){
 			this.index = -1;
 			this.process();
-			
+
 		},
 	},
 	run: function(done){
 		this.callback = done;
 		this.runners = [];
-		
-		
-		if (this.cfgBrowser) 
+
+
+		if (this.cfgBrowser)
 			this.runners.push(new RunnerClient(this.cfgBrowser));
-		
+
 		if (this.cfgNode)
 			this.runners.push(new RunnerNode(this.cfgNode));
-			
+
 		if (this.forks) {
 			var runners = this.forks.map(function(cfg) {
 				return new RunnerFork(cfg);
 			});
 			this.runners = this.runners.concat(runners);
 		}
-			
+
 		this.runners.forEach(function(runner){
 			runner.on('complete', this.process);
 		}, this);
-		
-		if (this.watch) 
+
+		if (this.watch)
 			log_clearStd();
-		
+
 		this.runTests();
 	},
-	
-	
-	
+
+
+
 	handleConfig: function(mix) {
 		if (Array.isArray(mix)) {
 			for (var i = 0, imax = mix.length; i < imax; i++) {
@@ -127,22 +127,22 @@ var RunnerSuite = Class({
 		this.handleSingle(mix);
 	},
 	handleSingle: function(config) {
-		
-		if (this.base == null && config.base) 
+
+		if (this.base == null && config.base)
 			this.base = config.base;
-		
-		if (this.watch == null && config.watch) 
+
+		if (this.watch == null && config.watch)
 			this.watch = config.watch;
-		
+
 		if ('browser' === config.exec || 'dom' === config.exec) {
 			cfg_add(this, 'cfgBrowser', config);
 			return;
 		}
-		
+
 		if (typeof config.fork === 'string') {
-			if (this.forks == null) 
+			if (this.forks == null)
 				this.forks = [];
-			
+
 			this.forks.push(config);
 			return;
 		}
@@ -171,14 +171,14 @@ function closeSocketsOnExit(suite) {
 		var rl = readLine.createInterface({
 			input: process.stdin,
 			output: process.stdout
-		});		
+		});
 		rl.on('SIGINT', function() {
 			process.emit('SIGINT');
 		});
 		rl.write('\n');
 		global.rl = rl;
 	}
-	
+
 	process.on('SIGINT', function() {
 		suite.closeSockets();
 		process.exit(0);

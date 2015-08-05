@@ -1,23 +1,21 @@
-
-
-global.assert = assert;
+var assert = global.assert;
 
 obj_extend(assert, {
 	total: 0,
 	failed: 0,
 	errors: 0,
 	timeouts: [],
-	
+
 	reset: function(){
-		
+
 		this.callbacks.length = 0;
 		this.timeouts.length = 0;
-		
+
 		this.failed = 0;
 		this.total = 0;
 		this.errors = 0;
 	},
-	
+
 	// @obsolete
 	callback: function assert_callback(callback){
 		return this.await(callback);
@@ -26,18 +24,18 @@ obj_extend(assert, {
 
 //> events
 (function(assert){
-	
+
 	assert.on('start', function(){
 		assert.total++;
 	});
-	
+
 	assert.on('success', function(){
-		
+
 		assert.onsuccess && assert.onsuccess();
 	});
-	
+
 	assert.on('fail', function(error){
-		
+
 		// force stack calculation
 		// (otherwise stack is not sent from browsers to the server)
 		if (Object.defineProperty) {
@@ -52,12 +50,12 @@ obj_extend(assert, {
 				configurable: true
 			});
 		}
-		
-		
+
+
 		assert.failed++;
 		assert.onfailure && assert.onfailure(error);
 	});
-	
+
 }(assert));
 
 /* GLOBALS */

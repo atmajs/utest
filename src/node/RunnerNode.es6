@@ -75,7 +75,7 @@ var RunnerNode;
 			},
 		},
 		clearResources: function() {
-			this.resources && ruqq.arr.each(this.resources, resource_clear);
+			this.resources && this.resources.forEach(resource_clear);
 			this.envResource && resource_clear(this.envResource);
 
 			this.resources = [];
@@ -84,10 +84,11 @@ var RunnerNode;
 		getResources: function() {
 			var arr = [];
 
-			this.envResource &&
-				resource_aggrIncludes(this.envResource, arr);
+			this.envResource && resource_aggrIncludes(this.envResource, arr);
 
-			ruqq.arr.aggr(this.resources, arr, resource_aggrIncludes);
+			this.resources.forEach(function(resource){
+				resource_aggrIncludes(resource, arr);
+			});
 			return arr;
 		}
 	});
@@ -107,7 +108,7 @@ var RunnerNode;
 		}
 
 		if (resource.includes) {
-			ruqq.arr.each(resource.includes, function(data){
+			resource.includes.forEach(function(data){
 				resource_clear(data.resource);
 			});
 		}
@@ -118,7 +119,7 @@ var RunnerNode;
 			aggr.push(resource.url);
 		}
 		if (resource.includes) {
-			ruqq.arr.each(resource.includes, function(data){
+			resource.includes.forEach(function(data){
 				resource_aggrIncludes(data.resource, aggr);
 			});
 		}

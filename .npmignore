@@ -1,7 +1,4 @@
 builds/
-ref-assertion/
-ref-atma-libs/
-ref-logger/
 resources/
 src/
 test/
