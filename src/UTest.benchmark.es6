@@ -30,7 +30,11 @@ var UTestBenchmark;
 			]),
 			$after: model.$after
 		};
+		var SKIP = ['$config', '$before', '$after', '$teardown'];
 		for (var suite in model) {
+			if (SKIP.indexOf(suite) !== -1) {
+				continue;
+			}
 			utest[suite] = _benchmarkDelegate(model, suite, model[suite])
 		}
 		return UTest(utest);
@@ -38,15 +42,16 @@ var UTestBenchmark;
 	
 	var Before = {
 		loadBenchmarkLibrary (model, next) {
-			if (typeof require != null) {
+			if (typeof require === 'function') {
 				_benchmark = require('benchmark');
 				next();
 				return;
 			}
 			include
-				.js('/.reference/atma_toolkit/node_modules/utest/node_modules/benchmark/benchmark.js')
+				.instance()
+				.js('/.reference/atma_toolkit/node_modules/atma-utest/node_modules/benchmark/benchmark.js')
 				.done(resp => {
-					_benchmark = resp.benchmark;
+					_benchmark = resp.benchmark || global.Benchmark;
 					next();
 				});
 		},
@@ -63,8 +68,17 @@ var UTestBenchmark;
 			for(key in versions) {
 				keyValues.push({
 					version: key,
-					path: versions[key]
+					path: versions[key],
+					alias: getAlias(versions[key])
 				});
+			}
+			function getAlias(path) {
+				var i = path.indexOf('::');
+				if (i !== -1) {
+					return path.substring(i + 2);
+				}
+				i = path.lastIndexOf('/');
+				return path.substring(i + 1, path.lastIndexOf('.'));
 			}
 			function load(resp){
 				var current;
@@ -72,10 +86,16 @@ var UTestBenchmark;
 				if (resp != null) {
 					current = keyValues[index];
 					
-					var library;
-					for(var key in resp) {
-						library = resp[key];
+					var library = resp[current.alias];
+					if (library == null) {
+						for(var key in resp) {
+							library = resp[key];
+						}
 					}
+					if (library == null) {
+						library = global[current.alias];
+					}
+					
 					if (library == null) {
 						throw Error(`Module in 'versions' is not loaded. Version: ${current.version} in ${current.path}`);
 					}
@@ -143,9 +163,10 @@ var UTestBenchmark;
 				.on('cycle', (event) => logger.log(event.target.toString()))
 				.on('teardown', model.$teardown)
 				.on('complete', (event) => {
-					
 					Array
-						.from(suite.sort((a, b) => {
+						.prototype
+						.slice
+						.call(suite.sort((a, b) => {
 							 a = a.stats; b = b.stats;
 							return a.mean + a.moe > b.mean + b.moe ? 1 : -1;
 						}))
