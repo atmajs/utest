@@ -5,9 +5,6 @@ UTest.benchmark({
 		},
 		'String#indexOf' () {
 			'Hello World!'.indexOf('o') > -1;
-		},
-		'RegExp::match' () {
-			!!'Hello World!'.match(/o/);
 		}
 	}
 });

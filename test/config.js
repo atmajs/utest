@@ -13,6 +13,10 @@ module.exports = {
 		'dom': {
 			exec: 'dom',
 			tests: 'test/dom/**.test'
+		},
+		'benchmark': {
+			exec: 'node',
+			tests: 'test/benchmark/**.test'
 		}
 	}
 };
