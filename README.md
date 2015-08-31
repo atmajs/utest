@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/atmajs/utest.png?branch=master)](https://travis-ci.org/atmajs/utest)
 
-_TDD and Unit Testing plugin for Atma.Toolkit_
+_TDD, Unit Testing and Benchmark plugin for Atma.Toolkit_
 
 - [Overview](#overview)
 - [Simplest example](#simplest-example)
@@ -13,6 +13,7 @@ _TDD and Unit Testing plugin for Atma.Toolkit_
 	- [DomTest](#domtest)
     - Interfaces
         - [Mocha](#mocha-syntax)
+- [Benchmark](#benchmark)
 - [Config](#config)
 - [Forks](#forks)
 - [CLI Sugar](#cli-sugar)
@@ -325,6 +326,31 @@ UTest('Baz suite', function(){
     })
 })
 ```
+
+#### Benchmark
+
+You can run your tests for benchmarking. Sample
+```javascript
+UTest.benchmark({
+	'string contains check' : {
+		'RegExp#test' () {
+			 /o/.test('Hello World!');
+		},
+		'String#indexOf' () {
+			'Hello World!'.indexOf('o') > -1;
+		},
+		'RegExp::match' () {
+			!!'Hello World!'.match(/o/);
+		}
+	}
+});
+```
+```bash
+1. String#indexOf x 17,556,886 ops/sec ±2.14% (93 runs sampled)
+2. RegExp#test x 11,799,132 ops/sec ±2.38% (92 runs sampled)
+3. RegExp::match x 8,654,070 ops/sec ±2.49% (95 runs sampled)
+```
+
 
 #### Config
 

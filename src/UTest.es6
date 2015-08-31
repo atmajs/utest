@@ -35,6 +35,7 @@
 	// import UTest.config.es6
 	// import UTest.page.js
 	// import UTest.server.js
+	// import UTest.benchmark.es6
 
 	function nextUTest() {
 		if (++_index > _tests.length - 1) {
@@ -226,7 +227,7 @@
 
 	var UTest = Class({
 
-		Extends: [ UTestServer, UTestConfiguration ],
+		Extends: [ UTestServer, UTestConfiguration, UTestBenchmark ],
 		Construct: function(mix, suite, parent){
 			if (this instanceof UTest === false)
 				return new UTest(mix, suite, parent);
