@@ -27,7 +27,15 @@ var scripts_resolve;
 			scripts = [];
 
 		add_source(scripts, '/socket.io/socket.io.js');
-
+		
+		var packageBaseDir = (function(){
+			var path = 'file://' + __dirname;
+			var i = path.indexOf('atma-utest');
+			path = path.substring(0, i) + 'atma-utest/';
+			return path;
+		}());
+		
+		
 		([
 			'node_modules/atma-logger/lib/browser.min.js',
 			'node_modules/assertion/lib/assert.js',
@@ -40,6 +48,9 @@ var scripts_resolve;
 			'lib/utest.browser.js',
 		])
 		.map(function(x){
+			if (io.File.exists(packageBaseDir + x) == false) {
+				return '/.reference/atma_toolkit/' + x;
+			}
 			return '/.reference/atma_toolkit/node_modules/atma-utest/' + x;
 		})
 		.forEach(function(x){
