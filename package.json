@@ -17,7 +17,7 @@
     "benchmark": "^1.0.0",
     "body-parser": "~1.4.3",
     "diff": "~1.0.8",
-    "domtest": "^0.10.33",
+    "domtest": "^0.10.34",
     "includejs": "^0.9.14",
     "jquery": "^2.1.4",
     "maskjs": "^0.52.3",
