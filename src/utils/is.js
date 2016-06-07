@@ -7,8 +7,7 @@ var is_Deferred,
 	is_Deferred = function(x){
 		return x != null
 			&& typeof x === 'object'
-			&& typeof x.done === 'function'
-			&& typeof x.fail === 'function'
+			&& is_Function(x.then)
 			;
 	};
 	is_Function = function(x){

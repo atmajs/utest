@@ -163,34 +163,30 @@
 
 
 		function tryWait_Deferred(dfr) {
-			if (is_Deferred(dfr) === false)
+			if (is_Deferred(dfr) === false) {
 				return false;
-
-			if (asyncData == null){
-				asyncData = async(
-					onComplete
-					, key
-					, ctx.$config && ctx.$config.timeout
-				);
+			}if (asyncData == null) {
+				asyncData = async(onComplete, key, ctx.$config && ctx.$config.timeout);
 			}
-			result
-				.fail(function(error){
-					if (error && error.name === 'AssertionError' && assert.onfailure) {
-						assert.fail(error);
-						return;
-					}
-					var msg = logger.formatMessage(
-						'Test case red<bold<`%s`>> rejected'.color , key
-					);
-					logger.log(msg);
-					eq_(error, null);
-				})
-				.done(function(){
-					eq_(result._rejected, null);
-					if (arguments.length !== 0)
-						ctx.arguments = arguments;
-				})
-				.always(asyncData.fn);
+			function onFail(error) {
+				if (error && error.name === "AssertionError" && assert.onfailure) {
+					assert.fail(error);
+					return;
+				}
+				var msg = logger.formatMessage("Test case red<bold<`%s`>> rejected".color, key);
+				logger.log(msg);
+				eq_(error, null);
+				asyncData.fn();
+			}
+			function onSuccess(error) {
+				eq_(result._rejected, null);
+				if (arguments.length !== 0) ctx.arguments = arguments;
+				asyncData.fn();
+			}
+			result.then(onSuccess, onFail);
+			if (is_Function(result.catch)) {
+				result.catch(onFail);
+			}
 			return true;
 		}
 	}
