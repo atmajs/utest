@@ -196,7 +196,12 @@
 	}
 
 	function case_isAsync(fn) {
-		return /^\s*function\s*([\w$_]+)?\s*\([\w\s,]*(done|next)/.test(fn.toString());
+		if (fn.length === 0) {
+			return false;
+		}
+		var str = fn.toString();
+			str = str.replace(fn.name, '').trim();
+		return /^(function)?\s*\([\w\s,]*(done|next)/.test(str);
 	}
 
 	var UTestProto = {
