@@ -49,7 +49,7 @@ var UTestBenchmark;
 			}
 			include
 				.instance()
-				.js('/.reference/atma_toolkit/node_modules/atma-utest/node_modules/benchmark/benchmark.js')
+				.js(model.$config.benchmarkPath || '/.reference/atma_toolkit/node_modules/benchmark/benchmark.js')
 				.done(resp => {
 					_benchmark = resp.benchmark || global.Benchmark;
 					next();

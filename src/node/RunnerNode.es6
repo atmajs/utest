@@ -112,6 +112,12 @@ var RunnerNode;
 				resource_clear(data.resource);
 			});
 		}
+
+		if (typeof require !== 'undefined' && require.cache) {
+			for (var key in require.cache) {
+				delete require.cache[key];
+			}
+		}
 	}
 
 	function resource_aggrIncludes(resource, aggr) {
