@@ -455,7 +455,7 @@
 					if (case_ == null)
 						continue;
 
-					var message = '   bold<%1>: '.format(key).color;
+					var message = logger.formatMessage('   bold<%s>: '.color, key);
 					if (typeof case_ === 'object')
 						message = message.bg_cyan;
 
