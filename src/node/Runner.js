@@ -65,7 +65,8 @@ var Runner = (function() {
 			});
 		},
 		notifyTest: function(url){
-			logger.log('Test: ', url.replace(this.config.base, '').cyan.bold);
+			var name = url.replace(this.config.base, '');
+			logger.log('Test: ', ('bold<cyan<' + name + '>>').color);
 		},
 		onComplete: function(stats) {
 			this.status = status_ready;
@@ -142,7 +143,9 @@ var Runner = (function() {
 
 
 			logger
-				.log('\n\nDone. '[failed ? 'red' : 'green'].bold)
+				.log('\n\nbold<%1<Done.>>'
+					.format(failed ? 'red' : 'green')
+					.color)
 				.log(
 					'bold<Assertions>: bold<green<%1>>(bold<red<%2>>)'
 						.format(Math.max(total - failed, 0), failed)
@@ -209,7 +212,7 @@ var Runner = (function() {
 			}
 
 			if (data.message && data.generatedMessage !== true)
-				logger.log(' :: '.red.bold + data.message.yellow);
+				logger.log(' bold<red<::>> '.color + data.message.yellow);
 
 			if (data.file && data.line != null) {
 
@@ -238,7 +241,7 @@ var Runner = (function() {
 		},
 
 		onSuccess: function(){
-			process.stdout.write(' |'.green.bold);
+			process.stdout.write('bold<green< |>>'.color);
 		}
 	});
 

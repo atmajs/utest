@@ -13,7 +13,7 @@ UTest.getSocket = function(callback){
 			
 			logger
 				.error('<Exit> server connection is not established.', error)
-				.log('Executed `atma server`?'.bold)
+				.log('bold<Executed `atma server`?>'.color)
 				;
 		});
 };

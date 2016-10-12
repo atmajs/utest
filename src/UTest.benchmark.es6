@@ -159,7 +159,7 @@ var UTestBenchmark;
 				suite.add(key, _getFn(key, fns));
 			}
 			suite
-				.on('start', () => logger.log(`Benchmark started '${name.bold}'`))
+				.on('start', () => logger.log(`Benchmark started 'bold<${name}>'`.color))
 				.on('cycle', (event) => logger.log(event.target.toString()))
 				.on('teardown', model.$teardown)
 				.on('complete', (event) => {
@@ -171,7 +171,7 @@ var UTestBenchmark;
 							return a.mean + a.moe > b.mean + b.moe ? 1 : -1;
 						}))
 						.map(x => x.toString())
-						.forEach((x, i) => logger.log(((i + 1) + '. ').bold.green + x));
+						.forEach((x, i) => logger.log(`bold<green<${i + 1}.>> ${x}`.color));
 					
 					// Fake some test to make the benchmark pass, as for now, benchmarks do not perform any unit tests;
 					assert.equal(true, true);

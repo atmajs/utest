@@ -202,9 +202,9 @@ var RunnerNode;
 							return;
 						}
 						logger
-							.log('<utest:Environment> Loaded dependency has no exports `%s`.'.yellow.bold, key)
+							.log('<utest:Environment> Loaded dependency has no exports `%s`.'.yellow, key)
 							.log('yellow<Should it be global variables, to bold<dismiss> this error use smth like this:>'.color)
-							.log('`{ env: [ "someLib.js::globalVarName" ] }`'.bold)
+							.log('`{ env: [ "someLib.js::globalVarName" ] }`')
 							;
 					});
 				callback(resp);

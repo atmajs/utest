@@ -67,7 +67,7 @@ var BrowserTunnel = Class({
 			that = this;
 
 		socket.emit('server:utest:handshake', function(stats) {
-			logger(90).log('UTest.tunnel - handshake - '.cyan.bold, stats);
+			logger(90).log('bold<cyan<UTest.tunnel - handshake - >>'.color, stats);
 
 			if (stats.ready === 1) {
 				socket.emit('server:utest', config);

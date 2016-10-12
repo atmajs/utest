@@ -46,7 +46,7 @@ var RunnerSuite = Class({
 
 				logger
 					.log('')
-					.log(failed === 0 ? 'Success'.green.bold : 'Failed'.red.bold);
+					.log(failed === 0 ? 'bold<green<Success>>'.color : 'bold<red<Failed>>'.color);
 
 				this.callback(failed);
 				return;
@@ -65,7 +65,7 @@ var RunnerSuite = Class({
 					+ date.getMinutes()
 					+ ':'
 					+ date.getSeconds()).bg_cyan
-					+ ' modified ' + path.bold);
+					+ ' modified ' + ('bold<%1>'.format(path).color));
 				self.runTests();
 			});
 			logger.log(' - watcher active.'.yellow);

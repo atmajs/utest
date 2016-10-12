@@ -11,7 +11,7 @@ var RunnerFork = Class({
 		
 		logger
 			.log('\t\t\t\t>'.bg_yellow)
-			.log('Fork'.bg_yellow.black, (net.Uri.combine(base, cfgPath)).bold)
+			.log('Fork'.bg_yellow.black, 'bold<%1>'.format(net.Uri.combine(base, cfgPath)).color)
 			.log('\t\t\t\t>'.bg_yellow)
 			.log('');
 		

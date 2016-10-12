@@ -50,7 +50,7 @@ var RunnerClient = Class({
 			
 			.done(function(socket){
 				
-				logger.log('<server> connected'.green.bold);
+				logger.log('bold<green<server connected>>'.color);
 				
 				that.socket = socket;
 				
@@ -74,9 +74,9 @@ var RunnerClient = Class({
 						fn.apply(console, args);
 					})
 					.on('slave:start', function(stats) {
-						var message = '#{browser.name} #{browser.version}'.bold;
+						var message = 'bold<#{browser.name} #{browser.version}>';
 						logger
-							.log(message.format(stats.userAgent))
+							.log(message.format(stats.userAgent).color)
 							.log('');
 					})
 					.on('slave:end', function(stats) {
@@ -110,7 +110,7 @@ var RunnerClient = Class({
 	runTests: function() {
 		logger.log(
 			'bold<-->--bold<-->--bold<-->--bold<--> yellow<client>'.color
-			, Date.format(new Date(), 'HH:mm:ss').bold
+			, 'bold<%1>'.format(Date.format(new Date(), 'HH:mm:ss')).color
 			, '\n'
 		);
 		

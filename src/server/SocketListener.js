@@ -40,7 +40,7 @@ var SocketListener;
 		var slice = Array.prototype.slice,
 			args;
 		return function() {
-			logger(90).log('Socket.Pipe'.green.bold, event);
+			logger(90).log('bold<green<Socket.Pipe>>'.color, event);
 			args = slice.call(arguments);
 			args.unshift(event);
 			socket.emit.apply(socket, args);

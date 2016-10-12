@@ -444,7 +444,7 @@
 						continue;
 
 					if (key.substring(0,2) === '//') {
-						console.warn(key.substring(2), '(skipped)'.bold);
+						console.warn(key.substring(2), 'bold<(skipped)>'.color);
 						this.processed.push(key);
 						continue;
 
@@ -455,7 +455,7 @@
 					if (case_ == null)
 						continue;
 
-					var message = ('   ' + key + ': ').bold;
+					var message = '   bold<%1>: '.format(key).color;
 					if (typeof case_ === 'object')
 						message = message.bg_cyan;
 
