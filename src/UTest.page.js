@@ -76,7 +76,7 @@ var UTestPage;
 				
 				var listener = xhr_createListener(_win);
 				
-				$(_iframe).load(function(){
+				$(_iframe).on('load', function(){
 					if (_win.include) {
 						_win.include.allDone(process);
 					} else {
