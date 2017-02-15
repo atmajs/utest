@@ -11,9 +11,16 @@
 		socket.emit('browser:utest:error', {
 			error: message
 		});
-		
-		//-state = state_ready;
 	};
+
+	window.addEventListener('unhandledrejection', function(event) {
+		var error = event.reason;
+		var message = error.stack || error.message || JSON.stringify(error);
+		console.error(message);		
+		socket.emit('browser:utest:error', {
+			error: message
+		});
+	});
 	
 	// import notify.js
 	// import utils/logger.js
