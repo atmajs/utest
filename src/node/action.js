@@ -127,20 +127,20 @@
 	};
 
 	process.on('uncaughtException', function(error){
-		logger.error(error.stack || error);
+		console.error(error.stack || error);
 
-		if (_suite.watch)
+		if (_suite.watch) {
 			return;
-
+		}
 		process.exit(1);
 	});
 
 	process.on('unhandledRejection', function(error){
-		logger.error(error.stack || error);
+		console.error(error.stack || error);
 
-		if (_suite.watch)
+		if (_suite.watch) {
 			return;
-
+		}
 		process.exit(1);
 	});
 
