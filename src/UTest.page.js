@@ -43,7 +43,7 @@ var UTestPage;
 					base += url;
 				}
 				
-				if (/<\s*head[^>]*>/i.test(html)) {
+				if (/<\s*head[^>]*>/i.test(html) === false) {
 					// no head
 					var index = html.indexOf('>');
 					if (index !== -1) {
