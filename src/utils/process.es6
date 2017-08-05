@@ -5,11 +5,13 @@ var process_toggle;
 	 *  	- id: string
 	 * 		- action: string enum, start|stop
 	 * 		- command: string
-	 * 		- commands: Array<string>
 	 * 		- cwd: string (default current cwd)
+	 * 		- detached: boolean
+	 *      - silent: boolean
+	 *      - matchReady: string (RegExp)
 	 */
 	process_toggle = function (params, done) {
-		var id = params.id,
+		var id = params.id || params.command,
 			process = __process[id];
 		if (params.action === 'stop') {
 			
@@ -22,7 +24,7 @@ var process_toggle;
 		}
 		
 		if (process != null) {
-			return done(new Error('Process with id is active'));
+			return done(new Error(`Process '${id}' is active`));
 		}
 		
 		var options = {
