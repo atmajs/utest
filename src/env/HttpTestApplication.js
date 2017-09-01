@@ -5,12 +5,13 @@ var resume = include.pause(),
 	Url = require('url')
 	;
 
-var app = server.Application({
+server
+.Application
+.create({
 	base: include.location,
 	configs: net.Uri.combine(include.location, 'server/config/**.yml')
-});
-
-app.done(function(app){
+})
+.done(function(app){
 	
 	app.responders([
 		function(req, res, next){

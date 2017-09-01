@@ -3,7 +3,7 @@ include
 	.load('utest.mask')
 	.done(function(resp){
 
-		include.exports = atma.server.HttpPage({
+		include.exports = atma.server.HttpPage.create({
 			template: resp.load.utest,
 			master: '',
 
