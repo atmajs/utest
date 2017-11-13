@@ -7,7 +7,7 @@ var uri = new net.Uri(include.url);
 include.exports = {
     register(rootConfig) {
 
-        var options = rootConfig.atma && rootConfig.atma.settings && rootConfig.atma.settings['atma-utest'];
+        var options = rootConfig.atma && rootConfig.atma.settings && rootConfig.atma.settings['atma-utest'] || {};
         var includeConfig = Object.assign({ amd: true }, options.include || {});
         include.cfg(includeConfig);
 
