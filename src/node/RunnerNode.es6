@@ -41,14 +41,13 @@ var RunnerNode;
 
 				assert.reset();
 				TestSuite.clear();
+				include.removeFromCache(url);
 
 				var that = this,
 					url = this.files[this.index].uri.toString();
 
-
 				this.notifyTest(url);
-
-				var incl = include
+				var resource = include
 					.cfg('path', _suite.base)
 					.instance(url)
 					.js(url)
@@ -59,7 +58,7 @@ var RunnerNode;
 						});
 					});
 
-				this.resources.push(incl);
+				this.resources.push(resource);
 			},
 			singleComplete: function() {
 				this.stats.push({

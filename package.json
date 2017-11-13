@@ -1,55 +1,56 @@
 {
-  "name": "atma-utest",
-  "description": "TDD-Plugin for the Atma Toolkit",
-  "author": {
-    "name": "Alexander Kit",
-    "email": "alex.kit@atmajs.com"
-  },
-  "version": "0.20.64",
-  "devDependencies": {
-    "atma": "latest",
-    "atma-loader-babel": ">0.0.0",
-    "babel-preset-es2015": "^6.18.0"
-  },
-  "dependencies": {
-    "assertion": "^1.3.25",
-    "atma-class": "^1.1.70",
-    "atma-logger": "^1.0.2",
-    "benchmark": "^1.0.0",
-    "body-parser": "~1.4.3",
-    "diff": "~1.0.8",
-    "domtest": "^0.10.34",
-    "includejs": "^0.12.41",
-    "jquery": "^2.1.4",
-    "maskjs": "^0.61.16",
-    "sinon": "^1.15.4",
-    "socket.io-client": "^1.3.5"
-  },
-  "atma": {
-    "plugins": [
-      "atma-loader-babel"
-    ],
-    "settings": {
-      "atma-loader-babel": {
-        "extensions": [
-          "test",
-          "es6"
-        ]
-      },
-      "babel": {
-        "presets": [
-          "es2015"
-        ]
-      }
-    }
-  },
-  "scripts": {
-    "test": "atma test",
-    "build": "atma"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/tenbits/atma-utest.git"
-  },
-  "license": "MIT"
+    "name": "atma-utest",
+    "description": "TDD-Plugin for the Atma Toolkit",
+    "author": {
+        "name": "Alexander Kit",
+        "email": "alex.kit@atmajs.com"
+    },
+    "version": "0.20.65",
+    "devDependencies": {
+        "atma": "latest",
+        "atma-loader-babel": ">0.0.0",
+        "babel-preset-es2015": "^6.18.0"
+    },
+    "dependencies": {
+        "assertion": "^1.3.25",
+        "atma-class": "^1.1.70",
+        "atma-logger": "^1.0.2",
+        "benchmark": "^1.0.0",
+        "body-parser": "~1.4.3",
+        "diff": "~1.0.8",
+        "domtest": "^0.10.34",
+        "includejs": "^0.12.41",
+        "jquery": "^2.1.4",
+        "maskjs": "^0.61.16",
+        "sinon": "^1.15.4",
+        "socket.io-client": "^1.3.5"
+    },
+    "atma": {
+        "plugins": [
+            "atma-loader-babel"
+        ],
+        "settings": {
+            "atma-loader-babel": {
+                "extensions": [
+                    "test",
+                    "es6"
+                ]
+            },
+            "babel": {
+                "presets": [
+                    "es2015"
+                ]
+            }
+        }
+    },
+    "scripts": {
+        "test": "atma test",
+        "build": "atma",
+        "watch": "atma --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tenbits/atma-utest.git"
+    },
+    "license": "MIT"
 }

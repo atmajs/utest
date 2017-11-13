@@ -202,7 +202,7 @@
 		}
 		var str = fn.toString();
 			str = str.replace(fn.name, '').trim();
-		return /^(function)?\s*\([\w\s,]*(done|next)/.test(str);
+		return /^(async )?(function)?\s*\([\w\s,]*(done|next)/.test(str);
 	}
 
 	var UTestProto = {
