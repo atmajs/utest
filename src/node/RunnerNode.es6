@@ -121,11 +121,14 @@ var RunnerNode;
     }
 
     function resource_aggrIncludes(resource, aggr) {
-        if (resource.url && aggr.indexOf(resource.url) === -1) {
+        if (resource.url && aggr.indexOf(resource.url) === -1 && _nodeBuiltIns.indexOf(resource.url) === -1) {
             aggr.push(resource.url);
         }
         if (resource.includes) {
             resource.includes.forEach(function(data) {
+                if (data.isCyclic) {
+                    return;
+                }
                 resource_aggrIncludes(data.resource, aggr);
             });
         }
@@ -244,4 +247,44 @@ var RunnerNode;
             callback
         );
     }
+
+    var _nodeBuiltIns = [
+		"assert",
+		"async_hooks",
+		"buffer",
+		"child_process",
+		"cluster",
+		"console",
+		"constants",
+		"crypto",
+		"dgram",
+		"dns",
+		"domain",
+		"events",
+		"fs",
+		"http",
+		"http2",
+		"https",
+		"inspector",
+		"module",
+		"net",
+		"os",
+		"path",
+		"perf_hooks",
+		"process",
+		"punycode",
+		"querystring",
+		"readline",
+		"repl",
+		"stream",
+		"string_decoder",
+		"timers",
+		"tls",
+		"tty",
+		"url",
+		"util",
+		"v8",
+		"vm",
+		"zlib"
+	];
 }());
