@@ -59,8 +59,8 @@ var include_reset = function(){
 	include = include.instance();
 }
 
-var include_configurate = function (config) {
-	var cfg = config.includejs;
+var include_configurate = function (suite) {
+	var cfg = suite.$config && suite.$config.includejs;
 	if (cfg == null) {
 		return;
 	}

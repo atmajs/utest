@@ -56,24 +56,23 @@
 
 
 
-	function utest_start(config) {
+	function utest_start(configs) {
 		
-		if (!config) {
+		if (!configs) {
 			socket.emit('browser:utest:end', {
 				error: 'No scripts to be tested'
 			});
 			return;
 		}
-		
-		include_configurate(config);
+				
 		state = state_busy;
 		
 		if (configuration._wait > 0) {
-			configuration.always(utest_start.bind(null, config));
+			configuration.always(utest_start.bind(null, configs));
 			return;
 		}
 		
-		RunnerDom.run(config, socket, function(){
+		RunnerDom.run(configs, socket, function(){
 				
 				state = state_ready;
 			

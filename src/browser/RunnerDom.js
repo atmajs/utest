@@ -145,7 +145,8 @@ var RunnerDom;
 
 	function suite_prepair(runner, callback) {
 		var suite = runner.config;
-
+		include_configurate(suite);
+		
 		fn_waterfall(
 			function(done) {
 				cfg_runConfigurationScript(

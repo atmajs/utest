@@ -111,8 +111,8 @@
 				.setBase(setts.base)
 				;
 
-			if (setts.includejs) {
-				include.cfg(setts.includejs);
+			if (setts.$config && setts.$config.includejs) {
+				include.cfg(setts.$config.includejs);
 			}
 
 			_suite = new RunnerSuite(_configs, setts);
