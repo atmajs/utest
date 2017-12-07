@@ -65,6 +65,7 @@
 			return;
 		}
 		
+		include_configurate(config);
 		state = state_busy;
 		
 		if (configuration._wait > 0) {
