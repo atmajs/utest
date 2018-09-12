@@ -119,7 +119,7 @@
 				return;
 			}
 
-			if (case_isAsync(fn)) {
+			if (case_hasAsyncCallback(fn)) {
 				asyncData = async(
 					onComplete
 					, key
@@ -196,12 +196,16 @@
 		}
 	}
 
-	function case_isAsync(fn) {
+	function case_hasAsyncCallback(fn) {
 		if (fn.length === 0) {
 			return false;
 		}
-		var str = fn.toString();
-			str = str.replace(fn.name, '').trim();
+		var str = fn
+			.toString()
+			.replace(fn.name, '')
+			// Name in Source Code can have quotes
+			.replace(/^['"]+/, '')
+			.trim();
 		return /^(async )?(function)?\s*\([\w\s,]*(done|next)/.test(str);
 	}
 
