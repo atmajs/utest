@@ -121,6 +121,9 @@ var RunnerNode;
 
         if (resource.includes) {
             resource.includes.forEach(function(data) {
+                if (data.isCyclic) {
+                    return;
+                }
                 resource_clear(data.resource);
             });
         }
