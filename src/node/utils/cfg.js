@@ -75,7 +75,7 @@ var cfg_prepairSettings,
             if (io.File.exists(base.combine(path))) {
                 return path;
             }
-            var testFolder = net.Uri.combine('test/', scripts);
+            var testFolder = net.Uri.combine('test/', path);
             if (io.File.exists(base.combine(testFolder))) {
                 return testFolder;
             }
