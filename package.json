@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.79",
+    "version": "0.20.80",
     "devDependencies": {
         "atma": "^0.10.85",
         "atma-loader-babel": ">0.0.0",
@@ -47,7 +47,8 @@
         "test": "atma test",
         "server": "atma server",
         "build": "atma",
-        "watch": "atma --watch"
+        "watch": "atma --watch",
+        "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && git push && npm publish"
     },
     "repository": {
         "type": "git",

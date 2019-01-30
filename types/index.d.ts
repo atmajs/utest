@@ -6,16 +6,16 @@ declare function UTest(definition: IUTestDefinition): void
 
 interface IUTestDefinition {
     $config?: {
-        timeout: number
-        errorableCallbacks: boolean
-        breakOnError: boolean
+        timeout?: number
+        errorableCallbacks?: boolean
+        breakOnError?: boolean
 
-        'http.config': any
-        'http.eval': string
-        'http.include': any
-        'http.service': any
-        'http.process': any
-        'util.process': any   
+        'http.config'?: any
+        'http.eval'?: string
+        'http.include'?: any
+        'http.service'?: any
+        'http.process'?: any
+        'util.process'?: any   
     }
     $before?: (done?: Function) => void | PromiseLike<any>
     $after?: (done?: Function) => void | PromiseLike<any>
