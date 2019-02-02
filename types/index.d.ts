@@ -21,6 +21,8 @@ interface IUTestDefinition {
     $after?: (done?: Function) => void | PromiseLike<any>
     $teardown?: (done?: Function) => void | PromiseLike<any>
 
+    domtest (subject: HTMLElement | JQuery | any, testMarkup: string | any): PromiseLike<any>
+
     [key: string]: ITestCase | IUTestDefinition | any
 }
 
