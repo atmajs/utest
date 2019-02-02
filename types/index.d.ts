@@ -1,8 +1,21 @@
 declare module "atma-utest" {
+    const UTest: IUtest;
 	export = UTest;
 }
 
-declare function UTest(definition: IUTestDefinition): void
+declare interface IUtest {
+    (definition: IUTestDefinition): void
+
+    domtest (subject: HTMLElement | JQuery | any, testMarkup: string | any): PromiseLike<any>
+    request (url, method, headers, data, callback)
+    server: {
+        render (template: string, ...args)
+    }
+
+    benchmark (model: IUTestDefinition)
+    benchmarkVersions (model: IUTestDefinition)
+
+}
 
 interface IUTestDefinition {
     $config?: {
@@ -21,7 +34,7 @@ interface IUTestDefinition {
     $after?: (done?: Function) => void | PromiseLike<any>
     $teardown?: (done?: Function) => void | PromiseLike<any>
 
-    domtest (subject: HTMLElement | JQuery | any, testMarkup: string | any): PromiseLike<any>
+    
 
     [key: string]: ITestCase | IUTestDefinition | any
 }
