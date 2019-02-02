@@ -1,7 +1,8 @@
 declare module "atma-utest" {
-    const UTest: IUtest;
-	export = UTest;
+    export = UTest;
 }
+
+declare var UTest: IUtest;
 
 declare interface IUtest {
     (definition: IUTestDefinition): void
