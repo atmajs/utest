@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.82",
+    "version": "0.20.83",
     "devDependencies": {
         "atma": "^0.10.85",
         "atma-loader-babel": ">0.0.0",
@@ -19,7 +19,7 @@
         "body-parser": "~1.4.3",
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
-        "includejs": "^0.12.41",
+        "includejs": "^0.15.12",
         "jquery": "^2.1.4",
         "maskjs": "^0.61.16",
         "sinon": "^1.15.4",

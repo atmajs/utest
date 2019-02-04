@@ -43,7 +43,7 @@ var script_insert = (function() {
 			tag.innerHTML = code;
 		}
 
-		var head = document.querySelector('head');
+		var head = document.body || document.querySelector('head');
 
 		head.appendChild(tag);
 	}
