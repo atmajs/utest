@@ -7,7 +7,7 @@ declare var UTest: IUtest;
 declare interface IUtest {
     (definition: IUTestDefinition): void
 
-    domtest (subject: HTMLElement | JQuery | any, testMarkup: string | any): PromiseLike<any>
+    domtest: IDomTest
     request (url, method, headers, data, callback)
     server: {
         render (template: string, ...args)
@@ -16,6 +16,12 @@ declare interface IUtest {
     benchmark (model: IUTestDefinition)
     benchmarkVersions (model: IUTestDefinition)
 
+}
+
+interface IDomTest {
+    (subject: HTMLElement | JQuery | any, testMarkup: string | any): PromiseLike<any>
+    use (astName: string): IDomTest
+    process (subject: HTMLElement | JQuery | any, testMarkup: string | any): PromiseLike<any>
 }
 
 interface IUTestDefinition {

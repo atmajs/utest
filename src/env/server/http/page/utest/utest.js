@@ -54,6 +54,7 @@ var scripts_resolve;
 			return '/.reference/atma_toolkit/node_modules/atma-utest/' + x;
 		})
 		.forEach(function(x){
+            console.log('>>>>',x);
 			add_source(scripts, x);
 		});
 
