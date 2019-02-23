@@ -26,7 +26,15 @@ var RunnerSuite = Class({
 		return this.runners.reduce(function(aggr, x) {
 			return aggr + (x.failed || 0);
 		}, 0);
-	},
+    },
+    
+    getSucceeded: function () {
+        return this.runners.reduce(function(aggr, x) {
+			return aggr + x.stats.reduce(function (aggr, x) {
+                return aggr + x.total
+            }, 0);
+		}, 0);
+    },
 
 	getResources: function(){
 		return this.runners.reduce(function(aggr, x) {
@@ -42,11 +50,12 @@ var RunnerSuite = Class({
 
 				this.closeSockets();
 
-				var failed = this.getFailed();
+                var failed = this.getFailed();
+                var succeeded = this.getSucceeded();
 
 				logger
 					.log('')
-					.log(failed === 0 ? 'bold<green<Success>>'.color : 'bold<red<Failed>>'.color);
+					.log(failed === 0 ? `bold<green<Success ${succeeded}>>`.color : `bold<red<Failed ${failed}/${succeeded}/>>`.color);
 
 				this.callback(failed);
 				return;
