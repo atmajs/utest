@@ -186,7 +186,24 @@ var RunnerDom;
 		resource.done(function(resp){
 			setTimeout(function(){
 				for (var lib in resp) {
-					var exports = resp[lib];
+                    var exports = resp[lib];
+                    if (exports == null) {
+                        break;
+                    }
+                    var notEmpty = typeof exports !== 'object' || 'length' in exports;
+                    if (notEmpty === false) {
+                        var empty = {};
+                        for (var key in exports) {
+                            if (key in empty) {
+                                continue;
+                            }
+                            notEmpty = true;
+                            break;
+                        }
+                    } 
+                    if (notEmpty === false) {
+                        break;
+                    }
 
 					if (exports != null) {
 						window[lib] = exports;

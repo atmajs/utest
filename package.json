@@ -27,7 +27,8 @@
     },
     "atma": {
         "plugins": [
-            "atma-loader-babel"
+            "atma-loader-babel",
+            "atma-loader-ts"
         ],
         "settings": {
             "atma-loader-babel": {
@@ -40,7 +41,8 @@
                 "presets": [
                     "es2015"
                 ]
-            }
+            },
+            "atma-loader-ts": {}
         }
     },
     "scripts": {

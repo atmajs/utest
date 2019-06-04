@@ -203,7 +203,7 @@ var RunnerNode;
                     .keys(resp)
                     .filter(key => key !== 'load')
                     .forEach(key => {
-                        var lib = resp[key];
+                        var lib = resp[key];                        
                         if (lib != null) {
                             global[key] = lib;
                             return;
@@ -216,11 +216,7 @@ var RunnerNode;
                         if (injected) {
                             global[key] = injected;
                             return;
-                        }
-                        logger
-                            .log('<utest:Environment> Loaded dependency has no exports `%s`.'.yellow, key)
-                            .log('yellow<Should it be global variables, to bold<dismiss> this error use smth like this:>'.color)
-                            .log('`{ env: [ "someLib.js::globalVarName" ] }`');
+                        } 
                     });
                 callback(resp);
             }));
