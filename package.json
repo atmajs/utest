@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.88",
+    "version": "0.20.90",
     "devDependencies": {
         "app-bundler": "0.0.72",
         "atma": "^0.10.85",

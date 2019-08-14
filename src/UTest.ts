@@ -362,6 +362,8 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         if (q == null) {
             return false;
         }
+
+        const SKIP = ['$config', '$before', '$after', '$teardown'];
         
         return handleQuery (this.suite);
         
@@ -371,6 +373,9 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
             Object
                 .keys(obj)
                 .forEach(function (key) {
+                    if (key[0] === '$' && SKIP.indexOf(key) > -1) {
+                        return;
+                    }
                     let val = obj[key];
 
                     let matched = UTestQueryUtil.matchQuery(key, q);
