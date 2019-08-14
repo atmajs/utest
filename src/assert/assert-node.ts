@@ -1,9 +1,7 @@
 import './wrapper'
-import { global } from '../vars'
+import { assert } from '../vars'
 import { obj_extend } from 'atma-utils'
 import { rgx_fromString } from '../utils/rgx';
-
-const assert = global.assert;
 
 
 assert.resolveData = function (stackData, base) {

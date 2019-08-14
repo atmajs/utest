@@ -1,0 +1,26 @@
+:document {
+	
+	head {
+		each ($c.scripts) >
+			script src='~[.]';
+	}
+	body {
+		
+		
+		script > :html > '''
+			
+			(function(){
+				if (typeof include !== 'undefined') {
+					include.allDone(initialize);
+					return;
+				}
+				initialize();
+				
+				
+				function initialize() {
+					window.app = mask.Compo.bootstrap(document.body);	
+				}
+			}());
+		'''
+	}
+}
