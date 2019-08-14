@@ -3,7 +3,7 @@ module.exports = {
 	suites: {
 		'generic': {
 			exec: 'node',
-			tests: 'test/*.test'
+			tests: 'test/*.spec.ts'
 		},
 		
 		'server': {

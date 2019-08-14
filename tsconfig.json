@@ -1,0 +1,10 @@
+{	
+	"compilerOptions": {
+		"diagnostics": true,
+        "declaration": true,
+        "target":"ES2015",
+		"module": "commonjs",
+		"sourceMap": false,
+        "experimentalDecorators": true
+    }
+}
