@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.90",
+    "version": "0.20.91",
     "devDependencies": {
         "app-bundler": "0.0.72",
         "atma": "^0.10.85",
@@ -53,7 +53,10 @@
                 "file": "builds/utest-server.ts",
                 "outputMain": "lib/utest.server.js",
                 "package": {
-                    "module": "commonjs"
+                    "module": "commonjs",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
                 },
                 "copyFiles": {
                     "./src/env/": "./lib/env/"
