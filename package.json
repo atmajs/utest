@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.91",
+    "version": "0.20.92",
     "devDependencies": {
         "app-bundler": "0.0.72",
         "atma": "^0.10.85",
@@ -59,7 +59,17 @@
                     }
                 },
                 "copyFiles": {
-                    "./src/env/": "./lib/env/"
+                    "./src/env/server/": "./lib/env/server/"
+                }
+            },
+            "server-app": {
+                "file": "src/env/HttpTestApplication.ts",
+                "outputMain": "./lib/env/HttpTestApplication.js",
+                "package": {
+                    "module": "commonjs",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
                 }
             }
         },
@@ -78,7 +88,8 @@
                 "socket.io-client",
                 "^sinon$",
                 "^assertion$",
-                "^domtest$"
+                "^domtest$",
+                "^url$"
             ],
             "defaultExtensions": {
                 "js": "ts"
