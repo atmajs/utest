@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.92",
+    "version": "0.20.93",
     "devDependencies": {
         "app-bundler": "0.0.72",
         "atma": "^0.10.85",
@@ -57,9 +57,6 @@
                     "commonjs": {
                         "output": "simplified"
                     }
-                },
-                "copyFiles": {
-                    "./src/env/server/": "./lib/env/server/"
                 }
             },
             "server-app": {
@@ -70,6 +67,9 @@
                     "commonjs": {
                         "output": "simplified"
                     }
+                },
+                "copyFiles": {
+                    "./src/env/server/": "./lib/env/server/"
                 }
             }
         },
@@ -89,7 +89,8 @@
                 "^sinon$",
                 "^assertion$",
                 "^domtest$",
-                "^url$"
+                "^url$",
+                "body-parser"
             ],
             "defaultExtensions": {
                 "js": "ts"
