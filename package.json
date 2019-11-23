@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.93",
+    "version": "0.20.94",
     "devDependencies": {
         "app-bundler": "0.0.72",
         "atma": "^0.10.85",
@@ -21,7 +21,7 @@
         "body-parser": "~1.4.3",
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
-        "includejs": "^0.15.17",
+        "includejs": "^0.15.30",
         "jquery": "^2.1.4",
         "maskjs": "^0.61.16",
         "sinon": "^1.15.4",
@@ -34,10 +34,29 @@
                 "outputMain": "lib/utest.browser.js",
                 "package": {
                     "module": "commonjs",
+                    "moduleName": "UTest",
+                    "moduleWrapper": "umd",
                     "commonjs": {
                         "output": "simplified"
                     }
-                }
+                },
+                "dynamicDependencies": [
+                    "atma-io",
+                    "socket-io",
+                    "^benchmark$",
+                    "^path$",
+                    "^child_process$",
+                    "^diff$",
+                    "^util$",
+                    "^net$",
+                    "^readline$",
+                    "socket.io-client",
+                    "^sinon$",
+                    "^assertion$",
+                    "^domtest$",
+                    "^url$",
+                    "body-parser"
+                ]
             },
             "node": {
                 "file": "builds/utest-node.ts",

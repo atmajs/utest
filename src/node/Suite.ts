@@ -9,7 +9,7 @@ import { RunnerNode } from './RunnerNode';
 
 export class RunnerSuite {
     index: number
-    runners: Runner[]
+    runners: Runner[] = []
     base: string
     watch: boolean
     forks = null

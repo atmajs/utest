@@ -23,9 +23,11 @@ export const include_ready = (function() {
 	}
 
 	return function(fn) {
-		callback = fn;
 
-		check();
+		// callback = fn;
+
+        // check();
+        include.allDone(fn);
 	};
 }());
 

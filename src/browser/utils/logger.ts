@@ -1,96 +1,95 @@
 import { assert } from '../../vars'
 import { ActionVars } from '../ActionVars';
 
+var orig_log = console.log;
 
-	var orig_log = console.log;
+(console as any).print = function () {
+    orig_log.apply(console, arguments);
+};
 
-	(console as any).print = function(){
-		orig_log.apply(console, arguments);
-	};
+for (var key in console) {
+    if (typeof console[key] !== 'function') {
+        continue;
+    }
+    console[key] = logger_create(key);
+}
 
-	for (var key in console) {
-		if (typeof console[key] !== 'function') {
-			continue;
-		}
-		console[key] = logger_create(key);
-	}
+assert.onfailure = function () {
+    ActionVars.socket.emit('browser:assert:failure', Arguments_dismissCircular(arguments));
+}
+assert.onsuccess = function () {
+    ActionVars.socket.emit('browser:assert:success', Arguments_dismissCircular(arguments));
+}
 
-	assert.onfailure = function() {
-		ActionVars.socket.emit('browser:assert:failure', Arguments_dismissCircular(arguments));
-	}
-	assert.onsuccess = function() {
-		ActionVars.socket.emit('browser:assert:success', Arguments_dismissCircular(arguments));
-	}
+function logger_create(key) {
 
-	function logger_create(key) {
+    var original = console[key];
+    return function () {
+        var args = Arguments_dismissCircular(arguments);
 
-		var original = console[key];
-		return function() {
-			var args = Arguments_dismissCircular(arguments);
+        if (ActionVars.socket) {
+            ActionVars.socket.emit('browser:log', key, args);
+        }
+        return original.apply(console, args);
+    };
+}
 
-			if (ActionVars.socket) {
-				ActionVars.socket.emit('browser:log', key, args);
-			}
-			return original.apply(console, args);
-		};
-	}
+function Arguments_dismissCircular(arguments_) {
+    var arr = [],
+        imax = arguments_.length,
+        i = -1;
+    while (++i < imax) {
+        arr[i] = logger_dimissCircular(arguments_[i]);
+    }
+    return arr;
+}
 
-	function Arguments_dismissCircular(arguments_) {
-		var arr = [],
-			imax = arguments_.length,
-			i = -1;
-		while( ++i < imax ) {
-			arr[i] = logger_dimissCircular(arguments_[i]);
-		}
-		return arr;
-	}
+var logger_dimissCircular = (function () {
+    var cache;
 
-	var logger_dimissCircular = (function() {
-		var cache;
-
-		function clone(mix) {
-			if (mix == null) {
-				return null;
-			}
+    function clone(mix) {
+        if (mix == null) {
+            return null;
+        }
 
 
-			var cloned;
+        var cloned;
 
-			if (mix instanceof Array) {
-				cloned = [];
-				for (var i = 0, imax = mix.length; i < imax; i++) {
-					cloned[i] = clone(mix[i]);
-				}
-				return cloned;
-			}
+        if (mix instanceof Array) {
+            cloned = [];
+            for (var i = 0, imax = mix.length; i < imax; i++) {
+                cloned[i] = clone(mix[i]);
+            }
+            return cloned;
+        }
 
-			if (typeof mix === 'object') {
-				var type = Object.prototype.toString.call(mix);
-				if (type.indexOf('[object HTML') === 0) 
-					return '[dom ' + mix.tagName + ']';
-				
-				if (~cache.indexOf(mix)) {
-					return '[object Circular]';
-				}
-				cache.push(mix);
+        if (typeof mix === 'object') {
+            var type = Object.prototype.toString.call(mix);
+            if (type.indexOf('[object HTML') === 0)
+                return '[dom ' + mix.tagName + ']';
 
-				cloned = {};
-				for (var key in mix) {
-					cloned[key] = clone(mix[key]);
-				}
-				return cloned;
-			}
+            if (~cache.indexOf(mix)) {
+                return '[object Circular]';
+            }
+            cache.push(mix);
 
-			return mix;
-		}
+            cloned = {};
+            for (var key in mix) {
+                cloned[key] = clone(mix[key]);
+            }
+            return cloned;
+        }
 
-		return function(mix) {
-			if (typeof mix === 'object' && mix != null) {
-				cache = [];
-				mix = clone(mix);
-				cache = null;
-			}
+        return mix;
+    }
 
-			return mix;
-		};
-	}());
+    return function (mix) {
+        if (typeof mix === 'object' && mix != null) {
+            cache = [];
+            mix = clone(mix);
+            cache = null;
+        }
+
+        return mix;
+    };
+}());

@@ -1,9 +1,11 @@
 import { UTestVars } from '../UTestVars';
 import { UTest } from '../UTest';
-import { assert } from '../vars';
+import { assert, include } from '../vars';
 import { is_Array } from 'atma-utils';
-import { include_clearCache, include_reset, include_ready } from './utils/include';
-import { script_getResources, script_insert } from './utils/script';
+import { include_clearCache, include_reset, include_ready, include_configurate } from './utils/include';
+import { script_getResources, script_insert, script_insertMany } from './utils/script';
+import { cfg_runConfigurationScript } from '../utils/cfg';
+import { fn_waterfall } from '../utils/fn';
 
 
 
@@ -182,7 +184,7 @@ function suite_prepair(runner, callback) {
     );
 }
 function suite_loadEnv(runner, suite, done) {
-    if (arr_isArray(suite.env) === false) {
+    if (is_Array(suite.env) === false) {
         done();
         return;
     }
@@ -231,4 +233,3 @@ function suite_loadEnv(runner, suite, done) {
         });
     });
 }
-}());

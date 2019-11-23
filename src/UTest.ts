@@ -14,6 +14,7 @@ import { Classify, FnPrototypeAlias } from './utils/classify';
 import { Color } from './utils/color';
 import { Console } from './utils/console';
 import { UTestQueryUtil } from './utils/utest-query';
+import { UTestVars } from './UTestVars';
 
 declare var DomTest, require;
 
@@ -50,12 +51,6 @@ export interface IUTestRunnerConfig {
 
 
 
-var _tests = [],
-    _index = -1,
-    _listeners = {},
-
-    _testsDone;
-
 var RESERVED = [
     '$teardown',
     '$config',
@@ -65,14 +60,12 @@ var RESERVED = [
 ];
 
 function nextUTest() {
-    if (++_index > _tests.length - 1) {
-        _testsDone();
-
+    if (++UTestVars.index > UTestVars.tests.length - 1) {
+        UTestVars.testsDone();
         return;
     }
 
-    var test = _tests[_index];
-
+    var test = UTestVars.tests[UTestVars.index];
     test.run(nextUTest);
 }
 
@@ -319,7 +312,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
             });
 
         if (parent == null) {
-            _tests.push(this);
+            UTestVars.tests.push(this);
         }
         return this;
     }
@@ -595,16 +588,15 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
 
     static stats() {
         return {
-            suites: _tests.length
+            suites: UTestVars.tests.length
         };
     }
     static clear() {
-        _tests = [];
-        _listeners = {};
+        UTestVars.clear();
     }
     static run(callback) {
-        _index = -1;
-        _testsDone = callback;
+        UTestVars.index = -1;
+        UTestVars.testsDone = callback;
 
         nextUTest();
     }
@@ -618,11 +610,11 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
                 break;
         }
 
-        var fns = (_listeners[event] || (_listeners[event] = []));
+        var fns = (UTestVars.listeners[event] || (UTestVars.listeners[event] = []));
         fns.push(callback);
     }
     static trigger(event, ...args) {
-        var fns = _listeners[event];
+        var fns = UTestVars.listeners[event];
         if (fns == null || !fns.length) {
             return;
         }
@@ -632,7 +624,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         }
     }
     static isBusy() {
-        return _index < _tests.length;
+        return UTestVars.index < UTestVars.tests.length;
     }
     static cfg(options) {
         for (var key in options) {
