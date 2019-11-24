@@ -86,17 +86,15 @@ export class RunnerSuite {
 
         closeSocketsOnExit(this);
 
-        var self = this;
-        watch(this.base, this.getResources(), function (path) {
+        
+        let resources = watch(this.base, this.getResources(), (path) => {
 
             log_clearStd();
-
-            
-            logger.log((Date as any).format(new Date, 'HH:mm:ss').bg_cyan
-                + ' modified ' + (color`bold<${path}>`));
-            self.runTests();
+            let dateStr = (Date as any).format(new Date, 'HH:mm:ss').bg_cyan;
+            logger.log(`${dateStr}  modified ${color`bold<${path}>`}`);
+            this.runTests();
         });
-        logger.log(color`yellow< - watcher active.>`);
+        logger.log(color`yellow< - watcher active. ${resources.length} Files>`);
     }
 
     process() {

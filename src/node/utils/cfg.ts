@@ -284,18 +284,20 @@ export function cfg_split(config) {
 
 
 
-export let watch = function (base, resources, callback) {
-    watch = function () { };
-
+export let watch = function (base, resources: string[], callback) {
+    let arr = null;
+    watch = function () {
+        return arr;
+    };
 
     base = new class_Uri(base);
-    resources.forEach(function (url) {
+    let watching = resources.map((url) => {
 
-        url = url.replace(/^\/utest\//i, '');
+        url = url.replace(/^(https?:\/\/[^\/]+)?(\/utest)?\//i, '');
 
         if (/^[\w\d\-_]+$/.test(url)) {
             // node module
-            return;
+            return null;
         }
 
         var uri = new class_Uri(url);
@@ -306,32 +308,35 @@ export let watch = function (base, resources, callback) {
         var file = new io.File(uri);
         if (file.uri == null) {
             // some virtual files does not expose uri property
-            return;
+            return null;
         }
 
+        let filename = file.uri.toLocalFile();
         if (file.exists()) {
-            io.watcher.watch(file.uri.toLocalFile(), function () {
-                var path = file.uri.toLocalFile();
-                io.File.clearCache(path);
+            io.watcher.watch(filename, function () {
 
-                var sys = require('path').normalize(path);
+                io.File.clearCache(filename);
+
+                var sys = require('path').normalize(filename);
                 delete require.cache[sys];
 
-                callback(path);
+                callback(filename);
             });
+            return url;
         }
-        else {
-            var path = file.uri.toLocalFile();
 
-            if (/\.reference\//i.test(path))
-                return;
-
-            if (/socket\.io/i.test(path))
-                return;
-
-            logger.warn('<utest: watcher> File 404 - ', path);
+        if (/\.reference\//i.test(filename)) {
+            return null;
         }
+        if (/socket\.io/i.test(filename)) {
+            return null;
+        }
+
+        logger.warn('<utest: watcher> File 404 - ', filename);
+        return null;
     });
+
+    return arr = watching.filter(Boolean);
 };
 
 //= private

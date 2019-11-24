@@ -75,6 +75,11 @@ export const AtmaAction = {
         var arg = setts.script || app.config.$cli.args[1],
             config;
 
+        if (typeof arg === 'string') {
+            // Normalize path to forward slashes
+            arg = arg.replace(/\\/g, '/');
+        }
+
         cfg_prepairSettings(setts, arg);
 
         config = cfg_loadConfig(setts);

@@ -116,7 +116,7 @@ export class RunnerClient extends Runner {
 
     }
 
-    runTests() {
+    private runTests() {
         logger.log(
             color`bold<-->--bold<-->--bold<-->--bold<--> yellow<client>`,
             color`bold<${(Date as any).format(new Date(), 'HH:mm:ss')}>`,

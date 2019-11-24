@@ -18,14 +18,14 @@ var _actions = {
             ;
     },
 
-    include (sources, done) {
+    include (sources, done?) {
         var base = io.env.currentDir.toDir();
         include
             .instance(base)
             .setBase(base)
             .js(sources)
             .done(function () {
-                done();
+                done?.();
             });
     },
 

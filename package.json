@@ -5,12 +5,12 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.20.98",
+    "version": "0.20.99",
     "devDependencies": {
         "@types/node": "^12.12.12",
         "app-bundler": "0.0.72",
         "atma": "^0.10.85",
-        "atma-loader-ts": "^1.1.11",
+        "atma-loader-ts": "^1.1.12",
         "babel-preset-es2015": "^6.18.0"
     },
     "dependencies": {
@@ -21,7 +21,7 @@
         "body-parser": "~1.4.3",
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
-        "includejs": "^0.15.30",
+        "includejs": "^0.15.31",
         "jquery": "^2.1.4",
         "maskjs": "^0.61.16",
         "sinon": "^1.15.4",

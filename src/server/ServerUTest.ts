@@ -4,7 +4,7 @@ import { class_EventEmitter } from 'atma-utils';
 
 export class ServerUTest extends class_EventEmitter {
     index: number
-    tunnels: any[]
+    tunnels: BrowserTunnel[]
     config: any
     onComplete: Function
 

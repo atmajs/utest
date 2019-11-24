@@ -1,6 +1,7 @@
 import { is_Array, class_EventEmitter, class_Uri } from 'atma-utils';
 import { logger, io, assert } from '../vars';
 import { log_stringDiff } from './utils/logger';
+import { color } from '../utils/str';
 
 export const status_blank = 1;
 export const status_connecting = 2;
@@ -81,7 +82,7 @@ export abstract class Runner extends class_EventEmitter {
     }
     notifyTest(url) {
         var name = url.replace(this.config.base, '');
-        logger.log('Test: ', ('bold<cyan<' + name + '>>').color);
+        logger.log('Test: ', color`bold<cyan<${name}>>`);
     }
     onComplete(stats) {
         this.status = status_ready;
@@ -130,7 +131,7 @@ export abstract class Runner extends class_EventEmitter {
             browsers = stats.length;
 
         if (total === 0) {
-            console.error('No assertions');
+            logger.error('No assertions');
             failed++;
         }
 
@@ -158,10 +159,10 @@ export abstract class Runner extends class_EventEmitter {
 
 
         logger
-            .log(`\n\nbold<${failed ? 'red' : 'green'}<Done.>>`.color)
-            .log(`bold<Assertions>: bold<green<${Math.max(total - failed, 0)}>>(bold<red<${failed}>>)`.color)
-            .log(`bold<Timeouts>: bold<${timeouts ? 'red' : 'green'}<${timeouts}>>`.color)
-            .log(`bold<Failed Callbacks>: bold<green<${callbacks}>>`.color);
+            .log(color`\n\nbold<${failed ? 'red' : 'green'}<Done.>>`)
+            .log(color`bold<Assertions>: bold<green<${Math.max(total - failed, 0)}>>(bold<red<${failed}>>)`)
+            .log(color`bold<Timeouts>: bold<${timeouts ? 'red' : 'green'}<${timeouts}>>`)
+            .log(color`bold<Failed Callbacks>: bold<green<${callbacks}>>`);
 
         this.failed = failed;
         this.stats = stats;
@@ -210,12 +211,12 @@ export abstract class Runner extends class_EventEmitter {
                 log_stringDiff(expect, actual);
             } else {
                 var msg = '%s bold<red<↔>> %s';
-                logger.log(msg.color, data.actual, data.expected);
+                logger.log(color`${msg}`, data.actual, data.expected);
             }
         }
 
         if (data.message && data.generatedMessage !== true)
-            logger.log(' bold<red<::>> '.color + data.message.yellow);
+            logger.log(color` bold<red<::>> ` + data.message.yellow);
 
         if (data.file && data.line != null) {
 
@@ -234,8 +235,8 @@ export abstract class Runner extends class_EventEmitter {
                     code = line && line.trim()
                     ;
                 logger
-                    .log(`  bold<${path}>`.color)
-                    .log(`  bold<cyan< → >> bold<${data.line + 1} |> bold<red< ${code} >>`.color)
+                    .log(color`  bold<${path}>`)
+                    .log(color`  bold<cyan< → >> bold<${data.line + 1} |> bold<red< ${code} >>`)
                     .log('');
             }
 
@@ -244,7 +245,7 @@ export abstract class Runner extends class_EventEmitter {
     }
 
     onSuccess() {
-        process.stdout.write('bold<green< |>>'.color);
+        process.stdout.write(color`bold<green< |>>`);
     }
 };
 
