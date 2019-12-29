@@ -1,4 +1,4 @@
-import { Runner } from './Runner';
+import { Runner, status_ready, status_testing, status_prepair } from './Runner';
 import { logger, global, assert } from '../vars';
 import { watch } from './utils/cfg';
 import { log_clearStd } from './utils/logger';
@@ -88,18 +88,22 @@ export class RunnerSuite {
 
         
         let resources = watch(this.base, this.getResources(), (path) => {
+            let dateStr = (Date as any).format(new Date, 'HH:mm:ss').bg_cyan;
+            let message = `${dateStr}  modified ${color`bold<${path}>`}`;
+            if (this.isIdle() === false) {
+                logger.log(message);
+                logger.log('... but the RunnerSuite is not yet idle');
+            }
 
             log_clearStd();
-            let dateStr = (Date as any).format(new Date, 'HH:mm:ss').bg_cyan;
-            logger.log(`${dateStr}  modified ${color`bold<${path}>`}`);
+            logger.log(message);
             this.runTests();
         });
         logger.log(color`yellow< - watcher active. ${resources.length} Files>`);
     }
 
     process() {
-        var runner = this.runners[++this.index];
-
+        let runner = this.runners[++this.index];
         if (runner == null) {
             this.onComplete();
             return;
@@ -173,6 +177,11 @@ export class RunnerSuite {
         }
 
         cfg_add(this, 'cfgNode', config);
+    }
+
+    private isIdle () {
+        let isBusy = this.runners.some(x => x.status === status_testing || x.status === status_prepair);
+        return isBusy === false;
     }
 };
 
