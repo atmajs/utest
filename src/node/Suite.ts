@@ -93,6 +93,7 @@ export class RunnerSuite {
             if (this.isIdle() === false) {
                 logger.log(message);
                 logger.log('... but the RunnerSuite is not yet idle');
+                return;
             }
 
             log_clearStd();
