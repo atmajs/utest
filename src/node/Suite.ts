@@ -1,5 +1,5 @@
 import { Runner } from './Runner';
-import { logger, global } from '../vars';
+import { logger, global, assert } from '../vars';
 import { watch } from './utils/cfg';
 import { log_clearStd } from './utils/logger';
 import { RunnerClient } from './RunnerClient';
@@ -110,7 +110,6 @@ export class RunnerSuite {
     runTests() {
         this.index = -1;
         this.process();
-
     }
 
     run(done) {

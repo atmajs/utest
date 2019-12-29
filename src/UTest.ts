@@ -203,14 +203,16 @@ function runCase(ctx, fn: ITestCase | IUTestDefinition, done: Function, teardown
             eq_(error, null);
             asyncData.fn();
         }
-        function onSuccess(error) {
+        function onSuccess(...args) {
             eq_(result._rejected, null);
-            if (arguments.length !== 0) ctx.arguments = arguments;
+            if (args.length !== 0) ctx.arguments = args;
             asyncData.fn();
         }
-        result.then(onSuccess, onFail);
-        if (is_Function(result.catch)) {
-            result.catch(onFail);
+
+        let supportsCatch = is_Function(result.catch);
+        let x = result.then(onSuccess, supportsCatch ? void 0 : onFail);
+        if (supportsCatch) {
+            x.catch(onFail);
         }
         return true;
     }

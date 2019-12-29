@@ -10,12 +10,6 @@ export const status_prepair = 4;
 export const status_testing = 5;
 export const status_ready = 6;
 
-let util = require('util');
-
-
-
-
-
 function utest_resolveFiles(config) {
     var files = [];
 
@@ -172,16 +166,15 @@ export abstract class Runner extends class_EventEmitter {
     }
 
     getResources() {
-        if (this.stats == null)
+        if (this.stats == null) {
             return [];
-
-
-        var resources = this.stats.resources || (this.stats[0] && this.stats[0].resources);
-
-        if (resources == null && this.getResources)
-            resources = this.getResources();
-
-        return resources || [];
+        }
+        let resources = this.stats.resources 
+            || this.stats[0]?.resources
+            || this.getResources?.()
+            || [];
+        
+        return resources;
     }
 
     // assertion events
