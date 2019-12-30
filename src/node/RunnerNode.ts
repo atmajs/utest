@@ -61,7 +61,6 @@ export class RunnerNode extends Runner {
         assert.reset();
         UTestVars.clear();
         include.removeFromCache(url);
-
         this.notifyTest(url);
         var resource = include
             .cfg('path', _suite.base)

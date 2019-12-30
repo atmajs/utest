@@ -282,16 +282,10 @@ export function cfg_split(config) {
     return configs;
 }
 
-
-
-export let watch = function (base, resources: string[], callback) {
-    let arr = null;
-    watch = function () {
-        return arr;
-    };
-
+const watching = [];
+export function watch (base, resources: string[], callback): string[] {
     base = new class_Uri(base);
-    let watching = resources.map((url) => {
+    resources.forEach((url) => {
 
         url = url.replace(/^(https?:\/\/[^\/]+)?(\/utest)?\//i, '');
 
@@ -312,7 +306,11 @@ export let watch = function (base, resources: string[], callback) {
         }
 
         let filename = file.uri.toLocalFile();
+        if (watching.includes(filename)) {
+            return;
+        }
         if (file.exists()) {
+            watching.push(filename);
             io.watcher.watch(filename, function () {
 
                 io.File.clearCache(filename);
@@ -336,7 +334,7 @@ export let watch = function (base, resources: string[], callback) {
         return null;
     });
 
-    return arr = watching.filter(Boolean);
+    return watching;
 };
 
 //= private

@@ -8,6 +8,7 @@ import { color } from '../utils/str';
 import { RunnerNode } from './RunnerNode';
 
 export class RunnerSuite {
+    counter = 0
     index: number
     runners: Runner[] = []
     base: string
@@ -89,10 +90,10 @@ export class RunnerSuite {
         
         let resources = watch(this.base, this.getResources(), (path) => {
             let dateStr = (Date as any).format(new Date, 'HH:mm:ss').bg_cyan;
-            let message = `${dateStr}  modified ${color`bold<${path}>`}`;
+            let message = `#${ ++this.counter }  ${dateStr}  modified ${color`bold<${path}>`}`;
             if (this.isIdle() === false) {
                 logger.log(message);
-                logger.log('... but the RunnerSuite is not yet idle');
+                logger.log(color`... but the RunnerSuite is red<busy>`);
                 return;
             }
 
