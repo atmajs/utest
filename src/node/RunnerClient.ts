@@ -37,26 +37,20 @@ export class RunnerClient extends Runner {
                 io_clean();
 
                 if (this.startServer === true) {
-
                     var msg = `Test server connection error - http://localhost:${port}/utest`;
                     done(msg);
                     return;
                 }
-
-
                 this.startServer = true;
                 logger.log(color`<utest:server not started> bold<green<starting...>>`)
 
-                slave_start(function (error) {
-
-                    if (error)
+                slave_start(error => {
+                    if (error) {
                         return done('Failed to start server: ' + error);
-
+                    }
                     this.run(done);
-                })
-
+                });
             })
-
             .done(socket => {
 
                 logger.log(color`bold<green<server connected>>`);
