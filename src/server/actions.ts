@@ -61,7 +61,8 @@ var _actions = {
         source = source.replace(/\}\s*$/, '');
 
         try {
-            result = new (Function(name, source))(done);
+            let Ctor: any = Function(name, source);
+            result = new Ctor(done);
         } catch (error) {
             logger.error('<$config:eval error>', error);
 
@@ -80,15 +81,14 @@ var _actions = {
 
 
 export const Actions = {
-    run (action, config) {
+    run (action, config, ...args) {
         var fn = _actions[action];
         if (typeof fn !== 'function') {
             logger.error('<utest:server> unknown action', action);
-
-            var done = arguments[arguments.length - 1];
-            if (typeof done === 'function')
+            let done = args[args.length - 1];
+            if (typeof done === 'function') {
                 done();
-
+            }
             return;
         }
 
@@ -96,7 +96,7 @@ export const Actions = {
             include.cfg('path', config.base);
 
 
-        fn.apply(null, Array.prototype.slice.call(arguments, 2));
+        fn.apply(null, args);
     },
 
     register (action, worker) {

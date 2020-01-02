@@ -42,8 +42,8 @@ export class ServerUTest extends class_EventEmitter {
         this.trigger('slave:error', { message: 'Slave error', slave: error });
         this.process();
     }
-    onAction (action, config) {
-        Actions.run(action, config)
+    onAction (action, config, ...args) {
+        Actions.run(action, config, ...args)
     }
 	
 	stats (){
