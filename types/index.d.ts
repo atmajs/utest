@@ -1,4 +1,4 @@
-declare module "atma-utest" {
+declare module "atma-utest-global" {
     export = UTest;
 }
 

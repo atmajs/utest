@@ -1,12 +1,13 @@
 {
     "name": "atma-utest",
     "main": "./lib/utest.node.js",
+    "types": "./lib/utest.node.d.ts",
     "description": "TDD-Plugin for the Atma Toolkit",
     "author": {
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.7",
+    "version": "0.21.8",
     "devDependencies": {
         "@types/node": "^13.1.7",
         "app-bundler": "0.0.72",

@@ -9,7 +9,7 @@ async function process () {
     }
 
     dts.bundle({
-        name: 'utest',
+        name: 'atma-utest',
         main: './ts-temp/export-utest-node.d.ts',
         out: './typings/index.d.ts',
         

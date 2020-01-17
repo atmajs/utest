@@ -2,17 +2,17 @@
 // Dependencies for this module:
 //   ../atma-utils
 
-declare module 'utest' {
+declare module 'atma-utest' {
     
     
     
-    import { AtmaAction } from 'utest/node/action';
+    import { AtmaAction } from 'atma-utest/node/action';
     export = AtmaAction;
 }
 
-declare module 'utest/node/action' {
-    import { UTest } from 'utest/UTest';
-    import { UAction } from 'utest/UAction';
+declare module 'atma-utest/node/action' {
+    import { UTest } from 'atma-utest/UTest';
+    import { UAction } from 'atma-utest/UAction';
     /**
       *	Atma.Toolkit Action entry
       */
@@ -65,11 +65,11 @@ declare module 'utest/node/action' {
     };
 }
 
-declare module 'utest/UTest' {
+declare module 'atma-utest/UTest' {
     import { Statics } from 'atma-utils'; 
-     import { UTestServer } from 'utest/UTest-server';
-    import { UTestBenchmark } from 'utest/UTest-benchmark';
-    import { UTestConfiguration } from 'utest/UTest-config';
+     import { UTestServer } from 'atma-utest/UTest-server';
+    import { UTestBenchmark } from 'atma-utest/UTest-benchmark';
+    import { UTestConfiguration } from 'atma-utest/UTest-config';
     export interface IUTestDefinition {
             $config?: {
                     timeout?: number;
@@ -130,8 +130,8 @@ declare module 'utest/UTest' {
     export {};
 }
 
-declare module 'utest/UAction' {
-    import { UTest } from 'utest/UTest';
+declare module 'atma-utest/UAction' {
+    import { UTest } from 'atma-utest/UTest';
     export class UAction extends UTest {
         constructor(mix: string | any, suite?: any, parent?: any);
         static spawn(command: string): void;
@@ -145,7 +145,7 @@ declare module 'utest/UAction' {
     }
 }
 
-declare module 'utest/UTest-server' {
+declare module 'atma-utest/UTest-server' {
     import { class_Dfr } from 'atma-utils';
     export class UTestServer {
         static server: {
@@ -155,16 +155,16 @@ declare module 'utest/UTest-server' {
     }
 }
 
-declare module 'utest/UTest-benchmark' {
-    import { UTest } from 'utest/UTest';
+declare module 'atma-utest/UTest-benchmark' {
+    import { UTest } from 'atma-utest/UTest';
     export class UTestBenchmark {
         static benchmark(model: any): UTest;
         static benchmarkVersions(model: any): UTest;
     }
 }
 
-declare module 'utest/UTest-config' {
-    import { UTest } from 'utest/UTest';
+declare module 'atma-utest/UTest-config' {
+    import { UTest } from 'atma-utest/UTest';
     export function configurate($config: any, done: any): void;
     export class UTestConfiguration {
         $cfg(this: UTest, key: any): any;

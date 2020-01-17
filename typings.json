@@ -1,5 +1,5 @@
 {
-    "name": "atma-utest",
+    "name": "atma-utest-global",
     "main": "types/index.d.ts",
     "global": true
 }
