@@ -49,11 +49,13 @@ export function cfg_prepairSettings(setts, script) {
             return resolveFileByNameWithExtension(path);
         }
         let extensions = [
-            '.test',
-            '.test.js',
-            '.test.ts',
-            '.spec.js',
             '.spec.ts',
+            '.spec.js',
+            '.test.ts',
+            '.test.js',
+            '.test',
+            '.ts',
+            '.js',
         ];
         for (let i = 0; i < extensions.length; i++) {
             let x = resolveFileByNameWithExtension(path + extensions[i]);

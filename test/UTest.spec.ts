@@ -1,4 +1,4 @@
-import { UTest as Fn } from '../builds/utest-node'
+import { UTest as Fn } from '../builds/export-utest-node'
 
 
 UTest({

@@ -1,6 +1,8 @@
 declare var global;
 
 
-global.sinon = require('sinon');
-global.assert = require('assertion');
-global.DomTest = require('domtest');
+const sinon = global.sinon = require('sinon');
+const assertion = global.assert = require('assertion');
+const domtest = global.DomTest = require('domtest');
+
+export { sinon, assertion, domtest };

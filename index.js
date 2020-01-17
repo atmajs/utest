@@ -13,7 +13,8 @@ include.exports = {
 
         rootConfig.$extend({
             actions: {
-                test: getPath('/utest.node.js')
+                test: getPath('/utest.node.js'),
+                act: getPath('/utest.node.js'),
             },
             server: {
                 subapps: {

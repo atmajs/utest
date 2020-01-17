@@ -1,5 +1,6 @@
 import { include, global, logger } from './vars';
 import { color } from './utils/str';
+import { UTest } from './UTest'
 
 declare var require, assert;
 
@@ -38,7 +39,7 @@ function _benchmark(model) {
         }
         utest[suite] = _benchmarkDelegate(model, suite, model[suite])
     }
-    return UTest(utest);
+    return new UTest(utest);
 }
 
 var Before = {

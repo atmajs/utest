@@ -4,6 +4,7 @@ import { cfg_prepairSettings, cfg_loadConfig, cfg_hasScripts, cfg_suiteInfoFromC
 import { NodeVars } from './node-vars';
 import { RunnerSuite } from './Suite';
 import { cfg_runConfigurationScript } from '../utils/cfg';
+import { UAction } from '../UAction';
 
 
 /**
@@ -12,6 +13,7 @@ import { cfg_runConfigurationScript } from '../utils/cfg';
 
 export const AtmaAction = {
     UTest: UTest,
+    UAction: UAction,
     help: {
         desciption: 'Start uTest runner. To run test(s) in browser refer to #browser-runner section',
         arguments: {

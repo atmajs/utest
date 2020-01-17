@@ -1,15 +1,17 @@
 {
     "name": "atma-utest",
+    "main": "./lib/utest.node.js",
     "description": "TDD-Plugin for the Atma Toolkit",
     "author": {
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.6",
+    "version": "0.21.7",
     "devDependencies": {
-        "@types/node": "^12.12.12",
+        "@types/node": "^13.1.7",
         "app-bundler": "0.0.72",
-        "atma": "^0.10.85",
+        "atma": "^0.12.15",
+        "atma-io": "^1.2.27",
         "atma-loader-ts": "^1.1.12",
         "babel-preset-es2015": "^6.18.0"
     },
@@ -21,6 +23,7 @@
         "body-parser": "~1.4.3",
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
+        "dts-bundle": "^0.7.3",
         "includejs": "^0.15.33",
         "jquery": "^2.1.4",
         "maskjs": "^0.61.16",
@@ -30,7 +33,7 @@
     "app-bundler": {
         "apps": {
             "browser": {
-                "file": "builds/utest-browser.ts",
+                "file": "src/export-utest-browser.ts",
                 "outputMain": "lib/utest.browser.js",
                 "package": {
                     "module": "commonjs",
@@ -59,7 +62,7 @@
                 ]
             },
             "node": {
-                "file": "builds/utest-node.ts",
+                "file": "src/export-utest-node.ts",
                 "outputMain": "lib/utest.node.js",
                 "package": {
                     "module": "commonjs",
@@ -69,7 +72,7 @@
                 }
             },
             "server": {
-                "file": "builds/utest-server.ts",
+                "file": "src/export-utest-server.ts",
                 "outputMain": "lib/utest.server.js",
                 "package": {
                     "module": "commonjs",
@@ -158,9 +161,10 @@
     "scripts": {
         "test": "atma test",
         "server": "atma server",
-        "build": "app-bundler",
+        "build": "app-bundler && npm run build-dts",
         "watch": "app-bundler --watch",
-        "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && git push && npm publish"
+        "build-dts": "tsc -p tsconfig-build.json && atma run tools/build-dts",
+        "release": "echo \"Run atma pub -m \"message\"\""
     },
     "repository": {
         "type": "git",

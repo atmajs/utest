@@ -35,10 +35,11 @@ export class Action {
     }
 
     spawn () {
-        process_toggle()
+        throw new Error('Not Implemented');
+        //process_toggle()
     }
 
     getLogs ()  {
-
+        throw new Error('Not Implemented');
     }
 }

@@ -1,6 +1,8 @@
 import { location_pushSearch } from './utils/location';
 import { xhr_createListener } from './utils/xhr';
 
+declare var $: any;
+
 let _iframe;
 
 export class UTestPage {
@@ -131,7 +133,7 @@ function request(url, method, headers, data, callback) {
         .done(function (response, status, xhr) {
             callback(null, response, xhr.getAllResponseHeaders());
         })
-        .fail(function (xhr, textStatus) {
+        .fail(function (xhr: any, textStatus) {
             callback({
                 responseText: xhr.responseText,
                 statusCode: xhr.status,
