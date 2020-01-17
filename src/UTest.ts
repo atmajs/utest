@@ -80,23 +80,23 @@ function teardownDelegate(ctx, teardown, done, utest) {
 }
 
 function async(callback: Function, name: string, msTimeout: number) {
-    var isTimeouted = false,
-        isProcessed = false,
+    let isTimeouted = false;
+    let isProcessed = false;
         // in case http requests are busy, take some more time
-        jam = 5,
-        fn = function () {
-            clearTimeout(timeout);
-            if (isTimeouted || isProcessed)
-                return;
-            isProcessed = true;
-            callback.apply(null, arguments);
-        };
-    var timeout = wait(),
-        future = {
-            fn: fn,
-            id: timeout,
-            timeout: null
-        };
+    let jam = 5;
+    let fn = function () {
+        clearTimeout(timeout as any);
+        if (isTimeouted || isProcessed)
+            return;
+        isProcessed = true;
+        callback.apply(null, arguments);
+    };
+    let timeout = wait();
+    let future = {
+        fn: fn,
+        id: timeout,
+        timeout: null
+    };
 
     function onTimeout() {
         if (transport_isBusy() && --jam > 0) {
@@ -111,7 +111,11 @@ function async(callback: Function, name: string, msTimeout: number) {
         callback();
     }
     function wait() {
-        return setTimeout(onTimeout, msTimeout || _options.timeout);
+        let ms = msTimeout || _options.timeout;
+        if (ms > 2 ** 30) {
+            return 0;
+        }
+        return setTimeout(onTimeout, ms);
     }
 
     return future;

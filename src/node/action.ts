@@ -6,12 +6,10 @@ import { RunnerSuite } from './Suite';
 import { cfg_runConfigurationScript } from '../utils/cfg';
 import { UAction } from '../UAction';
 
-
 /**
  *	Atma.Toolkit Action entry
  */
-
-export const AtmaAction = {
+let AtmaAction = {
     UTest: UTest,
     UAction: UAction,
     help: {
@@ -157,3 +155,13 @@ process.on('unhandledRejection', function (error: Error) {
     }
     process.exit(1);
 });
+
+//** Copy export to globals to make it singleton to be Module Loader agnostic. */
+if (global.atma?.utest_action) {
+    AtmaAction = global.atma?.utest_action;
+} else {
+    (global.atma ?? {}).utest_action = AtmaAction;
+}
+
+
+export { AtmaAction }

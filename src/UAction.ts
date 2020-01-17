@@ -11,7 +11,7 @@ export class UAction extends UTest {
                 if ($suite.$config == null) {
                     $suite.$config = {};
                 }
-                $suite.$config.timeout = Number.MAX_VALUE;
+                $suite.$config.timeout = Number.MAX_SAFE_INTEGER;
             }
         }
 

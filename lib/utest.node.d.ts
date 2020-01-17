@@ -16,7 +16,7 @@ declare module 'atma-utest/node/action' {
     /**
       *	Atma.Toolkit Action entry
       */
-    export const AtmaAction: {
+    let AtmaAction: {
         UTest: typeof UTest;
         UAction: typeof UAction;
         help: {
@@ -63,6 +63,7 @@ declare module 'atma-utest/node/action' {
         };
         process: (setts: any, done: any) => any;
     };
+    export { AtmaAction };
 }
 
 declare module 'atma-utest/UTest' {
