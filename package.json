@@ -7,7 +7,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.9",
+    "version": "0.21.11",
     "devDependencies": {
         "@types/node": "^13.1.7",
         "app-bundler": "0.0.72",
@@ -25,7 +25,7 @@
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
         "dts-bundle": "^0.7.3",
-        "includejs": "^0.15.33",
+        "includejs": "^0.15.41",
         "jquery": "^2.1.4",
         "maskjs": "^0.61.16",
         "sinon": "^1.15.4",
