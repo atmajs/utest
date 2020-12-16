@@ -398,8 +398,12 @@ function path_matchTests(test, path) {
         });
     }
 
-    if (typeof test !== 'string')
+    if (typeof test !== 'string') {
         return false;
+    }
+
+    test = test.replace(/^[\./]/, '');
+    path = path.replace(/^[\./]/, '');
 
     if (test.indexOf('*') === -1) {
         var a = test.toLowerCase(),
