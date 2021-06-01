@@ -9,7 +9,7 @@ var resume = include.pause(),
 	bodyParser = require('body-parser'),
 	Url = require('url')
     ;
-    
+
 
 server
 .Application
@@ -17,11 +17,11 @@ server
 	base: include.location,
 	configs: class_Uri.combine(include.location, 'server/config/**.yml')
 })
-.done((app) => {
-	
+.then((app) => {
+
 	app.responders([
 		function(req, res, next){
-			
+
 			io.File.disableCache();
 			server.StaticContent.Cache.state(false);
 
@@ -33,6 +33,6 @@ server
 		app.responder(),
 		atma.server.StaticContent.respond
 	]);
-	
+
 	resume(app);
 });
