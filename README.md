@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/atmajs/utest.png?branch=master)](https://travis-ci.org/atmajs/utest)
 
-_TDD, Unit Testing and Benchmark plugin for Atma.Toolkit_
+_TDD, Unit Testing, Actions (aka Tasks) and Benchmark plugin for Atma.Toolkit_
 
 - [Overview](#overview)
 - [Simplest example](#simplest-example)
@@ -30,11 +30,11 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 ##### Overview
 
 - **Node.js**-runner  ` $ atma test foo `.
-- **Browser**-runner  
+- **Browser**-runner 
     - with `atma` you create a test server (` $ atma server `), open a test-runner-page in one or many browsers (` http://localhost:5777/utest/ `), _so slaves are captured by the server_. _Otherwise it will be done under the hood._  Now run ` $ atma test foo -browser `.
 - **Watcher**       ` -watch ` flag allows atma test instance not to be closed after testing, but wait for any changes in files, that were used in unit tests and all its includejs dependencies.
 - **Environments** By default,  there will be available additional libraries in all tests
-    
+
     - [IncludeJS](https://github.com/atmajs/IncludeJS)
     - [MaskJS](https://github.com/atmajs/MaskJS)
     - [ClassJS](https://github.com/atmajs/ClassJS)
@@ -42,7 +42,7 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
     - [Logger](https://github.com/atmajs/atma-logger)
     - jQuery
     - SinonJS
-    
+
 - **Test Suites**   though this testing system does not require from developer to define test suites, as from example below, but with this class, developer can define test suites more properly
 - **Pages**         Load and Test webpages or other HTTP endpoints, like RESTful services.
 - **Configs**       configurations for more complex projects
@@ -53,7 +53,7 @@ Create Tests. Covers all use cases - from most simple test to complex-applicatio
 
 Default test extension: `*.test*`
 
-##### Simplest example
+##### Most simple example
 ```
 /myscript
    app.js
@@ -61,16 +61,17 @@ Default test extension: `*.test*`
 ```
 _app.js_
 ```javascript
-var Application = { version: 1 };
+export const FooApp = { version: 1 };
 ```
 _app.test_
 ```javascript
-eq(Application.version, 1); // alias for assert.equal()
+import { FooApp } from './app'
+eq_(FooApp.version, 1); // alias for assert.equal()
 ```
 
 > More Examples you can find in most [Atma.js Libraries](https://github.com/atmajs)
 
-- Node.js: 
+- Node.js:
     ```bash
         cd myscript
         atma test app
@@ -83,7 +84,7 @@ eq(Application.version, 1); // alias for assert.equal()
         # OR atma test app -browser -watch
     ```
 
-This is the simpliest test case. 
+This is the simplest test case.
 > As those 2 files ` app.js/app.test ` are in the same directory, `app.js` will be preloaded when 'app.test' is started
 
 _app.test_
@@ -107,7 +108,7 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
 ```javascript
   assert.equal(arg1, arg2, ?message);
   // eq_
-  
+
   assert.notEqual
   // notEq_
 
@@ -125,18 +126,18 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
 
   assert.has
   // has_
-  
+
   assert.hasNot
   // hasNot_
-  
+
   assert.is
   // is_
   assert.isNot
   // isNot_
-  
+
   assert.await(Function, name)
   assert.avoid(Function, name)
-  
+
   $.fn.has_
   $.fn.hasNot_
   $.fn.eq_
@@ -144,7 +145,7 @@ Quick overview (note the global aliases and jQuery assertions for browser tests)
   $.fn.deepEq_
   $.fn.notDeepEq_
   $.fn.is_
-  $.fn.isNot_  
+  $.fn.isNot_
 ```
 
 #### UTest Class
@@ -154,7 +155,7 @@ UTest({
     'foo test': function(){
         eq_(1, 1);
     },
-    
+
 	'async promise': function(){
 		return $.get('/index').then(function(response){
 			eq_(response, 'foo');
@@ -171,12 +172,12 @@ UTest({
         eq_(fooValue, 'foo');
         done();
     },
-    
+
     'nested or groupped tests': {
         'foo': function()
         'baz': function()
     },
-    
+
     // function is called before tests cases are run
     '$before': function(?done),
     // function is called after each test case
@@ -185,14 +186,14 @@ UTest({
     '$after': function(?done)
 	'$config': {
 		timeout: 3000,
-		
+
 		// `done(error)`: when true, then the first argument is checked for an error
 		// otherwise, it is the parameter for the next test function
 		errorableCallbacks: false,
-		
+
 		// when true, stops current test function and do not run all the next
 		breakOnError: false,
-		
+
 		// start external process
 		'util.process': {
 			command: 'node index --foo'
@@ -210,14 +211,14 @@ UTest({
         'foo': function()
         'baz': function()
     },
-    
+
     // COMMENT: skip test/group
     '//skip this and other skipped tests': function(),
-    
+
     // RANGES: `[` - start, `]` - end
     // if start is not specified, then start from the beginning
     // if end   is not specified, then run to the end
-    
+
     '[from this': function(),
     ']to this': function()
 });
@@ -226,12 +227,12 @@ UTest({
 ##### UTest server
 
 - HTTP (webpage / service) loading
-    
+
     ```javascript
     UTest
         .server
         .request(url [, method, bodyArgs], callback /* <Callback> */);
-        
+
     UTest
         .server
         /* -params {
@@ -243,25 +244,25 @@ UTest({
         .request(params) //-> Promise
         .done(callback /* <Callback> */)
         .fail(onError);
-        
+
     // <Callback> - depends on response:
     // 1. text/html: create a document and wait for the document to be loaded:
     callback === Function<document, window, headers>
-    
+
     // 2. json response
     callback === Function<json, headers>
-    
+
     // 3. other
     callback === Function<responseText, headers>
-    
-        
+
+
     UTest({
         'google has input': function(done){
             UTest
                 .server
                 .request('http://google.com', function(error, document, window){
                     eq_(error, null);
-                    
+
                     $(document)
                         .has_('input[type="text"]');
                     done();
@@ -269,14 +270,14 @@ UTest({
         }
     });
     ```
-    
+
 - server-side MaskJS rendering
 
     ```javascript
     UTest
         .server
         .render(template, model, callback);
-        
+
     UTest({
         'render title': function(done){
             var template = 'h4 > "Hello, ~[name]"',
@@ -286,7 +287,7 @@ UTest({
                 .render(template, model, function(error, document, window){
                     $(document)
                         .has_('html', 'Hello, world');
-                        
+
                     done();
                 })
         }
@@ -301,7 +302,7 @@ UTest({
 	'test foo' () {
 		// typing is asynchrone and the
 		// `domtest` returns Promise, when the tests are complete.
-		
+
 		return UTest.domtest(document.body, `
 			with ('input.foo') {
 				do type Hello;
@@ -372,10 +373,10 @@ module.exports = {
             // preloading scripts
             // (path is relative to projects directory)
             env: String | Array<String>,
-            
+
             // working directory, @default: cwd
             base: String,
-            
+
             // path to tests, glob pattern is also supported
             // e.g. test/**-node.test
             tests: String | Array<String>
@@ -431,7 +432,7 @@ module.exports = {
 - `atma test foo`
 
     Run the test `%CWD%/test/foo.test`. If exists, the configuration will also be loaded and the `ENV` property for this path will be extracted to preload the required resources.
-    
+
     ```javascript
     // test/config.js
     module.exports = {
@@ -457,7 +458,7 @@ module.exports = {
 - `atma test --config my-test-config.js`
 
     Override configuration path
-    
+
 - CLI flags
     - `-browser` runs test in browser
     - `-node` runs test in Node.js
@@ -469,12 +470,12 @@ Write tests using EcmaScript 6 for NodeJS and **browser** runners. This is possi
 **How to start?**
 
 - Install the plugin
-    
+
     ```bash
     $ atma plugin install atma-loader-traceur
     ```
 - Specify `test` extension to be handled by the tracuer. Edit your `package.json` to have at least:
-    
+
     ```json
     {
         "atma": {
@@ -501,7 +502,7 @@ But there is simpler approach to load it once for all tests with exporting the m
 module.exports = {
     addOne: function(n){
         return n + 1;
-    }    
+    }
 };
 ```
 ```javascript
@@ -531,32 +532,32 @@ Here was used alias-feature of the IncludeJS. So when 'some.js' is required, its
 
 - **Prepair**
     - Install Atma.Toolkit
-        
+
         ```bash
         $ npm install atma -g
         ```
     - Clone atma libraries first into any folder:
-        
+
         ```bash
         $ atma atma-clone --all
         ```
     - Reference the atma libraries
-        
+
         ```bash
         $ cd utest/
         $ atma reference atma
         ```
 - **Build**
-    
+
     ```bash
     $ atma
     ```
 - **Test**
-    
+
     ```bash
     $ atma test test/**
     ```
-    
-    
+
+
 ----
 (c) 2015 MIT - The Atma.js Project

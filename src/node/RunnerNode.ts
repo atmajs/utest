@@ -1,5 +1,5 @@
 import { assert, include, logger, io } from '../vars'
-import { status_testing, Runner, status_ready, status_blank, status_prepair } from './Runner';
+import { status_testing, Runner, status_ready, status_blank, status_prepair, IRunnerSettings } from './Runner';
 import { class_Uri } from 'atma-utils';
 import { UTestVars } from '../UTestVars';
 import { cfg_runConfigurationScript } from '../utils/cfg';
@@ -12,8 +12,8 @@ export class RunnerNode extends Runner {
     resources: any[]
     envResource: any
 
-    constructor(config) {
-        super(config);
+    constructor(config, settings: IRunnerSettings) {
+        super(config, settings);
 
         assert.onsuccess = this.onSuccess.bind(this);
         assert.onfailure = this.onFailure.bind(this);
@@ -55,14 +55,14 @@ export class RunnerNode extends Runner {
         }
 
 
-        var that = this,
+        let that = this,
             url = this.files[this.index].uri.toString();
 
         assert.reset();
         UTestVars.clear();
         include.removeFromCache(url);
         this.notifyTest(url);
-        var resource = include
+        let resource = include
             .cfg('path', _suite.base)
             .instance(url)
             .js(url)
@@ -96,7 +96,7 @@ export class RunnerNode extends Runner {
         this.envResource = null;
     }
     getResources() {
-        var arr = [];
+        let arr = [];
 
         this.envResource && resource_aggrIncludes(this.envResource, arr);
 
@@ -111,7 +111,7 @@ export class RunnerNode extends Runner {
                 return /[\\/]node_modules[\\/]/i.test(x) == false;
             })
             .forEach(function (x) {
-                var path = new class_Uri(x).toString();
+                let path = new class_Uri(x).toString();
                 arr.push(path);
             });
 
@@ -121,11 +121,11 @@ export class RunnerNode extends Runner {
 
 function resource_clear(resource) {
 
-    var bin = include.getResources();
+    let bin = include.getResources();
 
 
-    for (var type in bin) {
-        for (var key in bin[type]) {
+    for (let type in bin) {
+        for (let key in bin[type]) {
             if (bin[type][key] === resource) {
                 delete bin[type][key];
                 break;
@@ -143,7 +143,7 @@ function resource_clear(resource) {
     }
 
     if (typeof require !== 'undefined' && require.cache) {
-        for (var key in require.cache) {
+        for (let key in require.cache) {
             delete require.cache[key];
         }
     }
@@ -165,7 +165,7 @@ function resource_aggrIncludes(resource, aggr) {
 
 function suite_loadEnv(runner, suite, callback) {
 
-    var base = suite.base,
+    let base = suite.base,
         env = suite.env;
 
     if (env == null) {
@@ -186,19 +186,19 @@ function suite_loadEnv(runner, suite, callback) {
         return;
     }
 
-    var resource = include
+    let resource = include
         .instance(base)
         .setBase(base);
 
     base = new class_Uri(base);
-    var pckg = env
+    let pckg = env
         .map(x => {
-            var [src, alias] = x.split('::'),
+            let [src, alias] = x.split('::'),
                 uri = base.combine(src[0] === '/' ? src.substring(1) : src);
             return [uri, alias]
         })
         .filter(arr => {
-            var [uri] = arr;
+            let [uri] = arr;
             if (io.File.exists(uri) === false) {
                 logger.warn('Resource from Environment - 404 -', uri.toLocalFile());
                 return false;
@@ -206,7 +206,7 @@ function suite_loadEnv(runner, suite, callback) {
             return true
         })
         .map(arr => {
-            var [uri, alias] = arr;
+            let [uri, alias] = arr;
             return uri.toString() + (alias ? '::' + alias : '');
         });
 
@@ -216,7 +216,7 @@ function suite_loadEnv(runner, suite, callback) {
                 .keys(resp)
                 .filter(key => key !== 'load')
                 .forEach(key => {
-                    var lib = resp[key];
+                    let lib = resp[key];
                     if (lib != null) {
                         global[key] = lib;
                         return;
@@ -225,7 +225,7 @@ function suite_loadEnv(runner, suite, callback) {
                     if (global[key] != null) {
                         return;
                     }
-                    var injected = eval(`typeof ${key} !== 'undefined' && ${key}`);
+                    let injected = eval(`typeof ${key} !== 'undefined' && ${key}`);
                     if (injected) {
                         global[key] = injected;
                         return;
@@ -238,7 +238,7 @@ function suite_loadEnv(runner, suite, callback) {
     runner.envResource = resource;
 }
 
-var _suites = null,
+let _suites = null,
     _suite = null,
     _suiteIndex = -1,
 

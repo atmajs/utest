@@ -11,10 +11,10 @@ export const status_testing = 5;
 export const status_ready = 6;
 
 function utest_resolveFiles(config) {
-    var files = [];
+    let files = [];
 
     if (is_Array(config)) {
-        for (var i = 0, x, imax = config.length; i < imax; i++) {
+        for (let i = 0, x, imax = config.length; i < imax; i++) {
             x = config[i];
 
             files = files.concat(utest_resolveFiles(x));
@@ -27,12 +27,12 @@ function utest_resolveFiles(config) {
         return [];
     }
 
-    var scripts = config.scripts,
+    let scripts = config.scripts,
         base = config.base;
 
     base = new class_Uri(base);
 
-    for (var i = 0, x, imax = scripts.length; i < imax; i++) {
+    for (let i = 0, x, imax = scripts.length; i < imax; i++) {
         x = new class_Uri(scripts[i]);
 
         if (x.isRelative()) {
@@ -50,6 +50,9 @@ function utest_resolveFiles(config) {
     return files;
 }
 
+export interface IRunnerSettings {
+    isAction: boolean
+}
 
 export abstract class Runner extends class_EventEmitter {
     config: any
@@ -58,16 +61,18 @@ export abstract class Runner extends class_EventEmitter {
     suites: any[]
     failed: any
     stats: any
+    startedAt: number
+    isAction = false;
 
     abstract socket: any
     abstract run (cb: Function);
 
-    constructor(config) {
+    constructor(config, settings: IRunnerSettings) {
         super();
+        this.isAction = settings?.isAction ?? false;
         this.config = config;
         this.status = status_blank;
         this.files = utest_resolveFiles(config);
-
         this.suites = is_Array(config) ? config : [config];
 
         this.suites.forEach(function (x) {
@@ -75,14 +80,15 @@ export abstract class Runner extends class_EventEmitter {
         });
     }
     notifyTest(url) {
-        var name = url.replace(this.config.base, '');
-        logger.log('Test: ', color`bold<cyan<${name}>>`);
+        let name = url.replace(this.config.base, '');
+        logger.log(color`${ this.isAction ? "Tasks" : "Test" }: bold<cyan<${name}>>`);
+        this.startedAt = Date.now();
     }
     onComplete(stats) {
         this.status = status_ready;
 
         function count(key) {
-            var sum = 0;
+            let sum = 0;
 
             stats.forEach(function (x) {
                 if (x.error) {
@@ -103,7 +109,7 @@ export abstract class Runner extends class_EventEmitter {
             return sum;
         }
         function aggr(key) {
-            var aggr = [];
+            let aggr = [];
             stats.forEach(function (x) {
                 if (x[key] == null)
                     return;
@@ -117,7 +123,7 @@ export abstract class Runner extends class_EventEmitter {
             return aggr;
         }
 
-        var total = count('total'),
+        let total = count('total'),
             failed = count('failed'),
             timeouts = count('timeouts'),
             callbacks = count('callbacks'),
@@ -151,12 +157,17 @@ export abstract class Runner extends class_EventEmitter {
             !failed && failed++;
         }
 
-
-        logger
-            .log(color`\n\nbold<${failed ? 'red' : 'green'}<Done.>>`)
-            .log(color`bold<Assertions>: bold<green<${Math.max(total - failed, 0)}>>(bold<red<${failed}>>)`)
-            .log(color`bold<Timeouts>: bold<${timeouts ? 'red' : 'green'}<${timeouts}>>`)
-            .log(color`bold<Failed Callbacks>: bold<green<${callbacks}>>`);
+        if (this.isAction !== true) {
+            logger
+                .log(color`\n\nbold<${failed ? 'red' : 'green'}<Done.>>`)
+                .log(color`bold<Assertions>: bold<green<${Math.max(total - failed, 0)}>>(bold<red<${failed}>>)`)
+                .log(color`bold<Timeouts>: bold<${timeouts ? 'red' : 'green'}<${timeouts}>>`)
+                .log(color`bold<Failed Callbacks>: bold<green<${callbacks}>>`);
+        } else {
+            let time = Date.now() - this.startedAt;
+            logger
+                .log(color`\n\nbold<${failed ? 'red' : 'green'}<Completed> in ${time}ms>`)
+        }
 
         this.failed = failed;
         this.stats = stats;
@@ -169,11 +180,11 @@ export abstract class Runner extends class_EventEmitter {
         if (this.stats == null) {
             return [];
         }
-        let resources = this.stats.resources 
+        let resources = this.stats.resources
             || this.stats[0]?.resources
             || this.getResources?.()
             || [];
-        
+
         return resources;
     }
 
@@ -185,14 +196,14 @@ export abstract class Runner extends class_EventEmitter {
             data.stack = ''
         }
 
-        var base = this.suites[0].base || '';
+        let base = this.suites[0].base || '';
 
 
         data = assert.resolveData(data, base);
         logger.log('');
 
         if ('actual' in data || 'expected' in data) {
-            var actual = data.actual,
+            let actual = data.actual,
                 expect = data.expected;
 
             if (typeof expect === 'string'
@@ -203,7 +214,7 @@ export abstract class Runner extends class_EventEmitter {
 
                 log_stringDiff(expect, actual);
             } else {
-                var msg = '%s bold<red<↔>> %s';
+                let msg = '%s bold<red<↔>> %s';
                 logger.log(color`${msg}`, data.actual, data.expected);
             }
         }
@@ -213,7 +224,7 @@ export abstract class Runner extends class_EventEmitter {
 
         if (data.file && data.line != null) {
 
-            var path = data
+            let path = data
                 .file
                 .replace(/(\/)?utest\//i, '$1')
                 .replace(/\?.+/, '')
@@ -222,7 +233,7 @@ export abstract class Runner extends class_EventEmitter {
                 uri = new class_Uri(base).combine(path);
 
             if (io.File.exists(uri)) {
-                var source = io.File.read(uri),
+                let source = io.File.read(uri),
                     lines = source.split(/\r\n|\r|\n/g),
                     line = lines[data.line - 1],
                     code = line && line.trim()

@@ -7,6 +7,12 @@ import { RunnerFork } from './RunnerFork';
 import { color } from '../utils/str';
 import { RunnerNode } from './RunnerNode';
 
+
+interface IRunnerSuiteSettings {
+    base?: string
+    watch?: boolean
+    isAction?: boolean
+}
 export class RunnerSuite {
     counter = 0
     index: number
@@ -17,8 +23,9 @@ export class RunnerSuite {
     cfgNode = null
     cfgBrowser = null
     callback: Function
+    isAction = false
 
-    constructor(configs, settings) {
+    constructor(configs, settings: IRunnerSuiteSettings) {
 		/**
 		 *	this.watch
 		 *	this.base
@@ -71,15 +78,17 @@ export class RunnerSuite {
 
             this.closeSockets();
 
-            var failed = this.getFailed();
-            var succeeded = this.getSucceeded();
+            let failed = this.getFailed();
+            let succeeded = this.getSucceeded();
 
-            logger
-                .log('')
-                .log(failed === 0 
-                    ? color`bold<green<Success ${succeeded}>>` 
-                    : color`bold<red<Failed ${failed}/${succeeded}/>>`
-                );
+            if (this.isAction !== true) {
+                logger
+                    .log('')
+                    .log(failed === 0
+                        ? color`bold<green<Success ${succeeded}>>`
+                        : color`bold<red<Failed ${failed}/${succeeded}/>>`
+                    );
+            }
 
             this.callback(failed);
             return;
@@ -87,7 +96,7 @@ export class RunnerSuite {
 
         closeSocketsOnExit(this);
 
-        
+
         let resources = watch(this.base, this.getResources(), (path) => {
             let dateStr = (Date as any).format(new Date, 'HH:mm:ss').bg_cyan;
             let message = `#${ ++this.counter }  ${dateStr}  modified ${color`bold<${path}>`}`;
@@ -122,16 +131,19 @@ export class RunnerSuite {
         this.callback = done;
         this.runners = [];
 
+        let settings = {
+            isAction: this.isAction
+        };
 
         if (this.cfgBrowser)
-            this.runners.push(new RunnerClient(this.cfgBrowser));
+            this.runners.push(new RunnerClient(this.cfgBrowser, settings));
 
         if (this.cfgNode)
-            this.runners.push(new RunnerNode(this.cfgNode));
+            this.runners.push(new RunnerNode(this.cfgNode, settings));
 
         if (this.forks) {
-            var runners = this.forks.map(function (cfg) {
-                return new RunnerFork(cfg);
+            let runners = this.forks.map((cfg) => {
+                return new RunnerFork(cfg, settings);
             });
             this.runners = this.runners.concat(runners);
         }
@@ -150,7 +162,7 @@ export class RunnerSuite {
 
     handleConfig(mix) {
         if (Array.isArray(mix)) {
-            for (var i = 0, imax = mix.length; i < imax; i++) {
+            for (let i = 0, imax = mix.length; i < imax; i++) {
                 this.handleSingle(mix[i]);
             }
             return;
@@ -204,9 +216,9 @@ function cfg_add(that, prop, value) {
 let closeSocketsOnExit = function (suite) {
     closeSocketsOnExit = function () { };
 
-    var readLine = require('readline');
+    let readLine = require('readline');
     if (process.platform === 'win32') {
-        var rl = readLine.createInterface({
+        let rl = readLine.createInterface({
             input: process.stdin,
             output: process.stdout
         });

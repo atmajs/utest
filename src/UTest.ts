@@ -16,7 +16,7 @@ import { Console } from './utils/console';
 import { UTestQueryUtil } from './utils/utest-query';
 import { UTestVars } from './UTestVars';
 
-declare var DomTest, require;
+declare let DomTest, require;
 
 export interface IUTestDefinition {
     $config?: {
@@ -29,13 +29,13 @@ export interface IUTestDefinition {
         'http.include'?: any
         'http.service'?: any
         'http.process'?: any
-        'util.process'?: any   
+        'util.process'?: any
     }
     $before?: (done?: Function) => void | PromiseLike<any>
     $after?: (done?: Function) => void | PromiseLike<any>
     $teardown?: (done?: Function) => void | PromiseLike<any>
 
-    
+
 
     [key: string]: ITestCase | IUTestDefinition | any
 }
@@ -51,7 +51,7 @@ export interface IUTestRunnerConfig {
 
 
 
-var RESERVED = [
+let RESERVED = [
     '$teardown',
     '$config',
     '$before',
@@ -65,7 +65,7 @@ function nextUTest() {
         return;
     }
 
-    var test = UTestVars.tests[UTestVars.index];
+    let test = UTestVars.tests[UTestVars.index];
     test.run(nextUTest);
 }
 
@@ -126,18 +126,17 @@ function runCase(ctx, fn: ITestCase | IUTestDefinition, done: Function, teardown
 
     if (fn != null && typeof fn === 'object') {
 
-        var sub = new UTest(key, fn, ctx);
+        let sub = new UTest(key, fn, ctx);
         sub.run(teardownDelegate(ctx, teardown, done, utest));
         return;
     }
 
-    var asyncData;
-    try {
+    let args = _Array_slice.call(ctx.arguments || []),
+        onComplete = teardownDelegate(ctx, teardown, done, utest),
+        asyncData,
+        result;
 
-        var args = _Array_slice.call(ctx.arguments || []),
-            onComplete = teardownDelegate(ctx, teardown, done, utest),
-            asyncData,
-            result;
+    try {
 
         if (is_Function(fn) === false) {
             onComplete();
@@ -188,7 +187,7 @@ function runCase(ctx, fn: ITestCase | IUTestDefinition, done: Function, teardown
     function tryWait_Deferred(dfr) {
         if (is_Deferred(dfr) === false) {
             return false;
-        } 
+        }
         if (asyncData == null) {
             asyncData = async(onComplete, key, ctx.$config && ctx.$config.timeout);
         }
@@ -226,7 +225,7 @@ function case_hasAsyncCallback(fn) {
     if (fn.length === 0) {
         return false;
     }
-    var str = fn
+    let str = fn
         .toString()
         .replace(fn.name, '')
         // Name in Source Code can have quotes
@@ -235,7 +234,7 @@ function case_hasAsyncCallback(fn) {
     return /^(async )?(function)?\s*\([\w\s,]*(done|next)/.test(str);
 }
 
-var UTestProto = {
+let UTestProto = {
     // stores data exposed by the async Case
     arguments: null,
     $run: function (key, done) {
@@ -243,7 +242,7 @@ var UTestProto = {
     }
 };
 
-var UTestProtoDelegate = function (instance: UTest, suite: IUTestDefinition): IUTestDefinition {
+let UTestProtoDelegate = function (instance: UTest, suite: IUTestDefinition): IUTestDefinition {
     let proto = {};
     for (let key in UTestProto) {
 
@@ -369,12 +368,12 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         }
 
         const SKIP = ['$config', '$before', '$after', '$teardown'];
-        
+
         return handleQuery (this.suite);
-        
+
         /* private */
         function handleQuery(obj) {
-            var has = false;
+            let has = false;
             Object
                 .keys(obj)
                 .forEach(function (key) {
@@ -408,7 +407,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         }
 
         function rewriteDeep(obj) {
-            var has = false;
+            let has = false;
             Object
                 .keys(obj)
                 .forEach(function (key) {
@@ -432,7 +431,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
             return has;
         }
         function forceDeep(obj) {
-            var key, val;
+            let key, val;
             for (key in obj) {
                 if (RESERVED.indexOf(key) !== -1) continue;
                 if (key.substring(0, 2) === '//') continue;
@@ -446,7 +445,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
             }
         }
         function cleanBangsDeep(obj) {
-            var key, val;
+            let key, val;
             for (key in obj) {
                 if (key[0] !== '!') continue;
 
@@ -489,7 +488,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         }
     }
     handleRanges() {
-        var keys = Object.keys(this.suite),
+        let keys = Object.keys(this.suite),
             start, end;
 
         keys.forEach(function (x, index) {
@@ -518,7 +517,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
 
         logger.log(color`Range: from bold<green<${keys[start]}>> to bold<green<${keys[end]}>>`);
 
-        var range = {},
+        let range = {},
             suite = this.suite;
         keys.slice(start, end + 1).forEach(function (key) {
             range[key] = suite[key];
@@ -539,7 +538,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
     _nextCase() {
 
         if (arguments.length > 0) {
-            var index = 0;
+            let index = 0;
             if (this.$cfg('errorableCallbacks') === true) {
                 assert.equal(arguments[0], null);
                 index = 1;
@@ -547,7 +546,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
             this.proto.arguments = _Array_slice.call(arguments, index);
         }
 
-        var breakOnError = this.$cfg('breakOnError');
+        let breakOnError = this.$cfg('breakOnError');
         if (breakOnError) {
             breakOnError = assert.failed !== 0
                 || assert.errors !== 0
@@ -556,7 +555,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         }
 
 
-        for (var key in this.suite) {
+        for (let key in this.suite) {
             if (breakOnError)
                 break;
 
@@ -575,11 +574,11 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
             }
             this.processed.push(key);
 
-            var case_ = this.suite[key];
+            let case_ = this.suite[key];
             if (case_ == null)
                 continue;
 
-            var message = color`   bold<${key}>: `;
+            let message = color`   bold<${key}>: `;
             if (typeof case_ === 'object') {
                 message = Color.bg_cyan(message);
             }
@@ -622,15 +621,15 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
                 break;
         }
 
-        var fns = (UTestVars.listeners[event] || (UTestVars.listeners[event] = []));
+        let fns = (UTestVars.listeners[event] || (UTestVars.listeners[event] = []));
         fns.push(callback);
     }
     static trigger(event, ...args) {
-        var fns = UTestVars.listeners[event];
+        let fns = UTestVars.listeners[event];
         if (fns == null || !fns.length) {
             return;
         }
-        for (var i = 0, x, imax = fns.length; i < imax; i++) {
+        for (let i = 0, x, imax = fns.length; i < imax; i++) {
             x = fns[i];
             x.apply(null, args);
         }
@@ -639,7 +638,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
         return UTestVars.index < UTestVars.tests.length;
     }
     static cfg(options) {
-        for (var key in options) {
+        for (let key in options) {
             _options[key] = options[key];
         }
     }

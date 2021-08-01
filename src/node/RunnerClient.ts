@@ -1,4 +1,4 @@
-import { Runner, status_connecting, status_connected, status_blank, status_ready, status_testing } from './Runner';
+import { Runner, status_connecting, status_connected, status_blank, status_ready, status_testing, IRunnerSettings } from './Runner';
 import { io_connect, io_clean } from './utils/io';
 import { slave_start } from './utils/slave';
 import { logger, app } from '../vars';
@@ -8,8 +8,8 @@ export class RunnerClient extends Runner {
     startServer: boolean
     socket: any
 
-    constructor(config) {
-        super(config);
+    constructor(config, settings: IRunnerSettings) {
+        super(config, settings);
 
         this.suites.forEach(function (suite) {
 
