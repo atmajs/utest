@@ -7,7 +7,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.18",
+    "version": "0.21.19",
     "devDependencies": {
         "@types/node": "^13.1.7",
         "app-bundler": "0.0.72",

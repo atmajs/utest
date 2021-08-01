@@ -34,6 +34,7 @@ export class RunnerSuite {
 
         this.base = settings.base;
         this.watch = settings.watch;
+        this.isAction = settings?.isAction ?? false;
 
         this.onComplete = this.onComplete.bind(this);
         this.process = this.process.bind(this);
