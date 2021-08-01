@@ -123,7 +123,10 @@ let AtmaAction = {
             include.cfg(setts.$config.includejs);
         }
 
-        NodeVars.suite = new RunnerSuite(NodeVars.configs, setts);
+        NodeVars.suite = new RunnerSuite(NodeVars.configs, {
+            ...setts,
+            isAction: true
+        });
         // run configuration only if has suites, otherwise configuration will be run by the root suite
         var cfg = config.suites && config,
             runCfg = cfg_runConfigurationScript;
