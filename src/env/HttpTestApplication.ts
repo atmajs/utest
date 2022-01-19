@@ -1,18 +1,15 @@
 import { include, atma, app, io } from '../vars';
 import { class_Uri } from 'atma-utils';
+import { Application, StaticContent } from 'atma-server';
 
 declare var require;
 
-var resume = include.pause(),
-    server = atma.server,
-    appConfig = app.config,
-    bodyParser = require('body-parser'),
-    Url = require('url')
-    ;
+let resume = include.pause();
+let bodyParser = require('body-parser');
+let Url = require('url');
 
 
-server
-    .Application
+Application
     .create({
         base: include.location,
         configs: class_Uri.combine(include.location, 'server/config/**.yml')
@@ -23,15 +20,15 @@ server
             function(req, res, next){
 
                 io.File.disableCache();
-                server.StaticContent.Cache.state(false);
+                StaticContent.Cache.state(false);
 
                 var url = Url.parse(req.url, true);
                 req.query = url.query;
                 next();
             },
             bodyParser.json(),
-            app.responder(),
-            atma.server.StaticContent.respond
+            app.responder(null),
+            StaticContent.respond
         ]);
 
         resume(app);

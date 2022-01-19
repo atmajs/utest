@@ -230,13 +230,13 @@ export abstract class Runner extends class_EventEmitter {
                 .replace(/\?.+/, '')
                 .replace(/^\//, ''),
 
-                uri = new class_Uri(base).combine(path);
+                uri = new class_Uri(base).combine(path).toString();
 
             if (io.File.exists(uri)) {
-                let source = io.File.read(uri),
-                    lines = source.split(/\r\n|\r|\n/g),
-                    line = lines[data.line - 1],
-                    code = line && line.trim()
+                let source = io.File.read <string> (uri);
+                let lines = source.split(/\r\n|\r|\n/g);
+                let line = lines[data.line - 1];
+                let code = line && line.trim();
                     ;
                 logger
                     .log(color`  bold<${path}>`)

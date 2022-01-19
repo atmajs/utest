@@ -7,14 +7,14 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.19",
+    "version": "0.21.22",
     "devDependencies": {
         "@types/node": "^13.1.7",
-        "app-bundler": "0.0.72",
-        "atma": "^0.12.15",
-        "atma-io": "^1.2.27",
-        "atma-loader-ts": "^1.1.12",
-        "babel-preset-es2015": "^6.18.0"
+        "app-bundler": "^0.1.2",
+        "atma": "^0.12.33",
+        "atma-loader-ts": "^1.1.16",
+        "babel-preset-es2015": "^6.18.0",
+        "typescript": "^4.5.4"
     },
     "dependencies": {
         "assertion": "^1.3.25",
@@ -100,6 +100,7 @@
             "dynamicDependencies": [
                 "atma-io",
                 "atma-utils",
+                "atma-server",
                 "socket-io",
                 "^benchmark$",
                 "^path$",
@@ -171,5 +172,9 @@
         "type": "git",
         "url": "git://github.com/tenbits/atma-utest.git"
     },
-    "license": "MIT"
+    "license": "MIT",
+    "peerDependencies": {
+        "atma-io": ">=1.2.52",
+        "atma-server": ">=0.5.5"
+    }
 }
