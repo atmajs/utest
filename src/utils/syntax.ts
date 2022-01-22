@@ -3,7 +3,7 @@ import { global } from '../vars'
 
 export function syntax_Mocha (init){
     suite = {};
-    
+
     global.it = it;
     global.before = before;
     global.beforeEach = beforeEach;
@@ -15,13 +15,14 @@ export function syntax_Mocha (init){
 };
 
 
-var suite;
+let suite;
+
 function describe(name, fn) {
-    var root = suite;
+    let root = suite;
     root[name] = syntax_Mocha(fn);
     suite = root;
 }
-function it(name, fn) {
+export function it(name, fn) {
     suite[name] = fn;
 }
 function before(fn){

@@ -1,4 +1,4 @@
-import { UTest as Fn } from '../builds/export-utest-node'
+import { UTest as Fn } from '../src/UTest'
 
 
 UTest({
@@ -40,17 +40,17 @@ UTest({
 
         suite.run({ query: 'tw.'});
         deepEq_(flow, [ 2 ]);
-        
+
     }
 })
 
 // Fn({
-	
+
 // 	'firsty': assert.await(function(){
 // 		flow.push(1);
 // 	}),
 // 	'async': function(done){
-		
+
 // 		setTimeout(function(){
 // 			flow.push(2);
 // 			done();
@@ -59,23 +59,23 @@ UTest({
 // 	'third': function(){
 // 		flow.push(3);
 // 	},
-	
+
 // 	'pass through variables': function(done){
 // 		flow.push(4);
 // 		setTimeout(function(){
 // 			done('foo', 10);
 // 		}, 100)
 // 	},
-	
+
 // 	'expect variables': function(done, fooVar, numVar){
-		
+
 // 		flow.push(5);
 // 		eq_(fooVar, 'foo');
 // 		eq_(numVar, 10);
-		
+
 // 		done();
 // 	},
-	
+
 // 	'$before': function(){
 // 		flow.push(0);
 // 	},
@@ -85,7 +85,7 @@ UTest({
 // 		eq_(teardowns, 5);
 
 // 	}),
-	
+
 // 	'$teardown': function(){
 // 		teardowns++;
 // 	}

@@ -1,15 +1,28 @@
 import { UTest } from '../UTest'
 import { logger, io, app, include, global } from '../vars';
-import { cfg_prepairSettings, cfg_loadConfig, cfg_hasScripts, cfg_suiteInfoFromConfig, cfg_getScripts, cfg_parseSuites, cfg_split } from './utils/cfg';
+import {
+    cfg_prepairSettings,
+    cfg_loadConfig,
+    cfg_hasScripts,
+    cfg_suiteInfoFromConfig,
+    cfg_getScripts,
+    cfg_parseSuites,
+    cfg_split,
+} from './utils/cfg';
 import { NodeVars } from './node-vars';
 import { RunnerSuite } from './Suite';
 import { cfg_runConfigurationScript } from '../utils/cfg';
 import { UAction } from '../UAction';
+import { it } from '../utils/syntax';
 
 /**
  *	Atma.Toolkit Action entry
  */
 let AtmaAction = {
+    mocha: {
+        it: it,
+        describe: UTest,
+    },
     UTest: UTest,
     UAction: UAction,
     help: {
@@ -63,7 +76,7 @@ let AtmaAction = {
             ]
         }
     },
-    process: function (setts, done) {
+    process (setts, done) {
 
         // configurate
         io.File.disableCache();

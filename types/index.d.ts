@@ -6,6 +6,7 @@ declare var UTest: IUtest;
 
 declare interface IUtest {
     (definition: IUTestDefinition): void
+    (name: string, runner: Function): void
 
     domtest: IDomTest
     request (url, method, headers, data, callback)
@@ -35,13 +36,13 @@ interface IUTestDefinition {
         'http.include'?: any
         'http.service'?: any
         'http.process'?: any
-        'util.process'?: any   
+        'util.process'?: any
     }
     $before?: (done?: Function) => void | PromiseLike<any>
     $after?: (done?: Function) => void | PromiseLike<any>
     $teardown?: (done?: Function) => void | PromiseLike<any>
 
-    
+
 
     [key: string]: ITestCase | IUTestDefinition | any
 }

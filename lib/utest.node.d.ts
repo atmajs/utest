@@ -14,10 +14,15 @@ declare module 'atma-utest' {
 declare module 'atma-utest/node/action' {
     import { UTest } from 'atma-utest/UTest';
     import { UAction } from 'atma-utest/UAction';
+    import { it } from 'atma-utest/utils/syntax';
     /**
       *	Atma.Toolkit Action entry
       */
     let AtmaAction: {
+        mocha: {
+            it: typeof it;
+            describe: typeof UTest;
+        };
         UTest: typeof UTest;
         UAction: typeof UAction;
         help: {
@@ -62,14 +67,14 @@ declare module 'atma-utest/node/action' {
                 })[];
             };
         };
-        process: (setts: any, done: any) => any;
+        process(setts: any, done: any): any;
     };
     export { AtmaAction };
 }
 
 declare module 'atma-utest/UTest' {
     import { Statics } from 'atma-utils/mixin'; 
-     /// <reference types="atma-io/node_modules/atma-utils" />
+     /// <reference types="atma-utils" />
     import { UTestServer } from 'atma-utest/UTest-server';
     import { UTestBenchmark } from 'atma-utest/UTest-benchmark';
     import { UTestConfiguration } from 'atma-utest/UTest-config';
@@ -146,6 +151,11 @@ declare module 'atma-utest/UAction' {
         spawn(): void;
         getLogs(): void;
     }
+}
+
+declare module 'atma-utest/utils/syntax' {
+    export function syntax_Mocha(init: any): any;
+    export function it(name: any, fn: any): void;
 }
 
 declare module 'atma-utest/UTest-server' {
