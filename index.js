@@ -1,14 +1,14 @@
-if (typeof include === 'undefined')
+if (typeof include === 'undefined') {
     throw new Error('<atma-utest> should be loaded by the `atma` package.');
+}
 
+let uri = new net.Uri(include.url);
 
-var uri = new net.Uri(include.url);
-
-include.exports = {
+module.exports = {
     register(rootConfig) {
 
-        var options = rootConfig.atma && rootConfig.atma.settings && rootConfig.atma.settings['atma-utest'] || {};
-        var includeConfig = Object.assign({ amd: true }, options.include || {});
+        let options = rootConfig.atma && rootConfig.atma.settings && rootConfig.atma.settings['atma-utest'] || {};
+        let includeConfig = Object.assign({ amd: true }, options.include || {});
         include.cfg(includeConfig);
 
         rootConfig.$extend({
@@ -24,9 +24,8 @@ include.exports = {
                     '/node': getPath('/utest.server.js'),
                     '/utest-browser': function(socket) {
                         socket.emit('server:utest:handshake', function(info) {
-                            var agent = info.userAgent.browser,
-                                msg = agent.name + ' ' + agent.version;
-
+                            let agent = info.userAgent.browser;
+                            let msg = agent.name + ' ' + agent.version;
                             logger.log(
                                 'uTest Browser connected:', msg.green.bold
                             );

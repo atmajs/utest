@@ -21,7 +21,7 @@ declare module 'atma-utest/node/action' {
     let AtmaAction: {
         mocha: {
             it: typeof it;
-            describe: typeof UTest;
+            describe: typeof UTest.create;
         };
         UTest: typeof UTest;
         UAction: typeof UAction;

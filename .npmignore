@@ -2,9 +2,9 @@ builds/
 resources/
 src/
 test/
-vendor/
 build.js
 
+.vscode/
 .gitmodules
 .npmignore
 .travis.yml

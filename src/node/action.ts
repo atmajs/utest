@@ -21,7 +21,7 @@ import { it } from '../utils/syntax';
 let AtmaAction = {
     mocha: {
         it: it,
-        describe: UTest,
+        describe: UTest.create,
     },
     UTest: UTest,
     UAction: UAction,
