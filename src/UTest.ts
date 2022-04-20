@@ -265,7 +265,7 @@ export class UTest extends mixin(UTestServer, UTestConfiguration, UTestBenchmark
 
     static default = UTest
 
-    static create <T extends typeof UTest> (this: T, mix: string | IUTestDefinition, $suite?: IUTestDefinition | Function, parent?): InstanceType<T> {
+    static create <T extends typeof UTest> (this: T | void, mix: string | IUTestDefinition, $suite?: IUTestDefinition | Function, parent?): InstanceType<T> {
         let Ctor: T = typeof this === 'function' ? (this as any) : UTest;
         let x = new Ctor(mix, $suite, parent);
         return x as InstanceType<T>;

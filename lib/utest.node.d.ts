@@ -106,7 +106,7 @@ declare module 'atma-utest/UTest' {
     const UTest_base: Statics<typeof UTestServer> & Statics<typeof UTestConfiguration> & Statics<typeof UTestBenchmark> & (new () => UTestServer & UTestConfiguration & UTestBenchmark);
     export class UTest extends UTest_base {
             static default: typeof UTest;
-            static create<T extends typeof UTest>(this: T, mix: string | IUTestDefinition, $suite?: IUTestDefinition | Function, parent?: any): InstanceType<T>;
+            static create<T extends typeof UTest>(this: T | void, mix: string | IUTestDefinition, $suite?: IUTestDefinition | Function, parent?: any): InstanceType<T>;
             name: string;
             suite: IUTestDefinition;
             proto: IUTestDefinition;
