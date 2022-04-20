@@ -2,6 +2,8 @@ builds/
 resources/
 src/
 test/
+ts-temp/
+tools/
 build.js
 
 .vscode/
@@ -9,3 +11,4 @@ build.js
 .npmignore
 .travis.yml
 *.komodoproject
+tsconfig-build.json

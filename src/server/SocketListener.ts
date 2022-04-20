@@ -4,7 +4,7 @@ import { ServerUTest } from './ServerUTest';
 import { Color } from '../utils/color';
 import { color } from '../utils/str';
 
-var __config;
+let __config;
 
 export class SocketListener {
     socket: any
@@ -40,7 +40,7 @@ export class SocketListener {
 
 // private
 
-var wait_COUNT = 10,
+let wait_COUNT = 10,
     wait_DURATION = 1000;
 
 function Pipe (socket, event) {
@@ -55,14 +55,14 @@ class Logger {
 
     constructor (socket) {
 
-        for (var key in console) {
+        for (let key in console) {
             this[key] = create(key);
         }
 
         function create(key) {
             let originalFn = console[key];
             return function (...args) {
-                
+
                 socket.emit('server:log', key, args);
                 originalFn.apply(console, args);
             };
@@ -73,20 +73,18 @@ class Logger {
 
 
 
-
 function client_tryTest(io, socket, configs, $cli, done, port, retryIndex) {
     __config = configs;
 
-    var nsp = io.of('/utest-browser'),
-        connections = nsp.connected,
-        message
-        ;
+    let nsp = io.of('/utest-browser');
+    let connections = Array.from(nsp.sockets).map(([id, socket]) => socket);
+    let message;
 
     if (Object.keys(connections).length === 0) {
 
         if (retryIndex === 0 && $cli.params.workerAutostart) {
-            var url = `http://localhost:5777/utest/`;
-            var spawn = require('child_process').spawn,
+            let url = `http://localhost:5777/utest/`;
+            let spawn = require('child_process').spawn,
                 commands = {
                     darwin: 'open',
                     win32: 'explorer.exe',
@@ -116,8 +114,8 @@ function client_tryTest(io, socket, configs, $cli, done, port, retryIndex) {
         return;
     }
 
-    var clients = [];
-    for (var key in connections) {
+    let clients = [];
+    for (let key in connections) {
         clients.push(connections[key]);
     }
     client_doTest(clients, socket, configs, done);
@@ -128,7 +126,7 @@ function client_doTest(clients, socket, config, done) {
     // clean resources cache
     include.getResources().js = {};
 
-    var utest = new ServerUTest(clients, new Logger(socket));
+    let utest = new ServerUTest(clients, new Logger(socket));
 
     utest
         .on('slave:start', Pipe(socket, 'slave:start'))
@@ -145,4 +143,4 @@ function client_doTest(clients, socket, config, done) {
 
     utest.run(config, done);
 }
-	
+
