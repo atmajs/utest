@@ -169,7 +169,7 @@
         "body-parser": "~1.4.3",
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
-        "jquery": "^2.1.4",
+        "jquery": "^3.5.0",
         "sinon": "^1.15.4",
         "socket.io-client": "^4.4.1"
     },
