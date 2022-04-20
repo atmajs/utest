@@ -7,7 +7,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.26",
+    "version": "0.21.27",
     "app-bundler": {
         "apps": {
             "browser": {
@@ -153,13 +153,13 @@
     "devDependencies": {
         "@types/node": "^13.1.7",
         "app-bundler": "^0.1.2",
-        "appcfg": "^0.4.58",
-        "atma": "^0.12.33",
+        "appcfg": "^0.4.64",
+        "atma": "^0.15.12",
         "atma-loader-ts": "^1.1.16",
-        "atma-server": "^0.5.5",
+        "atma-server": "^0.5.13",
         "babel-preset-es2015": "^6.18.0",
         "dts-bundle": "^0.7.3",
-        "typescript": "^4.5.4"
+        "typescript": "^4.6.3"
     },
     "dependencies": {
         "assertion": "^1.3.25",
