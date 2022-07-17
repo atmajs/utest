@@ -67,11 +67,11 @@ let AtmaAction = {
                     env: [
                         'src/foo.js::Foo'
                     ],
-                    tests: 'src/browser/**.test'
+                    tests: 'src/browser/**.spec.ts'
                 }, {
                     exec: 'node',
                     env: 'src/foo.js::Foo',
-                    tests: 'src/node/**.test'
+                    tests: 'src/node/**.spec.ts'
                 }
             ]
         }
@@ -138,7 +138,7 @@ let AtmaAction = {
 
         NodeVars.suite = new RunnerSuite(NodeVars.configs, {
             ...setts,
-            isAction: true
+            isAction: setts?.action !== 'test'
         });
         // run configuration only if has suites, otherwise configuration will be run by the root suite
         var cfg = config.suites && config,
