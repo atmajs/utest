@@ -228,12 +228,14 @@ export abstract class Runner extends class_EventEmitter {
                 .file
                 .replace(/(\/)?utest\//i, '$1')
                 .replace(/\?.+/, '')
-                .replace(/^\//, ''),
+                .replace(/^\//, '');
 
-                uri = new class_Uri(base).combine(path).toString();
+            let uri = new class_Uri(path).isRelative()
+                ? new class_Uri(base).combine(path).toString()
+                : path;
 
             if (io.File.exists(uri)) {
-                let source = io.File.read <string> (uri);
+                let source = io.File.read <string> (uri, { skipHooks: true });
                 let lines = source.split(/\r\n|\r|\n/g);
                 let line = lines[data.line - 1];
                 let code = line && line.trim();

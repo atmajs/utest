@@ -7,7 +7,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.29",
+    "version": "0.21.30",
     "app-bundler": {
         "apps": {
             "browser": {
