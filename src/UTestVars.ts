@@ -10,5 +10,9 @@ export const UTestVars = {
         this.tests = [];
         this.listeners = {};
         this.index = -1;
+    },
+    remove (utest: UTest) {
+        let i = this.tests.indexOf(utest);
+        this.tests.splice(i, 1);
     }
 }

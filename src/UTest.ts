@@ -157,8 +157,9 @@ function runCase(ctx, fn: ITestCase | IUTestDefinition, done: Function, teardown
             return;
         }
         result = fn.apply(ctx, args);
-        if (tryWait_Deferred(result))
+        if (tryWait_Deferred(result)) {
             return;
+        }
 
         onComplete();
     } catch (error) {
@@ -207,6 +208,15 @@ function runCase(ctx, fn: ITestCase | IUTestDefinition, done: Function, teardown
             asyncData.fn();
         }
         function onSuccess(...args) {
+            if (args.length === 1 && args[0] instanceof UTest) {
+                let utest = args[0];
+                UTestVars.remove(utest);
+                utest.run(() => {
+                    // Process self
+                    onSuccess();
+                });
+                return;
+            }
             eq_(result._rejected, null);
             if (args.length !== 0) ctx.arguments = args;
             asyncData.fn();
