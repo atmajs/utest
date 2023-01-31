@@ -167,7 +167,7 @@
         "atma-utils": "^0.2.58",
         "benchmark": "^1.0.0",
         "body-parser": "~1.4.3",
-        "diff": "~1.0.8",
+        "diff": "~3.5.0",
         "domtest": "^0.10.34",
         "jquery": "^2.1.4",
         "sinon": "^1.15.4",
