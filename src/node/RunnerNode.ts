@@ -255,6 +255,11 @@ function suite_next(callback) {
 
     _runner.files = _suite.files;
     _runner.config = _suite;
+
+    if (_suite.$config?.includejs != null) {
+        (global as any).include?.cfg(_suite.$config.includejs);
+    }
+
     fn_waterfall(
         function (done) {
             cfg_runConfigurationScript(
