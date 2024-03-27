@@ -1,8 +1,8 @@
-{	
+{
 	"compilerOptions": {
 		"diagnostics": true,
         "declaration": true,
-        "target":"ES2015",
+        "target":"ES2022",
 		"module": "commonjs",
         "sourceMap": false,
         "experimentalDecorators": true

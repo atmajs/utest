@@ -12,7 +12,7 @@
         ],
         "types": ["node"],
         "declaration": true,
-        "target": "es5",
+        "target": "ES2022",
         "module": "commonjs",
         "sourceMap": false,
         "experimentalDecorators": true

@@ -89,7 +89,7 @@ export class RunnerNode extends Runner {
     }
 
     clearResources() {
-        this.resources && this.resources.forEach(resource_clear);
+        this.resources && this.resources.forEach(x => resource_clear(x));
         this.envResource && resource_clear(this.envResource);
 
         this.resources = [];
@@ -98,10 +98,10 @@ export class RunnerNode extends Runner {
     getResources() {
         let arr = [];
 
-        this.envResource && resource_aggrIncludes(this.envResource, arr);
+        this.envResource && resource_aggIncludes(this.envResource, arr);
 
         this.resources.forEach(function (resource) {
-            resource_aggrIncludes(resource, arr);
+            resource_aggIncludes(resource, arr);
         });
 
         Object
@@ -119,10 +119,18 @@ export class RunnerNode extends Runner {
     }
 };
 
-function resource_clear(resource) {
+function resource_clear(resource, cache?: Record<string, boolean>) {
+    cache ??= {};
 
-    let bin = include.getResources();
+    let key = resource.url ? `${resource.url}:${resource.includes?.length ?? 0}` : null;
+    if (key != null) {
+        if (cache[key]) {
+            return;
+        }
+        cache[key] = true;
+    }
 
+    const bin = include.getResources();
 
     for (let type in bin) {
         for (let key in bin[type]) {
@@ -133,14 +141,13 @@ function resource_clear(resource) {
         }
     }
 
-    if (resource.includes) {
-        resource.includes.forEach(function (data) {
-            if (data.isCyclic) {
-                return;
-            }
-            resource_clear(data.resource);
-        });
-    }
+    resource.includes?.forEach(data => {
+        if (data.isCyclic) {
+            return;
+        }
+        resource_clear(data.resource, cache);
+    });
+
 
     if (typeof require !== 'undefined' && require.cache) {
         for (let key in require.cache) {
@@ -149,18 +156,26 @@ function resource_clear(resource) {
     }
 }
 
-function resource_aggrIncludes(resource, aggr) {
-    if (resource.url && aggr.indexOf(resource.url) === -1 && NODE_BUILTINS.indexOf(resource.url) === -1) {
-        aggr.push(resource.url);
+function resource_aggIncludes(resource, agg: string[], cache?: Record<string, boolean>) {
+    cache ??= {};
+    let key = resource.url ? `${resource.url}:${resource.includes?.length ?? 0}` : null;
+
+    if (resource.url && agg.indexOf(resource.url) === -1 && NODE_BUILTINS.indexOf(resource.url) === -1) {
+        agg.push(resource.url);
     }
-    if (resource.includes) {
-        resource.includes.forEach(function (data) {
-            if (data.isCyclic) {
-                return;
-            }
-            resource_aggrIncludes(data.resource, aggr);
-        });
+    if (key != null) {
+        if (key in cache) {
+            return;
+        }
+        cache[key] = true;
     }
+
+    resource.includes?.forEach(function (data) {
+        if (data.isCyclic) {
+            return;
+        }
+        resource_aggIncludes(data.resource, agg, cache);
+    });
 }
 
 function suite_loadEnv(runner, suite, callback) {
