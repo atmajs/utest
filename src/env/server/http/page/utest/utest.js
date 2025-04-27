@@ -3,9 +3,9 @@ include
     .load('utest.mask')
     .done(function (resp) {
 
-        include.exports = atma.server.HttpPage.create({
-            template: resp.load.utest,
-            master: '',
+        include.exports = class extends atma.server.HttpPage {
+            template = resp.load.utest;
+            master = '';
 
             onRenderStart() {
 
@@ -13,7 +13,7 @@ include
                     scripts: scripts_resolve()
                 };
             }
-        });
+        };
 
     })
 
@@ -53,7 +53,7 @@ var scripts_resolve;
         let atmaPath = main.endsWith('atma')
             ? ('file://' + main.replace(/\/atma$/, ''))
             : null;
-        
+
         // let packageBaseDir = (function () {
         //     var path = 'file://' + __dirname;
         //     var i = path.indexOf('atma-utest');
@@ -74,7 +74,7 @@ var scripts_resolve;
         ])
             .map(function (x) {
                 let path, wwwPath;
-                
+
                 path = `/node_modules/atma-utest/${x}`;
                 if (io.File.exists(path)) {
                     return path;
@@ -83,7 +83,7 @@ var scripts_resolve;
                 if (io.File.exists(path)) {
                     return path;
                 }
-            
+
                 if (atmaPath) {
                     path = `${atmaPath}/node_modules/atma-utest/${x}`;
                     wwwPath = `/.reference/atma_toolkit/node_modules/atma-utest/${x}`;
