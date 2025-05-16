@@ -14,7 +14,7 @@ export function process_toggle (params, done) {
     var id = params.id || params.command,
         process = __process[id];
     if (params.action === 'stop') {
-        
+
         if (process != null) {
             delete __process[id];
             process.kill(done);
@@ -22,31 +22,35 @@ export function process_toggle (params, done) {
         done(new Error('Process not found to stop'));
         return;
     }
-    
+
     if (process != null) {
         return done(new Error(`Process '${id}' is active`));
     }
-    
+
     var options = {
         cwd       : params.cwd,
         command   : params.command,
         detached  : params.detached,
         matchReady: toRegexp(params.matchReady),
         silent    : params.silent === void 0 ? params.silent : false,
-        
+
     };
-    
-    process = __process[id] = new atma.shell.Process(options);
-    process
-        .always(function(){
+
+    const shellbee: typeof import('shellbee') = require('shellbee');
+    const shell = process = __process[id] = new shellbee.Shell(options);
+    shell
+        .promise
+        .catch(() => {
             delete __process[id];
-        })
+        });
+
+    shell
         .on('process_exception', data => done(data.error))
         .on('process_ready', () => done(null, process))
         ;
-    
-    
-    process.run();
+
+
+    shell.run();
 };
 
 var __process = {};

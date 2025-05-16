@@ -50,7 +50,7 @@ let AtmaAction = {
                 exec: 'String`dom|node`',
                 env: 'ScriptPath | Array<ScriptPath> :: IncludeJS alias feature can be used',
                 tests: 'String|GlobPattern - path to test(s)',
-                fork: 'ConfigPath - run in seperate thread another test configuration',
+                fork: 'ConfigPath - run in separate thread another test configuration',
                 cwd: 'WorkingPath - for `fork`'
             },
             '# Object': {

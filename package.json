@@ -7,7 +7,7 @@
         "name": "Alexander Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.21.33",
+    "version": "0.21.34",
     "app-bundler": {
         "apps": {
             "browser": {
@@ -36,6 +36,7 @@
                     "^assertion$",
                     "^domtest$",
                     "^url$",
+                    "^shellbee$",
                     "body-parser"
                 ]
             },
@@ -116,7 +117,9 @@
                             "esModuleInterop": true,
                             "allowSyntheticDefaultImports": true,
                             "target": "ES2022",
-                            "lib": [ "ES2022" ]
+                            "lib": [
+                                "ES2022"
+                            ]
                         }
                     }
                 }
@@ -175,7 +178,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/tenbits/atma-utest.git"
+        "url": "git://github.com/atmajs/utest.git"
     },
     "license": "MIT",
     "devDependencies": {
@@ -198,6 +201,7 @@
         "diff": "~1.0.8",
         "domtest": "^0.10.34",
         "jquery": "^2.1.4",
+        "shellbee": "^0.5.29",
         "sinon": "^1.15.4",
         "socket.io-client": "^4.4.1"
     },
