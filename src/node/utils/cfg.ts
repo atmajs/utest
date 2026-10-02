@@ -3,19 +3,42 @@ import { arr_isEmpty, arr_distinctConcat } from '../../utils/array'
 
 import { class_Uri, is_Array } from 'atma-utils';
 
-export function cfg_prepairSettings(setts, script) {
+type TExecutor = 'dom' | 'node' | 'browser' | '';
+type TExclude = string | RegExp | string[] | RegExp[];
 
-    var base = setts.base;
+interface IConfig {
+    base?: string;
+    cwd?: string;
+    config?: string;
+    name?: string;
+    tests?: string | string[];
+    exclude?: TExclude;
+    exec?: TExecutor;
+    env?: string | string[];
+    nodeScripts?: string[];
+    domScripts?: string[];
+    browser?: boolean;
+    node?: boolean;
+    fork?: string;
+    suites?: Record<string, IConfig> | IConfig[];
+    $config?: Record<string, any>;
+}
+
+export function cfg_prepairSettings(setts: IConfig, script: string) {
+
+    let base: any = setts.base;
     if (base) {
         base = new class_Uri(class_Uri.combine(base, '/'));
 
-        if (base[0] === '/')
+        if (base[0] === '/') {
             // relative to CWD
             base = base.substring(1);
+        }
 
 
-        if (base.isRelative())
+        if (base.isRelative()) {
             base = io.env.currentDir.combine(base);
+        }
 
     }
     else {
@@ -28,10 +51,11 @@ export function cfg_prepairSettings(setts, script) {
     setts.env = [];
 
 
-    if (script == null)
+    if (script == null) {
         return;
+    }
 
-    if (script.indexOf('*') !== -1) {
+    if (script.includes('*')) {
 
         cfg_addScript(
             script,
@@ -43,8 +67,8 @@ export function cfg_prepairSettings(setts, script) {
         return;
     }
 
-    function resolveFileByName(path) {
-        var ext = /\.[\w]+$/;
+    function resolveFileByName(path: string) {
+        let ext = /\.[\w]+$/;
         if (ext.test(path)) {
             return resolveFileByNameWithExtension(path);
         }
@@ -65,11 +89,11 @@ export function cfg_prepairSettings(setts, script) {
         }
         return null;
     }
-    function resolveFileByNameWithExtension(path) {
+    function resolveFileByNameWithExtension(path: string) {
         if (io.File.exists(base.combine(path))) {
             return path;
         }
-        var testFolder = class_Uri.combine('test/', path);
+        let testFolder = class_Uri.combine('test/', path);
         if (io.File.exists(base.combine(testFolder))) {
             return testFolder;
         }
@@ -92,12 +116,13 @@ export function cfg_prepairSettings(setts, script) {
     );
 
     // Consider to remove: add same-name js file to env to be preloaded.
-    var ext = /\.\w{1,5}$/.exec(script)
+    let ext = /\.\w{1,5}$/.exec(script)
     if (ext && ext[0] === '.test') {
         script = script.replace(/\.\w{1,5}$/, '.js');
 
-        if (io.File.exists(base.combine(script)))
+        if (io.File.exists(base.combine(script))) {
             setts.env.push(script);
+        }
     }
 
 
@@ -110,9 +135,9 @@ export function cfg_prepairSettings(setts, script) {
  * env: [String]
  * tests: String | [String]
  */
-export function cfg_loadConfig(baseConfig) {
+export function cfg_loadConfig(baseConfig: IConfig) {
 
-    var path = baseConfig.config;
+    let path = baseConfig.config;
 
     if (path == null) {
         path = /\/test.?[\\\/]?$/.test(baseConfig.base)
@@ -122,26 +147,28 @@ export function cfg_loadConfig(baseConfig) {
         path = class_Uri.combine(baseConfig.base, path);
     }
 
-    var file = new io.File(path);
-    if (file.exists() === false)
+    let file = new io.File(path);
+    if (file.exists() === false) {
         return { error: '404 ' + path };
+    }
 
 
     return suite_normalize(require(file.uri.toLocalFile()));
 
 }
 
-export function cfg_getScripts(baseConfig, config) {
+export function cfg_getScripts(baseConfig: IConfig, config: IConfig) {
 
     if (config.tests) {
         // root object, should not have suites
-        var tests = config.tests,
+        let tests = config.tests,
+            exclude = config.exclude,
             base = baseConfig.base,
             nodeScripts = baseConfig.nodeScripts,
             domScripts = baseConfig.domScripts,
             executor = baseConfig.exec;
 
-        cfg_addScript(tests, base, nodeScripts, domScripts, executor);
+        cfg_addScript(tests, base, nodeScripts, domScripts, executor, void 0, exclude);
 
 
         baseConfig.env = config.env;
@@ -151,21 +178,24 @@ export function cfg_getScripts(baseConfig, config) {
     baseConfig.suites = cfg_parseSuites(config.suites, baseConfig.base);
 };
 
-export function cfg_hasScripts(config) {
-    if (!config)
+export function cfg_hasScripts(config: IConfig) {
+    if (!config) {
         return false;
+    }
 
-    if (!arr_isEmpty(config.nodeScripts))
+    if (!arr_isEmpty(config.nodeScripts)) {
         return true;
+    }
 
-    if (!arr_isEmpty(config.domScripts))
+    if (!arr_isEmpty(config.domScripts)) {
         return true;
+    }
 
     return false;
 };
 
-export function cfg_parseSuites(suites, base) {
-    var array = [],
+export function cfg_parseSuites(suites: IConfig['suites'], base: string) {
+    let array = [],
         key, x, config;
 
     for (key in suites) {
@@ -194,7 +224,9 @@ export function cfg_parseSuites(suites, base) {
             config.base,
             config.nodeScripts,
             config.domScripts,
-            config.exec
+            config.exec,
+            void 0,
+            x.exclude
         );
 
 
@@ -203,7 +235,7 @@ export function cfg_parseSuites(suites, base) {
     return array;
 };
 
-export function cfg_suiteInfoFromConfig(setts, config) {
+export function cfg_suiteInfoFromConfig(setts: IConfig, config: IConfig) {
     setts.env = arr_distinctConcat(
         setts.env, config.env
     );
@@ -214,7 +246,7 @@ export function cfg_suiteInfoFromConfig(setts, config) {
         return;
     }
 
-    var path = first(setts.nodeScripts) || first(setts.domScripts),
+    let path = first(setts.nodeScripts) || first(setts.domScripts),
         suite = suite_getForPath(config.suites, path);
     if (suite) {
         setts.env = arr_distinctConcat(
@@ -225,11 +257,11 @@ export function cfg_suiteInfoFromConfig(setts, config) {
         recalculateExecScripts(setts);
     }
     // private
-    function first(arr) {
+    function first(arr: string[]) {
         return arr && arr[0];
     }
-    function recalculateExecScripts(config) {
-        var exec = config.exec,
+    function recalculateExecScripts(config: IConfig) {
+        let exec = config.exec,
             from, to;
         if (exec === 'dom' && config.nodeScripts.length) {
             from = 'nodeScripts';
@@ -239,8 +271,9 @@ export function cfg_suiteInfoFromConfig(setts, config) {
             from = 'domScripts';
             to = 'nodeScripts';
         }
-        if (from == null)
+        if (from == null) {
             return;
+        }
 
         config[to] = config[to].concat(config[from]);
         config[from].length = 0;
@@ -248,12 +281,13 @@ export function cfg_suiteInfoFromConfig(setts, config) {
 };
 
 
-export function cfg_split(config) {
-    if (config.fork)
+export function cfg_split(config: IConfig) {
+    if (config.fork) {
         return [config];
+    }
 
     // split config per executor
-    var configs = [];
+    let configs = [];
     if (!arr_isEmpty(config.domScripts) && !config.node) {
         configs.push({
             exec: 'browser',
@@ -275,7 +309,7 @@ export function cfg_split(config) {
     }
 
     if (config.suites) {
-        config.suites.forEach(function (suite) {
+        (config.suites as IConfig[]).forEach(function (suite) {
             configs = configs.concat(cfg_split(suite));
         });
 
@@ -284,8 +318,8 @@ export function cfg_split(config) {
     return configs;
 }
 
-const watching = [];
-export function watch (base, resources: string[], callback): string[] {
+let watching: string[] = [];
+export function watch(base: string | class_Uri, resources: string[], callback: (filename: string) => void): string[] {
     base = new class_Uri(base);
     resources.forEach((url) => {
 
@@ -296,12 +330,12 @@ export function watch (base, resources: string[], callback): string[] {
             return null;
         }
 
-        var uri = new class_Uri(url);
+        let uri = new class_Uri(url);
         if (uri.isRelative()) {
-            uri = base.combine(uri);
+            uri = (base as class_Uri).combine(uri);
         }
 
-        var file = new io.File(uri);
+        let file = new io.File(uri);
         if (file.uri == null) {
             // some virtual files does not expose uri property
             return null;
@@ -313,11 +347,11 @@ export function watch (base, resources: string[], callback): string[] {
         }
         if (file.exists()) {
             watching.push(filename);
-            io.watcher.watch(filename, function () {
+            io.watcher.watch(filename, {}, function () {
 
                 io.File.clearCache(filename);
 
-                var sys = require('path').normalize(filename);
+                let sys = require('path').normalize(filename);
                 delete require.cache[sys];
 
                 callback(filename);
@@ -331,6 +365,9 @@ export function watch (base, resources: string[], callback): string[] {
         if (/socket\.io/i.test(filename)) {
             return null;
         }
+        if (/\bnode_modules\b/i.test(filename)) {
+            return null;
+        }
 
         logger.warn('<utest: watcher> File 404 - ', filename);
         return null;
@@ -341,22 +378,22 @@ export function watch (base, resources: string[], callback): string[] {
 
 //= private
 
-function cfg_addScript(path, base, nodeScripts, domScripts, executor: 'dom' | 'node' | 'browser' | '', forceAsPath?) {
+function cfg_addScript(path: string | string[], base: string, nodeScripts: string[], domScripts: string[], executor: TExecutor | false, forceAsPath?: boolean, exclude?: TExclude) {
 
     if (Array.isArray(path)) {
         path.forEach(function (x) {
-            cfg_addScript(x, base, nodeScripts, domScripts, executor, forceAsPath);
+            cfg_addScript(x, base, nodeScripts, domScripts, executor, forceAsPath, exclude);
         });
         return;
     }
 
-    if (forceAsPath !== true && ~path.indexOf('*')) {
+    if (forceAsPath !== true && path.includes('*')) {
         // asPath here is actually to prevent recursion in case if
         // file, which is resolved by globbing, contains '*'
 
-        var files = io
+        let files = io
             .glob
-            .readFiles(class_Uri.combine(base, path));
+            .readFiles(class_Uri.combine(base, path), exclude);
 
         if (files.length === 0) {
             logger.warn('<No files found. Base %s. Search %s', base, path);
@@ -371,27 +408,30 @@ function cfg_addScript(path, base, nodeScripts, domScripts, executor: 'dom' | 'n
         return;
     }
 
-    if (executor == null)
+    if (executor == null) {
         executor = path_isForBrowser(path) ? 'dom' : 'node';
+    }
 
 
-    if ('dom' === executor || 'browser' === executor)
+    if ('dom' === executor || 'browser' === executor) {
         domScripts.push(path);
+    }
 
-    if ('node' === executor)
+    if ('node' === executor) {
         nodeScripts.push(path);
+    }
 }
 
-function path_isForNode(path) {
+function path_isForNode(path: string) {
     return /\-node\.[\w]+$/.test(path) || /\/node\//.test(path);
 }
 
-function path_isForBrowser(path) {
+function path_isForBrowser(path: string) {
     return /\-dom\.[\w]+$/.test(path) || /\/dom\//.test(path);
 }
 
 
-function path_matchTests(test, path) {
+function path_matchTests(test: string | string[], path: string) {
     if (Array.isArray(test)) {
         return test.some(function (x) {
             return path_matchTests(x, path);
@@ -405,8 +445,8 @@ function path_matchTests(test, path) {
     test = test.replace(/^[\./]/, '');
     path = path.replace(/^[\./]/, '');
 
-    if (test.indexOf('*') === -1) {
-        var a = test.toLowerCase(),
+    if (test.includes('*') === false) {
+        let a = test.toLowerCase(),
             b = path.toLowerCase()
             ;
         return a.indexOf(b) !== -1 || b.indexOf(a) !== -1;
@@ -415,41 +455,44 @@ function path_matchTests(test, path) {
     return io.glob.matchPath(test, path);
 }
 
-function suite_getForPath(suites, path) {
-    var key, suite;
+function suite_getForPath(suites: IConfig['suites'], path: string) {
+    let key, suite;
     for (key in suites) {
         suite = suites[key];
 
-        if (path_matchTests(suite.tests, path))
+        if (path_matchTests(suite.tests, path)) {
             return suite;
+        }
     }
 }
-function suite_normalize(config) {
+function suite_normalize(config: IConfig) {
     normalize(config);
 
-    var suites = config.suites;
+    let suites = config.suites;
     if (suites) {
 
         if (is_Array(suites)) {
             logger.warn('Use object{SUITE_NAME:CONFIG}. Normalizing the array...');
-            var obj = {};
-            suites.forEach(function (suite, index) {
+            let obj = {};
+            (suites as IConfig[]).forEach(function (suite, index) {
                 obj[index] = suite;
             });
             suites = obj;
         }
 
-        for (var key in suites) {
+        for (let key in suites) {
             normalize(suites[key], key);
         }
     }
     // private
-    function normalize(x, name = null) {
-        if (typeof x.env === 'string')
+    function normalize(x: IConfig, name: string = null) {
+        if (typeof x.env === 'string') {
             x.env = [x.env];
+        }
 
-        if (name != null)
+        if (name != null) {
             x.name = x.name || name;
+        }
     }
     return config;
 }

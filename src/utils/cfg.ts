@@ -1,16 +1,21 @@
 import { include, logger } from '../vars'
+import { is_Deferred } from './is';
 
 export function cfg_runConfigurationScript(type, config, done) {
     var $script = config && config.$config && config.$config[type];
-    if ($script == null)
+    if ($script == null) {
         return done();
-
+    }
 
     if (typeof $script === 'function') {
-        $script(done);
-        if ($script.length === 0)
+        let result = $script(done);
+        if (is_Deferred(result)) {
+            result.then(done);
+            return;
+        }
+        if ($script.length === 0) {
             done();
-
+        }
         return;
     }
 
